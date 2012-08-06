@@ -19,6 +19,7 @@
      * @return jQuery
      */
     $.popunder = function(sUrl, aOptions) {
+        use "strict";
         aOptions = aOptions || {};
         aOptions.simple = $.browser.msie;
         $.popunderHelper.open(sUrl, aOptions);
@@ -36,7 +37,8 @@
          * @return boolean
          */
         cookieCheck: function(sUrl, aOptions) {
-            var name = this.rand(aOptions.cookie, false);
+            use "strict";
+            var name = this.rand(aOptions.cookie, false),
                 cookie = $.cookies.get(name),
                 ret = false;
 
@@ -120,7 +122,7 @@
                     popunder.init = function(e) {
                         with (e) {
                             (function() {
-                                if (typeof window.mozPaintCount != 'undefined' || typeof navigator.webkitGetUserMedia === "function") {
+                                if (typeof window.mozPaintCount !== 'undefined' || typeof navigator.webkitGetUserMedia === "function") {
                                     var x = window.open('about:blank');
                                     x.close();
                                 }
