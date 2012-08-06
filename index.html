@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="Hans-Peter Buniat" name="author">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Form-Submit Popunder with Cookie support</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+<!-- Cookie support -->
+<script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jaaulde.cookies.js"></script>
+<script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jquery.cookies.js"></script>
+<script type="text/javascript" src="jquery.popunder.js"></script>
+</head>
+<body>
+    <form id="testSubmit" action="http://www.google.com">
+        <input type="submit" />
+    </form>
+
+    <script type="text/javascript">
+    $('#testSubmit').submit(function() {
+        jQuery.popunder('http://www.fluege.de', {height:400, width:400, blocktime:1}).popunder('http://www.flug24.de');
+    });
+    </script>
+</body>
+</html>
