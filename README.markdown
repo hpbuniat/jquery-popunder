@@ -11,13 +11,10 @@ This script will only work, if the popunder is opened on a user-generated event 
 
 Options
 -------
-"cookie": The cookie-name (used for blocking a popunder)
-
-"blocktime": The time to block popunder, in hours
-
-"height": The height of the popunder
-
-"width": The width of the popunder
+- "cookie": The cookie-name (used for blocking a popunder)
+- "blocktime": The time to block popunder, in hours
+- "height": The height of the popunder
+- "width": The width of the popunder
 
 Compatibility
 -------
@@ -28,7 +25,13 @@ jquery-popunder was tested with:
 - Microsoft Internet Explorer 6-9
 - Apple Safari 5
 
+Known Issues
+-------
+The script currently does not work:
+- with Opera-Browser
+- when using Gnome
+
 Dependencies
 -------
-jquery - http://www.jquery.com
-jquery.cookie - https://code.google.com/p/cookies/
+- jquery - http://www.jquery.com
+- jquery.cookie - https://code.google.com/p/cookies/
