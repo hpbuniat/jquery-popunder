@@ -9,20 +9,22 @@
  *
  * @requires jQuery
  */
+
+/*global jQuery, window, screen, opener, top */
 (function($) {
     "use strict";
 
     /**
      * Create a popunder
      *
-     * @param  sUrl Url to open as popunder
-     * @param  aOptions Options for the Popunder
+     * @param  {string} sUrl Url to open as popunder
+     * @param  {object} options Options for the Popunder
      *
      * @return jQuery
      */
-    $.popunder = function(sUrl, aOptions) {
-        aOptions = aOptions || {};
-        $.popunder.helper.open(sUrl, aOptions);
+    $.popunder = function(sUrl, options) {
+        options = options || {};
+        $.popunder.helper.open(sUrl, options);
         return $;
     };
 
@@ -31,13 +33,13 @@
         /**
          * Helper to create a (optionally) random value with prefix
          *
-         * @param  sUrl The url to open
-         * @param  aOptions Options for the Popunder
+         * @param  {string} sUrl The url to open
+         * @param  {object} options Options for the Popunder
          *
          * @return boolean
          */
-        cookieCheck: function(sUrl, aOptions) {
-            var name = this.rand(aOptions.cookie, false),
+        cookieCheck: function(sUrl, options) {
+            var name = this.rand(options.cookie, false),
                 cookie = $.cookies.get(name),
                 ret = false;
 
@@ -52,7 +54,7 @@
             }
 
             $.cookies.set(name, cookie, {
-                expiresAt: new Date((new Date()).getTime() + aOptions.blocktime * 3600000)
+                expiresAt: new Date((new Date()).getTime() + options.blocktime * 3600000)
             });
 
             return ret;
@@ -61,8 +63,8 @@
         /**
          * Helper to create a (optionally) random value with prefix
          *
-         * @param  name
-         * @param  rand
+         * @param  {string} name
+         * @param  {boolean} rand
          *
          * @return string
          */
@@ -74,23 +76,23 @@
         /**
          * Open the popunder
          *
-         * @param  sUrl The URL to open
-         * @param  aOptions
+         * @param  {string} sUrl The URL to open
+         * @param  {object} options Options for the Popunder
          *
          * @return boolean
          */
-        open: function(sUrl, aOptions) {
+        open: function(sUrl, options) {
             var _parent = window.self,
                 sToolbar = (!$.browser.webkit && (!$.browser.mozilla || parseInt($.browser.version, 10) < 12)) ? 'yes' : 'no',
                 sOptions,
                 popunder;
 
-            aOptions.blocktime = (aOptions.blocktime) ? aOptions.blocktime : false;
-            aOptions.cookie = (aOptions.cookie) ? aOptions.cookie : 'puCookie';
-            aOptions.height = (aOptions.height) ? aOptions.height : (screen.availHeight - 122).toString();
-            aOptions.width = (aOptions.width) ? aOptions.width : (screen.availWidth - 122).toString();
+            options.blocktime = (options.blocktime) ? options.blocktime : false;
+            options.cookie = (options.cookie) ? options.cookie : 'puCookie';
+            options.height = (options.height) ? options.height : (screen.availHeight - 122).toString();
+            options.width = (options.width) ? options.width : (screen.availWidth - 122).toString();
 
-            if (aOptions.blocktime && $.popunder.helper.cookieCheck(sUrl, aOptions)) {
+            if (options.blocktime && $.popunder.helper.cookieCheck(sUrl, options)) {
                 return false;
             }
 
@@ -104,7 +106,7 @@
             }
 
             /* popunder options */
-            sOptions = 'toolbar=' + sToolbar + ',scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width=' + aOptions.width + ',height=' + aOptions.height + ',screenX=0,screenY=0,left=0,top=0';
+            sOptions = 'toolbar=' + sToolbar + ',scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width=' + options.width + ',height=' + options.height + ',screenX=0,screenY=0,left=0,top=0';
 
             /* create pop-up from parent context */
             popunder = _parent.window.open(sUrl, $.popunder.helper.rand(), sOptions);
