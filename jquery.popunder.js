@@ -87,10 +87,10 @@
                 sOptions,
                 popunder;
 
-            options.blocktime = (options.blocktime) ? options.blocktime : false;
-            options.cookie = (options.cookie) ? options.cookie : 'puCookie';
-            options.height = (options.height) ? options.height : (screen.availHeight - 122).toString();
-            options.width = (options.width) ? options.width : (screen.availWidth - 122).toString();
+            options.blocktime = options.blocktime || false;
+            options.cookie = options.cookie || 'puCookie';
+            options.height = options.height || (screen.availHeight - 122).toString();
+            options.width = options.width || (screen.availWidth - 122).toString();
 
             if (options.blocktime && $.popunder.helper.cookieCheck(sUrl, options)) {
                 return false;
