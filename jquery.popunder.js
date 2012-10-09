@@ -92,7 +92,7 @@
             options.height = options.height || (screen.availHeight - 122).toString();
             options.width = options.width || (screen.availWidth - 122).toString();
 
-            if (options.blocktime && $.popunder.helper.cookieCheck(sUrl, options)) {
+            if (options.blocktime && (typeof $.cookies === 'object') && $.popunder.helper.cookieCheck(sUrl, options)) {
                 return false;
             }
 
@@ -102,7 +102,7 @@
                         _parent = top;
                     }
                 }
-                catch(err) { }
+                catch(err) {}
             }
 
             /* popunder options */
@@ -118,27 +118,29 @@
                     try {
                         opener.window.focus();
                     }
-                    catch (err) {
-                    }
+                    catch (err) {}
                 }
                 else {
                     /* popunder for e.g. ff, chrome */
                     popunder.init = function(e) {
+                        e.focus();
                         /* in ff4+, chrome21+ we need to trigger a window.open on our parent to bring it to the front */
                         if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
-                            var x = e.window.open('about:blank');
-                            x.close();
+                            try {
+                                var x = e.window.open('about:blank');
+                                x.close();
+                            }
+                            catch (err) {}
                         }
 
                         try {
                             e.opener.window.focus();
                         }
-                        catch (err) { }
+                        catch (err) {}
                     };
-                    popunder.params = {
-                        url: sUrl
-                    };
-                    popunder.init(popunder);
+                    setTimeout(function() {
+                        popunder.init(popunder);
+                    }, 0);
                 }
             }
 
