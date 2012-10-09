@@ -123,7 +123,6 @@
                 else {
                     /* popunder for e.g. ff, chrome */
                     popunder.init = function(e) {
-                        e.focus();
                         /* in ff4+, chrome21+ we need to trigger a window.open on our parent to bring it to the front */
                         if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
                             try {
