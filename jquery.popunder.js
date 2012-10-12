@@ -87,10 +87,24 @@
                 sOptions,
                 popunder;
 
-            options.blocktime = options.blocktime || false;
-            options.cookie = options.cookie || 'puCookie';
-            options.height = options.height || (screen.availHeight - 122).toString();
-            options.width = options.width || (screen.availWidth - 122).toString();
+            options.disableOpera = typeof options.disableOpera !== 'undefined' ? options.disableOpera : true;
+            options.blocktime = typeof options.blocktime !== 'undefined' ? options.blocktime : false;
+            options.cookie = typeof options.cookie !== 'undefined' ? options.cookie : 'puCookie';
+            options.height = typeof options.height !== 'undefined' ? options.height : (screen.availHeight - 122).toString();
+            options.width = typeof options.width !== 'undefined' ? options.width : (screen.availWidth - 122).toString();
+            options.scrollbars = typeof options.scrollbars !== 'undefined' ? options.scrollbars : 'yes';
+            options.location = typeof options.location !== 'undefined' ? options.location : 'yes';
+            options.statusbar = typeof options.statusbar !== 'undefined' ? options.statusbar : 'yes';
+            options.menubar = typeof options.menubar !== 'undefined' ? options.menubar : 'no';
+            options.resizable = typeof options.resizable !== 'undefined' ? options.resizable : '1';
+            options.screenX = typeof options.screenX !== 'undefined' ? options.screenX : '0';
+            options.screenY = typeof options.screenY !== 'undefined' ? options.screenY : '0';
+            options.left = typeof options.left !== 'undefined' ? options.left : '0';
+            options.top = typeof options.top !== 'undefined' ? options.top : '0';
+
+            if (options.disableOpera === true && $.browser.opera === true) {
+                return false;
+            }
 
             if (options.blocktime && (typeof $.cookies === 'object') && $.popunder.helper.cookieCheck(sUrl, options)) {
                 return false;
@@ -106,7 +120,7 @@
             }
 
             /* popunder options */
-            sOptions = 'toolbar=' + sToolbar + ',scrollbars=yes,location=yes,statusbar=yes,menubar=no,resizable=1,width=' + options.width + ',height=' + options.height + ',screenX=0,screenY=0,left=0,top=0';
+            sOptions = 'toolbar=' + sToolbar + ',scrollbars='+options.scrollbars+',location='+options.location+',statusbar='+options.statusbar+',menubar='+options.menubar+',resizable='+options.resizable+',width='+options.width+',height='+options.height+',screenX='+options.screenX+',screenY='+options.screenY+',left='+options.left+',top='+options.top;
 
             /* create pop-up from parent context */
             popunder = _parent.window.open(sUrl, $.popunder.helper.rand(), sOptions);
