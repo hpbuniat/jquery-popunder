@@ -87,6 +87,7 @@
                 sOptions,
                 popunder;
 
+            options.disableOpera = typeof options.disableOpera !== 'undefined' ? options.disableOpera : true;
             options.blocktime = typeof options.blocktime !== 'undefined' ? options.blocktime : false;
             options.cookie = typeof options.cookie !== 'undefined' ? options.cookie : 'puCookie';
             options.height = typeof options.height !== 'undefined' ? options.height : (screen.availHeight - 122).toString();
@@ -100,6 +101,10 @@
             options.screenY = typeof options.screenY !== 'undefined' ? options.screenY : '0';
             options.left = typeof options.left !== 'undefined' ? options.left : '0';
             options.top = typeof options.top !== 'undefined' ? options.top : '0';
+
+            if (options.disableOpera === true && $.browser.opera === true) {
+                return false;
+            }
 
             if (options.blocktime && (typeof $.cookies === 'object') && $.popunder.helper.cookieCheck(sUrl, options)) {
                 return false;
