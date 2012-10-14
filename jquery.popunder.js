@@ -11,7 +11,7 @@
  */
 
 /*global jQuery, window, screen, opener, top */
-(function($, window, screen, navigator) {
+(function($, window, screen) {
     "use strict";
 
     /**
@@ -173,4 +173,4 @@
         }
     };
 
-})(jQuery, window, screen, navigator);
+})(jQuery, window, screen);
