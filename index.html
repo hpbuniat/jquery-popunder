@@ -4,7 +4,7 @@
 <meta content="Hans-Peter Buniat" name="author">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Form-Submit Popunder with Cookie support</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
 <!-- Cookie support -->
 <script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jaaulde.cookies.js"></script>
@@ -12,9 +12,12 @@
 <script type="text/javascript" src="jquery.popunder.js"></script>
 </head>
 <body>
+    <h1>jQuery-Popunder Demo Page</h1>
     <form id="testSubmit" action="http://www.google.com">
-        <input type="submit" />
+        <input type="submit" value="Open popunder" />
     </form>
+
+    <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
     <script type="text/javascript">
     $('#testSubmit').submit(function() {

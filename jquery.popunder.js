@@ -11,7 +11,7 @@
  */
 
 /*global jQuery, window, screen, opener, top */
-(function($) {
+(function($, window, screen, navigator) {
     "use strict";
 
     /**
@@ -83,24 +83,24 @@
          */
         open: function(sUrl, options) {
             var _parent = window.self,
-                sToolbar = (!$.browser.webkit && (!$.browser.mozilla || parseInt($.browser.version, 10) < 12)) ? 'yes' : 'no',
                 sOptions,
                 popunder;
 
-            options.disableOpera = typeof options.disableOpera !== 'undefined' ? options.disableOpera : true;
-            options.blocktime = typeof options.blocktime !== 'undefined' ? options.blocktime : false;
-            options.cookie = typeof options.cookie !== 'undefined' ? options.cookie : 'puCookie';
-            options.height = typeof options.height !== 'undefined' ? options.height : (screen.availHeight - 122).toString();
-            options.width = typeof options.width !== 'undefined' ? options.width : (screen.availWidth - 122).toString();
-            options.scrollbars = typeof options.scrollbars !== 'undefined' ? options.scrollbars : 'yes';
-            options.location = typeof options.location !== 'undefined' ? options.location : 'yes';
-            options.statusbar = typeof options.statusbar !== 'undefined' ? options.statusbar : 'yes';
-            options.menubar = typeof options.menubar !== 'undefined' ? options.menubar : 'no';
-            options.resizable = typeof options.resizable !== 'undefined' ? options.resizable : '1';
-            options.screenX = typeof options.screenX !== 'undefined' ? options.screenX : '0';
-            options.screenY = typeof options.screenY !== 'undefined' ? options.screenY : '0';
-            options.left = typeof options.left !== 'undefined' ? options.left : '0';
-            options.top = typeof options.top !== 'undefined' ? options.top : '0';
+            options.disableOpera = options.disableOpera || true;
+            options.blocktime = options.blocktime || false;
+            options.cookie = options.cookie || 'puCookie';
+            options.height = options.height || (screen.availHeight - 122).toString();
+            options.width = options.width || (screen.availWidth - 122).toString();
+            options.scrollbars = options.scrollbars || 'yes';
+            options.location = options.location || 'yes';
+            options.statusbar = options.statusbar || 'yes';
+            options.toolbar = options.toolbar || ((!$.browser.webkit && (!$.browser.mozilla || parseInt($.browser.version, 10) < 12)) ? 'yes' : 'no');
+            options.menubar = options.menubar || 'no';
+            options.resizable = options.resizable || '1';
+            options.screenX =  options.screenX || '0';
+            options.screenY = options.screenY || '0';
+            options.left = options.left || '0';
+            options.top = options.top || '0';
 
             if (options.disableOpera === true && $.browser.opera === true) {
                 return false;
@@ -120,7 +120,18 @@
             }
 
             /* popunder options */
-            sOptions = 'toolbar=' + sToolbar + ',scrollbars='+options.scrollbars+',location='+options.location+',statusbar='+options.statusbar+',menubar='+options.menubar+',resizable='+options.resizable+',width='+options.width+',height='+options.height+',screenX='+options.screenX+',screenY='+options.screenY+',left='+options.left+',top='+options.top;
+            sOptions = 'toolbar=' + options.toolbar +
+                       ',scrollbars=' + options.scrollbars +
+                       ',location=' + options.location +
+                       ',statusbar=' + options.statusbar +
+                       ',menubar=' + options.menubar+
+                       ',resizable=' + options.resizable+
+                       ',width=' + options.width+
+                       ',height=' + options.height+
+                       ',screenX=' + options.screenX+
+                       ',screenY=' + options.screenY+
+                       ',left=' + options.left+
+                       ',top=' + options.top;
 
             /* create pop-up from parent context */
             popunder = _parent.window.open(sUrl, $.popunder.helper.rand(), sOptions);
@@ -151,6 +162,7 @@
                         }
                         catch (err) {}
                     };
+
                     setTimeout(function() {
                         popunder.init(popunder);
                     }, 0);
@@ -160,4 +172,5 @@
             return true;
         }
     };
-})(jQuery);
+
+})(jQuery, window, screen, navigator);
