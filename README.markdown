@@ -9,6 +9,8 @@ Usage
 Popunders are popups which are opened in the background of a browser-window.
 This script will only work, if the popunder is opened on a user-generated event (e.g. click or submit).
 
+For examples, take a look at the index.html.
+
 Options
 -------
 - "cookie": The cookie-name (used for blocking a popunder)

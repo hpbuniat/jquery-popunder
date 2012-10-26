@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta content="Hans-Peter Buniat" name="author">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Form-Submit Popunder with Cookie support</title>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <meta content="Hans-Peter Buniat" name="author">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Form-Submit Popunder with Cookie support</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
-<!-- Cookie support -->
-<script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jaaulde.cookies.js"></script>
-<script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jquery.cookies.js"></script>
-<script type="text/javascript" src="jquery.popunder.js"></script>
+    <!-- Cookie support -->
+    <script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jaaulde.cookies.js"></script>
+    <script type="text/javascript" src="https://cookies.googlecode.com/svn/trunk/jquery.cookies.js"></script>
+    <script type="text/javascript" src="jquery.popunder.js"></script>
 </head>
 <body>
+<form id="testSubmit" action="#">
     <h1>jQuery-Popunder Demo Page</h1>
-    <form id="testSubmit" action="http://www.google.com">
-        <input type="submit" value="Open popunder" />
-    </form>
+    <input id="submitButton" type="submit" value="Open popunder" />
+</form>
 
-    <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+<a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
-    <script type="text/javascript">
-    $('#testSubmit').submit(function() {
-        $.popunder('http://www.fluege.de', {height:400, width:400, blocktime:1}).popunder('http://www.flug24.de');
+<script type="text/javascript">
+    window.aPopunder = [
+        ['http://www.google.de', {height:400, width:400, blocktime:1}],
+        ['http://www.github.com'],
+        ['http://www.heise.de']
+    ];
+
+    $.popunder(window.aPopunder, '#testSubmit', '#submitButton');
+
+/*
+    Line 30 can be substituted with:
+
+    $('#submitButton').on('mousedown click', function(e) {
+        $.popunder(window.aPopunder);
     });
-    </script>
+
+    $('#testSubmit').on('submit', function(e) {
+        $.popunder(window.aPopunder);
+    });
+*/
+
+    $(function() {
+        $('#testSubmit').attr('action', document.location.href);
+    });
+</script>
 </body>
 </html>

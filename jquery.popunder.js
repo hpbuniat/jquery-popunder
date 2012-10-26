@@ -10,26 +10,72 @@
  * @requires jQuery
  */
 
-/*global jQuery, window, screen, opener, top */
-(function($, window, screen) {
+/*global jQuery, self, window, screen, opener, top */
+(function($, self, window, screen) {
     "use strict";
 
     /**
      * Create a popunder
      *
-     * @param  {string} sUrl Url to open as popunder
-     * @param  {object} options Options for the Popunder
+     * @param  {Array} aPopunder The popunder(s) to open
+     * @param  {string|object} form A form, where the submit is used to open the popunder
+     * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
      *
      * @return jQuery
      */
-    $.popunder = function(sUrl, options) {
-        options = options || {};
-        $.popunder.helper.open(sUrl, options);
+    $.popunder = function(aPopunder, form, trigger) {
+        var h = $.popunder.helper;
+        if (trigger || form) {
+            h.bindEvents(aPopunder, form, trigger);
+        }
+        else {
+            if (aPopunder.length) {
+                var p = aPopunder.shift();
+                h.open(p[0], p[1] || {});
+            }
+            else {
+                h.moveToBackground();
+            }
+        }
+
         return $;
     };
 
     /* several helper functions */
     $.popunder.helper = {
+        _top: self,
+        lastWindow: null,
+        timeouts: [],
+        messageName: 'popunder',
+        counter: 0,
+
+        /**
+         * Create a popunder
+         *
+         * @param  {Array} aPopunder The popunder(s) to open
+         * @param  {string|object} form A form, where the submit is used to open the popunder
+         * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
+         *
+         * @return void
+         */
+        bindEvents: function(aPopunder, form, trigger) {
+            var a = function(e) {
+                $.popunder(aPopunder);
+                $.popunder(aPopunder);
+                return true;
+            };
+
+            if (form) {
+                form = (typeof form === 'string') ? $(form) : form;
+                form.on('submit', $.proxy(a, this));
+            }
+
+            if (trigger) {
+                trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
+                trigger.on('click mousedown', $.proxy(a, this));
+            }
+        },
+
         /**
          * Helper to create a (optionally) random value with prefix
          *
@@ -82,62 +128,44 @@
          * @return boolean
          */
         open: function(sUrl, options) {
-            var _parent = window.self,
-                sOptions,
-                popunder;
+            if (top !== self) {
+                try {
+                    if (top.document.location.toString()) {
+                        this._top = top;
+                    }
+                } catch (err) {}
+            }
 
             options.disableOpera = options.disableOpera || true;
-            options.blocktime = options.blocktime || false;
-            options.cookie = options.cookie || 'puCookie';
-            options.height = options.height || (screen.availHeight - 122).toString();
-            options.width = options.width || (screen.availWidth - 122).toString();
-            options.scrollbars = options.scrollbars || 'yes';
-            options.location = options.location || 'yes';
-            options.statusbar = options.statusbar || 'yes';
-            options.toolbar = options.toolbar || ((!$.browser.webkit && (!$.browser.mozilla || parseInt($.browser.version, 10) < 12)) ? 'yes' : 'no');
-            options.menubar = options.menubar || 'no';
-            options.resizable = options.resizable || '1';
-            options.screenX =  options.screenX || '0';
-            options.screenY = options.screenY || '0';
-            options.left = options.left || '0';
-            options.top = options.top || '0';
-
             if (options.disableOpera === true && $.browser.opera === true) {
                 return false;
             }
 
-            if (options.blocktime && (typeof $.cookies === 'object') && $.popunder.helper.cookieCheck(sUrl, options)) {
+            options.blocktime = options.blocktime || false;
+            options.cookie = options.cookie || 'puCookie';
+            if (options.blocktime && (typeof $.cookies === 'object') && this.cookieCheck(sUrl, options)) {
                 return false;
             }
 
-            if (top !== window.self) {
-                try {
-                    if (top.document.location.toString()) {
-                        _parent = top;
-                    }
-                }
-                catch(err) {}
-            }
+            /* create pop-up */
+            this.lastWindow = this._top.window.open(sUrl, this.rand(options.cookie, true), this.getOptions(options)) || this.lastWindow;
+            this.counter++;
+            this.moveToBackground();
 
-            /* popunder options */
-            sOptions = 'toolbar=' + options.toolbar +
-                       ',scrollbars=' + options.scrollbars +
-                       ',location=' + options.location +
-                       ',statusbar=' + options.statusbar +
-                       ',menubar=' + options.menubar+
-                       ',resizable=' + options.resizable+
-                       ',width=' + options.width+
-                       ',height=' + options.height+
-                       ',screenX=' + options.screenX+
-                       ',screenY=' + options.screenY+
-                       ',left=' + options.left+
-                       ',top=' + options.top;
+            return true;
+        },
 
-            /* create pop-up from parent context */
-            popunder = _parent.window.open(sUrl, $.popunder.helper.rand(), sOptions);
-            if (popunder) {
-                popunder.blur();
+        /**
+         * Move a popup to the background
+         */
+        moveToBackground: function() {
+            var t = this;
+            if (t.lastWindow) {
+                t.lastWindow.blur();
+                t._top.window.blur();
+                t._top.window.focus();
                 if ($.browser.msie === true) {
+
                     /* classic popunder, used for ie */
                     window.focus();
                     try {
@@ -146,31 +174,90 @@
                     catch (err) {}
                 }
                 else {
-                    /* popunder for e.g. ff, chrome */
-                    popunder.init = function(e) {
-                        /* in ff4+, chrome21+ we need to trigger a window.open on our parent to bring it to the front */
-                        if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
-                            try {
-                                var x = e.window.open('about:blank');
-                                x.close();
-                            }
-                            catch (err) {}
-                        }
 
+                    /* popunder for e.g. ff, chrome */
+                    t.lastWindow.init = function(e) {
+                        t.backgroundHack(e);
                         try {
                             e.opener.window.focus();
                         }
                         catch (err) {}
                     };
 
-                    setTimeout(function() {
-                        popunder.init(popunder);
-                    }, 0);
+                    t.lastWindow.init(t.lastWindow);
                 }
             }
+        },
 
-            return true;
+        backgroundHack: function(e) {
+            /* in ff4+, chrome21+ we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window */
+            if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
+                try {
+                    e.window.open('about:blank').close();
+                }
+                catch (err) {}
+            }
+        },
+
+        /**
+         * Get the option-string for the popup
+         *
+         * @param  {object} options
+         *
+         * @return {String}
+         */
+        getOptions: function(options) {
+            return 'toolbar=' + options.toolbar || ((!$.browser.webkit && (!$.browser.mozilla || parseInt($.browser.version, 10) < 12)) ? '1' : '0') +
+                ',scrollbars=' + options.scrollbars || '1' +
+                ',location=' + options.location || '1' +
+                ',statusbar=' + options.statusbar || '1' +
+                ',menubar=' + options.menubar || '0' +
+                ',resizable=' + options.resizable || '1' +
+                ',width=' + options.width || (screen.availWidth - 122).toString() +
+                ',height=' + options.height || (screen.availHeight - 122).toString() +
+                ',screenX=' + options.screenX || '0' +
+                ',screenY=' + options.screenY || '0' +
+                ',left=' +  options.left || '0' +
+                ',top=' + options.top || '0';
+        },
+
+        /**
+         * Trigger a function to be executed non-blocking
+         *
+         * @param {function} fn
+         */
+        timeout: function(fn) {
+            if ($.browser.msie) {
+                fn();
+            }
+            else if (typeof window.postMessage !== 'undefined') {
+                this.timeouts.push(fn);
+                window.postMessage(this.messageName, "*");
+            }
+            else {
+                setTimeout(fn, 0);
+            }
+        },
+
+        /**
+         * Handle messages from postMessage
+         *
+         * @param {Event} e
+         */
+        handleMessage: function(e) {
+            var h = $.popunder.helper;
+            if (e.source === window && e.data === h.messageName) {
+                e.stopPropagation();
+                if (h.timeouts.length > 0) {
+                    var fn = $.proxy(h.timeouts.shift(), h);
+                    fn();
+                }
+            }
         }
     };
 
-})(jQuery, window, screen);
+    if (typeof window.addEventListener === 'function') {
+        window.addEventListener("message", $.popunder.helper.handleMessage, true);
+    }
+
+})(jQuery, self, window, screen);
