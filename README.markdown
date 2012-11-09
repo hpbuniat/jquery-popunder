@@ -22,8 +22,9 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-15
-- Google Chrome 10-22
+- Mozilla Firefox 3-16
+- Google Chrome 10-23
+  - Note: Currently you can only create 2 popunder in Chrome 22+
 - Microsoft Internet Explorer 6-9
 - Apple Safari 5
 
@@ -32,6 +33,7 @@ Known Issues
 The script currently does not work:
 - with Opera-Browser
 - when using Gnome
+- in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
 Dependencies
 -------

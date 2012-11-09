@@ -22,14 +22,14 @@
 <script type="text/javascript">
     window.aPopunder = [
         ['http://www.google.de', {height:400, width:400, blocktime:1}],
-        ['http://www.github.com'],
+        // ['http://www.github.com'],
         ['http://www.heise.de']
     ];
 
     $.popunder(window.aPopunder, '#testSubmit', '#submitButton');
 
 /*
-    Line 30 can be substituted with:
+    Line 29 can be substituted with:
 
     $('#submitButton').on('mousedown click', function(e) {
         $.popunder(window.aPopunder);

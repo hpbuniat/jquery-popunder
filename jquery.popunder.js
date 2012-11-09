@@ -5,7 +5,7 @@
  *
  * @author Hans-Peter Buniat <hpbuniat@googlemail.com>
  * @copyright 2012 Hans-Peter Buniat <hpbuniat@googlemail.com>
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
+ * @license http://opensource.org/licenses/BSD-3-Clause
  *
  * @requires jQuery
  */
@@ -189,8 +189,14 @@
             }
         },
 
+        /**
+         * In ff4+, chrome21+ we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window
+         *
+         * @param e
+         *
+         * @return void
+         */
         backgroundHack: function(e) {
-            /* in ff4+, chrome21+ we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window */
             if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
                 try {
                     e.window.open('about:blank').close();
