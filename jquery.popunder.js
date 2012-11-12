@@ -24,22 +24,13 @@
      * @return jQuery
      */
     $.popunder = function(aPopunder, form, trigger) {
-        var h = $.popunder.helper,
-            b = false;
+        var h = $.popunder.helper;
         if (trigger || form) {
             h.bindEvents(aPopunder, form, trigger);
         }
         else {
-            if (aPopunder.length) {
-                while (b === false) {
-                    var p = aPopunder.shift();
-                    b = h.open(p[0], p[1] || {}, aPopunder.length);
-                }
-            }
-            else if(h.lastProcessed === false)  {
-                h.lastProcessed = true;
-                h.moveToBackground(true);
-            }
+            h.queue(aPopunder);
+            h.queue(aPopunder);
         }
 
         return $;
@@ -50,9 +41,31 @@
         _top: self,
         lastWindow: null,
         lastTarget: null,
-        messageName: 'popunder',
         counter: 0,
-        lastProcessed: false,
+        last: false,
+
+        /**
+         * Process the queue
+         *
+         * @param  {Array} aPopunder The popunder(s) to open
+         *
+         * @return void
+         */
+        queue: function(aPopunder) {
+            var b = false;
+
+            if (aPopunder.length) {
+                while (b === false) {
+                    var p = aPopunder.shift();
+                    b = this.open(p[0], p[1] || {}, aPopunder.length);
+                }
+            }
+            else if (this.last === false) {
+                this.last = true;
+                this.moveToBackground(true);
+            }
+        },
+
 
         /**
          * Create a popunder
@@ -66,7 +79,7 @@
         bindEvents: function(aPopunder, form, trigger) {
             var a = function(e) {
                 $.popunder(aPopunder);
-                $.popunder(aPopunder);
+
                 return true;
             };
 

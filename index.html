@@ -12,9 +12,34 @@
     <script type="text/javascript" src="jquery.popunder.js"></script>
 </head>
 <body>
+
+<h1>jQuery-Popunder Demo Page</h1>
 <form id="testForm" action="#">
-    <h1>jQuery-Popunder Demo Page</h1>
+    <h3>Testcase #1</h3>
+    <pre>
+        $.popunder(window.aPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
+    </pre>
     <input id="submitButton" type="submit" value="Open Popunder via Form-Submit" />
+
+    <a href="#">Open Popunder via Link</a>
+</form>
+
+<form id="testFormTwo" action="#">
+    <h3>Testcase #2</h3>
+    <pre>
+        $('#submitButtonTwo').on('mousedown click', function(e) {
+            $.popunder(window.aPopunder);
+        });
+
+        $('#testFormTwo').on('submit', function(e) {
+            $.popunder(window.aPopunder);
+        });
+
+        $('#testFormTwo a').on('mousedown click', function(e) {
+            $.popunder(window.aPopunder);
+        });
+    </pre>
+    <input id="submitButtonTwo" type="submit" value="Open Popunder via Form-Submit" />
 
     <a href="#">Open Popunder via Link</a>
 </form>
@@ -28,27 +53,24 @@
         ['http://www.heise.de']
     ];
 
-    $.popunder(window.aPopunder, '#testForm', '#submitButton, a');
+    // TestCase #1
+    $.popunder(window.aPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
 
-/*
-    Line 31 can be substituted with:
-
-    $('#submitButton').on('mousedown click', function(e) {
+    // TestCase #2
+    $('#submitButtonTwo').on('mousedown click', function(e) {
         $.popunder(window.aPopunder);
     });
 
-    $('#testForm').on('submit', function(e) {
+    $('#testFormTwo').on('submit', function(e) {
         $.popunder(window.aPopunder);
     });
 
-    $('#testForm a').on('click', function(e) {
-        $.popunder(window.aPopunder);
+    $('#testFormTwo a').on('mousedown click', function(e) {
         $.popunder(window.aPopunder);
     });
-*/
 
     $(function() {
-        $('#testForm').attr('action', document.location.href);
+        $('form').attr('action', document.location.href);
     });
 </script>
 </body>
