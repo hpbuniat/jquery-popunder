@@ -38,4 +38,4 @@ The script currently does not work:
 Dependencies
 -------
 - jquery - http://www.jquery.com
-- jquery.cookie - https://code.google.com/p/cookies/
+- (optional) jquery.cookie - https://code.google.com/p/cookies/

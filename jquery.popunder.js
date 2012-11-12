@@ -24,17 +24,21 @@
      * @return jQuery
      */
     $.popunder = function(aPopunder, form, trigger) {
-        var h = $.popunder.helper;
+        var h = $.popunder.helper,
+            b = false;
         if (trigger || form) {
             h.bindEvents(aPopunder, form, trigger);
         }
         else {
             if (aPopunder.length) {
-                var p = aPopunder.shift();
-                h.open(p[0], p[1] || {});
+                while (b === false) {
+                    var p = aPopunder.shift();
+                    b = h.open(p[0], p[1] || {}, aPopunder.length);
+                }
             }
-            else {
-                h.moveToBackground();
+            else if(h.lastProcessed === false)  {
+                h.lastProcessed = true;
+                h.moveToBackground(true);
             }
         }
 
@@ -45,9 +49,10 @@
     $.popunder.helper = {
         _top: self,
         lastWindow: null,
-        timeouts: [],
+        lastTarget: null,
         messageName: 'popunder',
         counter: 0,
+        lastProcessed: false,
 
         /**
          * Create a popunder
@@ -124,10 +129,11 @@
          *
          * @param  {string} sUrl The URL to open
          * @param  {object} options Options for the Popunder
+         * @param  {int} iLength Length of the popunder-stack
          *
          * @return boolean
          */
-        open: function(sUrl, options) {
+        open: function(sUrl, options, iLength) {
             if (top !== self) {
                 try {
                     if (top.document.location.toString()) {
@@ -148,17 +154,22 @@
             }
 
             /* create pop-up */
-            this.lastWindow = this._top.window.open(sUrl, this.rand(options.cookie, true), this.getOptions(options)) || this.lastWindow;
+            this.lastWindow = this._top.window.open('about:blank', this.rand(options.cookie, true), this.getOptions(options)) || this.lastWindow;
+            this.lastTarget = sUrl;
             this.counter++;
-            this.moveToBackground();
+            this.moveToBackground(iLength);
 
             return true;
         },
 
         /**
          * Move a popup to the background
+         *
+         * @param  {int|boolean} l Indicator to redirect the popunder
          */
-        moveToBackground: function() {
+        moveToBackground: function(l) {
+            console.log(l);
+            console.log(this.lastTarget);
             var t = this;
             if (t.lastWindow) {
                 t.lastWindow.blur();
@@ -176,15 +187,17 @@
                 else {
 
                     /* popunder for e.g. ff, chrome */
-                    t.lastWindow.init = function(e) {
-                        t.backgroundHack(e);
+                    (function(e) {
+                        t.flip(e);
                         try {
                             e.opener.window.focus();
                         }
                         catch (err) {}
-                    };
+                    })(t.lastWindow);
+                }
 
-                    t.lastWindow.init(t.lastWindow);
+                if (l && this.lastTarget) {
+                    t.lastWindow.document.location.href = this.lastTarget;
                 }
             }
         },
@@ -196,7 +209,7 @@
          *
          * @return void
          */
-        backgroundHack: function(e) {
+        flip: function(e) {
             if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
                 try {
                     e.window.open('about:blank').close();
@@ -225,45 +238,6 @@
                 ',screenY=' + options.screenY || '0' +
                 ',left=' +  options.left || '0' +
                 ',top=' + options.top || '0';
-        },
-
-        /**
-         * Trigger a function to be executed non-blocking
-         *
-         * @param {function} fn
-         */
-        timeout: function(fn) {
-            if ($.browser.msie) {
-                fn();
-            }
-            else if (typeof window.postMessage !== 'undefined') {
-                this.timeouts.push(fn);
-                window.postMessage(this.messageName, "*");
-            }
-            else {
-                setTimeout(fn, 0);
-            }
-        },
-
-        /**
-         * Handle messages from postMessage
-         *
-         * @param {Event} e
-         */
-        handleMessage: function(e) {
-            var h = $.popunder.helper;
-            if (e.source === window && e.data === h.messageName) {
-                e.stopPropagation();
-                if (h.timeouts.length > 0) {
-                    var fn = $.proxy(h.timeouts.shift(), h);
-                    fn();
-                }
-            }
         }
     };
-
-    if (typeof window.addEventListener === 'function') {
-        window.addEventListener("message", $.popunder.helper.handleMessage, true);
-    }
-
 })(jQuery, self, window, screen);

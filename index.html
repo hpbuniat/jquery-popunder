@@ -12,36 +12,43 @@
     <script type="text/javascript" src="jquery.popunder.js"></script>
 </head>
 <body>
-<form id="testSubmit" action="#">
+<form id="testForm" action="#">
     <h1>jQuery-Popunder Demo Page</h1>
-    <input id="submitButton" type="submit" value="Open popunder" />
+    <input id="submitButton" type="submit" value="Open Popunder via Form-Submit" />
+
+    <a href="#">Open Popunder via Link</a>
 </form>
 
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
 <script type="text/javascript">
     window.aPopunder = [
-        ['http://www.google.de', {height:400, width:400, blocktime:1}],
-        // ['http://www.github.com'],
+        // ['http://www.google.de', {height:400, width:400, blocktime:1}],
+        ['http://www.github.com'],
         ['http://www.heise.de']
     ];
 
-    $.popunder(window.aPopunder, '#testSubmit', '#submitButton');
+    $.popunder(window.aPopunder, '#testForm', '#submitButton, a');
 
 /*
-    Line 29 can be substituted with:
+    Line 31 can be substituted with:
 
     $('#submitButton').on('mousedown click', function(e) {
         $.popunder(window.aPopunder);
     });
 
-    $('#testSubmit').on('submit', function(e) {
+    $('#testForm').on('submit', function(e) {
+        $.popunder(window.aPopunder);
+    });
+
+    $('#testForm a').on('click', function(e) {
+        $.popunder(window.aPopunder);
         $.popunder(window.aPopunder);
     });
 */
 
     $(function() {
-        $('#testSubmit').attr('action', document.location.href);
+        $('#testForm').attr('action', document.location.href);
     });
 </script>
 </body>
