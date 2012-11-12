@@ -77,7 +77,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
-                trigger.on('click mousedown', $.proxy(a, this));
+                trigger.on(($.browser.msie === true) ? 'click' : 'click mousedown', $.proxy(a, this));
             }
         },
 
@@ -168,8 +168,6 @@
          * @param  {int|boolean} l Indicator to redirect the popunder
          */
         moveToBackground: function(l) {
-            console.log(l);
-            console.log(this.lastTarget);
             var t = this;
             if (t.lastWindow) {
                 t.lastWindow.blur();
