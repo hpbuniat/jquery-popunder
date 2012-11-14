@@ -17,7 +17,7 @@
     /**
      * Create a popunder
      *
-     * @param  {Array} aPopunder The popunder(s) to open
+     * @param  {Array|function} aPopunder The popunder(s) to open
      * @param  {string|object} form A form, where the submit is used to open the popunder
      * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
      *
@@ -25,12 +25,14 @@
      */
     $.popunder = function(aPopunder, form, trigger) {
         var h = $.popunder.helper;
+        aPopunder = (typeof aPopunder === 'function') ? aPopunder() : aPopunder;
+
         if (trigger || form) {
             h.bindEvents(aPopunder, form, trigger);
         }
         else {
-            h.queue(aPopunder);
-            h.queue(aPopunder);
+            h.c = 0;
+            h.queue(aPopunder).queue(aPopunder);
         }
 
         return $;
@@ -39,33 +41,73 @@
     /* several helper functions */
     $.popunder.helper = {
         _top: self,
-        lastWindow: null,
+
+        /**
+         * Reference to the last popup-window
+         *
+         * @var boolean
+         */
+        lastWin: null,
+
+        /**
+         * Reference to the last url
+         *
+         * @var string
+         */
         lastTarget: null,
-        counter: 0,
+
+        /**
+         * The counter of opened popunder
+         *
+         * @var int
+         */
+        c: 0,
+
+        /**
+         * Was the last popunder was processed
+         *
+         * @var boolean
+         */
         last: false,
+
+        /**
+         * About:blank
+         *
+         * @var string
+         */
+        b: 'about:blank',
+
+        /**
+         * Chrome?
+         *
+         * @var boolean
+         */
+        g: $.browser.webkit,
 
         /**
          * Process the queue
          *
          * @param  {Array} aPopunder The popunder(s) to open
          *
-         * @return void
+         * @return $.popunder.helper
          */
         queue: function(aPopunder) {
-            var b = false;
+            var b = false,
+                h = this;
 
             if (aPopunder.length) {
                 while (b === false) {
                     var p = aPopunder.shift();
-                    b = this.open(p[0], p[1] || {}, aPopunder.length);
+                    b = h.open(p[0], p[1] || {}, aPopunder.length);
                 }
             }
-            else if (this.last === false) {
-                this.last = true;
-                this.moveToBackground(true);
+            else if (h.last === false && (!h.g || h.c === 0)) {
+                h.last = true;
+                h.bg().href(true);
             }
-        },
 
+            return this;
+        },
 
         /**
          * Create a popunder
@@ -127,7 +169,7 @@
         /**
          * Helper to create a (optionally) random value with prefix
          *
-         * @param  {string} name
+         * @param  {string|boolean} name
          * @param  {boolean} rand
          *
          * @return string
@@ -147,10 +189,13 @@
          * @return boolean
          */
         open: function(sUrl, options, iLength) {
+            var h = this,
+                sOpen = (h.g) ? h.b : sUrl;
+
             if (top !== self) {
                 try {
                     if (top.document.location.toString()) {
-                        this._top = top;
+                        h._top = top;
                     }
                 } catch (err) {}
             }
@@ -162,15 +207,19 @@
 
             options.blocktime = options.blocktime || false;
             options.cookie = options.cookie || 'puCookie';
-            if (options.blocktime && (typeof $.cookies === 'object') && this.cookieCheck(sUrl, options)) {
+            if (options.blocktime && (typeof $.cookies === 'object') && h.cookieCheck(sUrl, options)) {
                 return false;
             }
 
             /* create pop-up */
-            this.lastWindow = this._top.window.open('about:blank', this.rand(options.cookie, true), this.getOptions(options)) || this.lastWindow;
-            this.lastTarget = sUrl;
-            this.counter++;
-            this.moveToBackground(iLength);
+            h.c++;
+            h.lastTarget = sUrl;
+            h.lastWin = (h._top.window.open(sOpen, h.rand(false, true), h.getOptions(options)) || h.lastWin);
+            if (!h.g) {
+                h.bg();
+            }
+
+            h.href(iLength);
 
             return true;
         },
@@ -178,39 +227,58 @@
         /**
          * Move a popup to the background
          *
-         * @param  {int|boolean} l Indicator to redirect the popunder
+         * @param  {int|boolean} l True, if the url should be set
+         *
+         * @return $.popunder.helper
          */
-        moveToBackground: function(l) {
+        bg: function(l) {
             var t = this;
-            if (t.lastWindow) {
-                t.lastWindow.blur();
+            if (t.lastWin) {
+                t.lastWin.blur();
                 t._top.window.blur();
                 t._top.window.focus();
-                if ($.browser.msie === true) {
 
-                    /* classic popunder, used for ie */
-                    window.focus();
-                    try {
-                        opener.window.focus();
-                    }
-                    catch (err) {}
-                }
-                else {
+                if (this.lastTarget && !l) {
+                    if ($.browser.msie === true) {
 
-                    /* popunder for e.g. ff, chrome */
-                    (function(e) {
-                        t.flip(e);
+                        /* classic popunder, used for ie */
+                        window.focus();
                         try {
-                            e.opener.window.focus();
+                            opener.window.focus();
                         }
                         catch (err) {}
-                    })(t.lastWindow);
-                }
+                    }
+                    else {
 
-                if (l && this.lastTarget) {
-                    t.lastWindow.document.location.href = this.lastTarget;
+                        /* popunder for e.g. ff, chrome */
+                        (function(e) {
+                            t.flip(e);
+                            try {
+                                e.opener.window.focus();
+                            }
+                            catch (err) {}
+                        })(t.lastWin);
+                    }
                 }
             }
+
+            return this;
+        },
+
+        /**
+         * Set the popunders url
+         *
+         * @param  {int|boolean} l True, if the url should be set
+         *
+         * @return $.popunder.helper
+         */
+        href: function(l) {
+            var t = this;
+            if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b) {
+                t.lastWin.document.location.href = t.lastTarget;
+            }
+
+            return t;
         },
 
         /**
@@ -237,18 +305,18 @@
          * @return {String}
          */
         getOptions: function(options) {
-            return 'toolbar=' + options.toolbar || ((!$.browser.webkit && (!$.browser.mozilla || parseInt($.browser.version, 10) < 12)) ? '1' : '0') +
-                ',scrollbars=' + options.scrollbars || '1' +
-                ',location=' + options.location || '1' +
-                ',statusbar=' + options.statusbar || '1' +
-                ',menubar=' + options.menubar || '0' +
-                ',resizable=' + options.resizable || '1' +
-                ',width=' + options.width || (screen.availWidth - 122).toString() +
-                ',height=' + options.height || (screen.availHeight - 122).toString() +
-                ',screenX=' + options.screenX || '0' +
-                ',screenY=' + options.screenY || '0' +
-                ',left=' +  options.left || '0' +
-                ',top=' + options.top || '0';
+            return 'toolbar=' + (options.toolbar || '0') +
+                ',scrollbars=' + (options.scrollbars || '1') +
+                ',location=' + (options.location || '1') +
+                ',statusbar=' + (options.statusbar || '1') +
+                ',menubar=' + (options.menubar || '0') +
+                ',resizable=' + (options.resizable || '1') +
+                ',width=' + (options.width || (screen.availWidth - 122).toString()) +
+                ',height=' + (options.height || (screen.availHeight - 122).toString()) +
+                ',screenX=' + (options.screenX || '0') +
+                ',screenY=' + (options.screenY || '0') +
+                ',left=' +  (options.left || '0') +
+                ',top=' + (options.top || '0');
         }
     };
 })(jQuery, self, window, screen);

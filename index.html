@@ -15,7 +15,7 @@
 
 <h1>jQuery-Popunder Demo Page</h1>
 <form id="testForm" action="#">
-    <h3>Testcase #1</h3>
+    <h3>Testcase #1 (2 Popunder)</h3>
     <pre>
         $.popunder(window.aPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
     </pre>
@@ -25,13 +25,13 @@
 </form>
 
 <form id="testFormTwo" action="#">
-    <h3>Testcase #2</h3>
+    <h3>Testcase #2 (2 Popunder with explicit binding)</h3>
     <pre>
-        $('#submitButtonTwo').on('mousedown click', function(e) {
+        $('#testFormTwo').on('submit', function(e) {
             $.popunder(window.aPopunder);
         });
 
-        $('#testFormTwo').on('submit', function(e) {
+        $('#submitButtonTwoClick').on('mousedown click', function(e) {
             $.popunder(window.aPopunder);
         });
 
@@ -39,17 +39,48 @@
             $.popunder(window.aPopunder);
         });
     </pre>
-    <input id="submitButtonTwo" type="submit" value="Open Popunder via Form-Submit" />
+    <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
 
     <a href="#">Open Popunder via Link</a>
+</form>
+
+<form id="testFormThree" action="#">
+    <h3>Testcase #3 (1 Popunder with explicit binding)</h3>
+    <pre>
+        $('#testFormThree').on('submit', function(e) {
+            $.popunder(window.aOnePopunder);
+        });
+
+        $('#submitButtonThreeClick').on('mousedown click', function(e) {
+            $.popunder(window.aOnePopunder);
+        });
+    </pre>
+    <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
+</form>
+
+<form id="testFormFour" action="#">
+    <h3>Testcase #4 (1 Popunder, use a function as parameter)</h3>
+    <pre>
+        window.fPopunder = function() {
+            if (!window.fPopunderStack) {
+                window.fPopunderStack = [['http://www.heise.de']];
+            }
+
+            return window.fPopunderStack;
+        };
+
+        $.popunder(window.fPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
+    </pre>
+    <input id="submitButtonFourClick" type="submit" value="Open Popunder via Button-Click" />
 </form>
 
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
 <script type="text/javascript">
+
     window.aPopunder = [
         // ['http://www.google.de', {height:400, width:400, blocktime:1}],
-        ['http://www.github.com'],
+        ['http://www.github.com', {height:100, width:100}],
         ['http://www.heise.de']
     ];
 
@@ -57,17 +88,41 @@
     $.popunder(window.aPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
 
     // TestCase #2
-    $('#submitButtonTwo').on('mousedown click', function(e) {
+    $('#testFormTwo').on('submit', function(e) {
         $.popunder(window.aPopunder);
     });
 
-    $('#testFormTwo').on('submit', function(e) {
+    $('#submitButtonTwoClick').on('mousedown click', function(e) {
         $.popunder(window.aPopunder);
     });
 
     $('#testFormTwo a').on('mousedown click', function(e) {
         $.popunder(window.aPopunder);
     });
+
+    // TestCase #3
+    window.aOnePopunder = [
+        ['http://www.heise.de']
+    ];
+
+    $('#testFormThree').on('submit', function(e) {
+        $.popunder(window.aOnePopunder);
+    });
+
+    $('#submitButtonThreeClick').on('mousedown click', function(e) {
+        $.popunder(window.aOnePopunder);
+    });
+
+    // TestCase #4
+    window.fPopunder = function() {
+        if (!window.fPopunderStack) {
+            window.fPopunderStack = [['http://www.heise.de']];
+        }
+
+        return window.fPopunderStack;
+    };
+
+    $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
 
     $(function() {
         $('form').attr('action', document.location.href);
