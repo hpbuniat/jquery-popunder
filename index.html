@@ -31,11 +31,12 @@
             $.popunder(window.aPopunder);
         });
 
-        $('#submitButtonTwoClick').on('mousedown click', function(e) {
+        var sEvents = $.browser.webkit ? 'mousedown click' : 'click';
+        $('#submitButtonTwoClick').on(sEvents, function(e) {
             $.popunder(window.aPopunder);
         });
 
-        $('#testFormTwo a').on('mousedown click', function(e) {
+        $('#testFormTwo a').on(sEvents, function(e) {
             $.popunder(window.aPopunder);
         });
     </pre>
@@ -51,7 +52,8 @@
             $.popunder(window.aOnePopunder);
         });
 
-        $('#submitButtonThreeClick').on('mousedown click', function(e) {
+        var sEvents = $.browser.webkit ? 'mousedown click' : 'click';
+        $('#submitButtonThreeClick').on(sEvents, function(e) {
             $.popunder(window.aOnePopunder);
         });
     </pre>
@@ -69,7 +71,7 @@
             return window.fPopunderStack;
         };
 
-        $.popunder(window.fPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
+        $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
     </pre>
     <input id="submitButtonFourClick" type="submit" value="Open Popunder via Button-Click" />
 </form>
@@ -92,11 +94,12 @@
         $.popunder(window.aPopunder);
     });
 
-    $('#submitButtonTwoClick').on('mousedown click', function(e) {
+    var sEvents = $.browser.webkit ? 'mousedown click' : 'click';
+    $('#submitButtonTwoClick').on(sEvents, function(e) {
         $.popunder(window.aPopunder);
     });
 
-    $('#testFormTwo a').on('mousedown click', function(e) {
+    $('#testFormTwo a').on(sEvents, function(e) {
         $.popunder(window.aPopunder);
     });
 
@@ -109,7 +112,8 @@
         $.popunder(window.aOnePopunder);
     });
 
-    $('#submitButtonThreeClick').on('mousedown click', function(e) {
+    var sEvents = $.browser.webkit ? 'mousedown click' : 'click';
+    $('#submitButtonThreeClick').on(sEvents, function(e) {
         $.popunder(window.aOnePopunder);
     });
 

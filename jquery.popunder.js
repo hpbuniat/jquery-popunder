@@ -10,8 +10,8 @@
  * @requires jQuery
  */
 
-/*global jQuery, self, window, screen, opener, top */
-(function($, self, window, screen) {
+/*global jQuery, window, screen, opener, top */
+(function($, window, screen) {
     "use strict";
 
     /**
@@ -40,7 +40,13 @@
 
     /* several helper functions */
     $.popunder.helper = {
-        _top: self,
+
+        /**
+         * Reference to the window
+         *
+         * @var window
+         */
+        _top: window.self,
 
         /**
          * Reference to the last popup-window
@@ -132,7 +138,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
-                trigger.on(($.browser.msie === true) ? 'click' : 'click mousedown', $.proxy(a, this));
+                trigger.on((this.g === true) ? 'click mousedown' : 'click', $.proxy(a, this));
             }
         },
 
@@ -175,7 +181,7 @@
          * @return string
          */
         rand: function(name, rand) {
-            var p = (name) ? name : 'pu_';
+            var p = (name) ? name : 'pu';
             return p + (rand === false ? '' : Math.floor(89999999*Math.random()+10000000));
         },
 
@@ -192,7 +198,7 @@
             var h = this,
                 sOpen = (h.g) ? h.b : sUrl;
 
-            if (top !== self) {
+            if (top !== window.self) {
                 try {
                     if (top.document.location.toString()) {
                         h._top = top;
@@ -214,7 +220,7 @@
             /* create pop-up */
             h.c++;
             h.lastTarget = sUrl;
-            h.lastWin = (h._top.window.open(sOpen, h.rand(false, true), h.getOptions(options)) || h.lastWin);
+            h.lastWin = (h._top.window.open(sOpen, h.rand(), h.getOptions(options)) || h.lastWin);
             if (!h.g) {
                 h.bg();
             }
@@ -319,4 +325,4 @@
                 ',top=' + (options.top || '0');
         }
     };
-})(jQuery, self, window, screen);
+})(jQuery, window, screen);
