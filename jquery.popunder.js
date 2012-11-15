@@ -25,12 +25,12 @@
      */
     $.popunder = function(aPopunder, form, trigger) {
         var h = $.popunder.helper;
-        aPopunder = (typeof aPopunder === 'function') ? aPopunder() : aPopunder;
-
         if (trigger || form) {
             h.bindEvents(aPopunder, form, trigger);
         }
         else {
+            aPopunder = (typeof aPopunder === 'function') ? aPopunder() : aPopunder;
+
             h.c = 0;
             h.queue(aPopunder).queue(aPopunder);
         }
