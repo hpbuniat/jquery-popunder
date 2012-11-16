@@ -84,6 +84,13 @@
         b: 'about:blank',
 
         /**
+         * The last opened window-url (before calling href)
+         *
+         * @var string
+         */
+        o: null,
+
+        /**
          * Chrome?
          *
          * @var boolean
@@ -195,9 +202,9 @@
          * @return boolean
          */
         open: function(sUrl, options, iLength) {
-            var h = this,
-                sOpen = (h.g) ? h.b : sUrl;
+            var h = this;
 
+            h.o = (h.g) ? h.b : sUrl;
             if (top !== window.self) {
                 try {
                     if (top.document.location.toString()) {
@@ -220,7 +227,7 @@
             /* create pop-up */
             h.c++;
             h.lastTarget = sUrl;
-            h.lastWin = (h._top.window.open(sOpen, h.rand(), h.getOptions(options)) || h.lastWin);
+            h.lastWin = (h._top.window.open(h.o, h.rand(), h.getOptions(options)) || h.lastWin);
             if (!h.g) {
                 h.bg();
             }
@@ -279,12 +286,12 @@
          * @return $.popunder.helper
          */
         href: function(l) {
-            var t = this;
-            if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b) {
-                t.lastWin.document.location.href = t.lastTarget;
+            var h = this;
+            if (l && h.lastTarget && h.lastWin && h.lastTarget !== h.b && h.lastTarget !== h.o) {
+                h.lastWin.document.location.href = h.lastTarget;
             }
 
-            return t;
+            return h;
         },
 
         /**
