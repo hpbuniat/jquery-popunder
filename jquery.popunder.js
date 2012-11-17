@@ -132,7 +132,7 @@
          * @return void
          */
         bindEvents: function(aPopunder, form, trigger) {
-            var a = function(e) {
+            var a = function() {
                 $.popunder(aPopunder);
 
                 return true;
