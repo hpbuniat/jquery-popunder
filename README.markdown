@@ -17,6 +17,7 @@ Options
 - "blocktime": The time to block popunder, in hours
 - "height": The height of the popunder
 - "width": The width of the popunder
+- "name": The window-name (optional)
 
 Compatibility
 -------

@@ -188,8 +188,8 @@
          * @return string
          */
         rand: function(name, rand) {
-            var p = (name) ? name : 'pu';
-            return p + (rand === false ? '' : Math.floor(89999999*Math.random()+10000000));
+            var p = (!!name) ? name : 'pu';
+            return p + (rand === false ? '' : Math.floor(89999999 * Math.random() + 10000000));
         },
 
         /**
@@ -227,7 +227,7 @@
             /* create pop-up */
             h.c++;
             h.lastTarget = sUrl;
-            h.lastWin = (h._top.window.open(h.o, h.rand(), h.getOptions(options)) || h.lastWin);
+            h.lastWin = (h._top.window.open(h.o, h.rand(options.name, !options.name), h.getOptions(options)) || h.lastWin);
             if (!h.g) {
                 h.bg();
             }
@@ -302,12 +302,12 @@
          * @return void
          */
         flip: function(e) {
-            if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
-                try {
+            try {
+                if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
                     e.window.open('about:blank').close();
                 }
-                catch (err) {}
             }
+            catch (err) {}
         },
 
         /**
