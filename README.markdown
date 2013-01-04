@@ -11,6 +11,9 @@ This script will only work, if the popunder is opened on a user-generated event 
 
 For examples, take a look at the index.html.
 
+The recommended usage is the 4th example: a function to build the url-stack.
+So you leave the event-handling to the plugin. To add some flexibility to the function, the plugin will pass the initial event to the function - from which you may access e.g. DOM-data of the activated DOM-element.
+
 Options
 -------
 - "cookie": The cookie-name (used for blocking a popunder)

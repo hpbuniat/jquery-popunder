@@ -45,6 +45,6 @@ module.exports = function(grunt) {
   });
 
   // This is what gets run when you don't specify an argument for grunt.
-  grunt.registerTask('default', 'lint');
+  grunt.registerTask('default', 'lint min');
 
 };

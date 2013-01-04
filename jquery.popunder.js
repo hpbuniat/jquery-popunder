@@ -20,16 +20,17 @@
      * @param  {Array|function} aPopunder The popunder(s) to open
      * @param  {string|object} form A form, where the submit is used to open the popunder
      * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
+     * @param  {object} _source The source of the event
      *
      * @return jQuery
      */
-    $.popunder = function(aPopunder, form, trigger) {
+    $.popunder = function(aPopunder, form, trigger, _source) {
         var h = $.popunder.helper;
         if (trigger || form) {
             h.bindEvents(aPopunder, form, trigger);
         }
         else {
-            aPopunder = (typeof aPopunder === 'function') ? aPopunder() : aPopunder;
+            aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
 
             h.c = 0;
             h.queue(aPopunder).queue(aPopunder);
@@ -132,8 +133,8 @@
          * @return void
          */
         bindEvents: function(aPopunder, form, trigger) {
-            var a = function() {
-                $.popunder(aPopunder);
+            var a = function(event) {
+                $.popunder(aPopunder, false, false, event);
 
                 return true;
             };
