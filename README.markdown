@@ -44,6 +44,7 @@ The script currently does not work:
 Dependencies
 -------
 The dependencies can be installed using bower
+
     bower update
 
 - (optional )jquery - http://www.jquery.com
