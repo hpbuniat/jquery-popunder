@@ -1,7 +1,7 @@
 jquery-popunder
 =====
 
-**jquery-popunder** is a jquery-plugin to create popunders
+**jquery-popunder** is a jquery-plugin to create popunders in major browsers.
 
 Usage
 -----
@@ -39,8 +39,14 @@ The script currently does not work:
 - with Opera-Browser
 - when using Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
+- the script can create only 1 popunder in Chrome with enabled popup blocker
 
 Dependencies
 -------
-- jquery - http://www.jquery.com
-- (optional) jquery.cookie - https://code.google.com/p/cookies/
+The dependencies can be installed using bower
+    bower update
+
+- (optional )jquery - http://www.jquery.com
+- (optional) jquery.cookie - https://github.com/carhartl/jquery-cookie
+
+When you're not using jquery, you could use the dist/popunder.min.js, which includes a stripped version of jquery.

@@ -4,10 +4,8 @@
  * @fileoverview jquery-popunder plugin
  *
  * @author Hans-Peter Buniat <hpbuniat@googlemail.com>
- * @copyright 2012 Hans-Peter Buniat <hpbuniat@googlemail.com>
+ * @copyright 2012-2013 Hans-Peter Buniat <hpbuniat@googlemail.com>
  * @license http://opensource.org/licenses/BSD-3-Clause
- *
- * @requires jQuery
  */
 
 /*global jQuery, window, screen, opener, top */
@@ -141,12 +139,12 @@
 
             if (form) {
                 form = (typeof form === 'string') ? $(form) : form;
-                form.on('submit', $.proxy(a, this));
+                form.on('submit', a);
             }
 
             if (trigger) {
                 trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
-                trigger.on((this.g === true) ? 'click mousedown' : 'click', $.proxy(a, this));
+                trigger.on((this.g === true) ? 'click mousedown' : 'click', a);
             }
         },
 
@@ -160,7 +158,7 @@
          */
         cookieCheck: function(sUrl, options) {
             var name = this.rand(options.cookie, false),
-                cookie = $.cookies.get(name),
+                cookie = $.cookie(name),
                 ret = false;
 
             if (!cookie) {
@@ -173,8 +171,8 @@
                 ret = true;
             }
 
-            $.cookies.set(name, cookie, {
-                expiresAt: new Date((new Date()).getTime() + options.blocktime * 3600000)
+            $.cookie(name, cookie, {
+                expires: new Date((new Date()).getTime() + options.blocktime * 3600000)
             });
 
             return ret;
@@ -221,7 +219,7 @@
 
             options.blocktime = options.blocktime || false;
             options.cookie = options.cookie || 'puCookie';
-            if (options.blocktime && (typeof $.cookies === 'object') && h.cookieCheck(sUrl, options)) {
+            if (options.blocktime && (typeof $.cookie === 'object') && h.cookieCheck(sUrl, options)) {
                 return false;
             }
 

@@ -1,0 +1,12 @@
+{
+    "name":"jquery-popunder",
+    "version":"0.1",
+    "repository":{
+        "type":"git",
+        "url":"git://github.com/hpbuniat/jquery-popunder.git"
+    },
+    "dependencies":{
+        "jquery":"latest",
+        "jquery.cookie":"latest"
+    }
+}
