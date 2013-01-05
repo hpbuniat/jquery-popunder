@@ -35,9 +35,8 @@ jquery-popunder was tested with:
 
 Known Issues
 -------
-The script currently does not work:
-- with Opera-Browser
-- when using Gnome
+- the script does not work with the Opera-Browser
+- the script does not work in Firefox under Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 - the script can create only 1 popunder in Chrome with enabled popup blocker
 
