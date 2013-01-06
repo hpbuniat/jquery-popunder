@@ -9,23 +9,22 @@
  */
 
 /*global window, document, navigator */
-(function (window, document, navigator) {
+(function(window, document, navigator) {
     "use strict";
 
     // when there is no jQuery available, we'll create a fallback-object with
     if (typeof jQuery === "undefined") {
         var ua = navigator.userAgent.toLowerCase(),
-            jQuery = function (param) {
+            jQuery = function(param) {
                 return new jQuery.fn.init(param);
             };
 
         jQuery.fn = jQuery.prototype = {
-            constructor:jQuery,
-            init:function (param) {
+            constructor: jQuery,
+            init: function(param) {
                 var qsa = (document.querySelectorAll);
 
-                // Handle $(DOMElement)
-                if ( param.nodeType ) {
+                if (param.nodeType) {
                     this.elem = [ param ];
                 }
                 else if (typeof param === "function") {
@@ -33,7 +32,7 @@
                 }
                 else if (typeof param === "string") {
 
-                    this.elem = qsa ? document.querySelectorAll(param) : document.getElementById(param);
+                    this.elem = qsa ? document.querySelectorAll(param) : document.getElementById(param.substr(1));
                     if (!qsa) {
                         this.elem = [this.elem];
                     }
@@ -42,7 +41,7 @@
                 return this;
             },
 
-            elem:null
+            elem: null
         };
 
         // stripped & simplified version of jQuery.extend
@@ -52,22 +51,22 @@
                 i = 0,
                 length = arguments.length;
 
-            for ( ; i < length; i++ ) {
+            for (; i < length; i++) {
                 // Only deal with non-null/undefined values
-                if ( (options = arguments[ i ]) != null ) {
+                if ((options = arguments[ i ]) != null) {
                     // Extend the base object
-                    for ( name in options ) {
+                    for (name in options) {
                         if (options.hasOwnProperty(name)) {
                             src = target[ name ];
                             copy = options[ name ];
 
                             // Prevent never-ending loop
-                            if ( target === copy ) {
+                            if (target === copy) {
                                 continue;
                             }
 
                             // Recurse if we're merging plain objects or arrays
-                            if ( copy !== undefined ) {
+                            if (copy !== undefined) {
                                 target[ name ] = copy;
                             }
                         }
@@ -80,7 +79,7 @@
         };
 
         jQuery.fn.extend({
-            on: function (events, callback) {
+            on: function(events, callback) {
                 var i, ii, l, ll, e, ee;
                 if (!this.elem) {
                     return this;
@@ -92,14 +91,10 @@
                     for (ii = 0, ll = this.elem.length; ii < ll; ii++) {
                         ee = this.elem[ii];
                         if (document.attachEvent) {
-                            ee.attachEvent('on' + e, function (e) {
-                                callback(e);
-                            }, false);
+                            ee.attachEvent('on' + e, callback);
                         }
                         else if (document.addEventListener) {
-                            ee.addEventListener(e, function (e) {
-                                callback(e);
-                            }, false);
+                            ee.addEventListener(e, callback, false);
                         }
                     }
                 }

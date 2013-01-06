@@ -46,7 +46,7 @@ The dependencies can be installed using bower
 
     bower update
 
-- (optional )jquery - http://www.jquery.com
+- (optional) jquery - http://www.jquery.com
 - (optional) jquery.cookie - https://github.com/carhartl/jquery-cookie
 
-When you're not using jquery, you could use the dist/popunder.min.js, which includes a stripped version of jquery.
+When you're not using jquery, you could use the dist/popunder.min.js, which includes a stripped version of jquery. Mind, that there is no real selector-engine included, which limits element-selection in oldie to #ids.
