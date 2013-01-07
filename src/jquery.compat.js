@@ -13,7 +13,7 @@
     "use strict";
 
     // when there is no jQuery available, we'll create a fallback-object with
-    if (typeof jQuery === "undefined") {
+    if (typeof window.jQuery === "undefined") {
         var ua = navigator.userAgent.toLowerCase(),
             jQuery = function(param) {
                 return new jQuery.fn.init(param);
@@ -128,9 +128,9 @@
         });
 
         jQuery.browser = {
-            webkit:((/webkit/).exec(ua) || false),
-            opera:((/opera/).exec(ua) || false),
-            msie:((/msie/).exec(ua) || false)
+            webkit:(!!(/webkit/).exec(ua) || false),
+            opera:(!!(/opera/).exec(ua) || false),
+            msie:(!!(/msie/).exec(ua) || false)
         };
 
         // Give the init function the jQuery prototype for later instantiation
