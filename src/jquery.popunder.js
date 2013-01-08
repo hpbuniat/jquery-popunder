@@ -24,14 +24,19 @@
      */
     $.popunder = function(aPopunder, form, trigger, _source) {
         var h = $.popunder.helper;
+        if (arguments.length === 0) {
+            aPopunder = window.aPopunder;
+        }
+
         if (trigger || form) {
             h.bindEvents(aPopunder, form, trigger);
         }
         else {
             aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
-
-            h.c = 0;
-            h.queue(aPopunder).queue(aPopunder);
+            if (typeof aPopunder !== "undefined") {
+                h.c = 0;
+                h.queue(aPopunder).queue(aPopunder);
+            }
         }
 
         return $;

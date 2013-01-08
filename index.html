@@ -87,6 +87,17 @@
     <input id="submitButtonFourClick" data-target="http://www.heise.de" type="submit" value="Open Popunder via Button-Click" />
 </form>
 
+<div id="testFive">
+    <h3>Testcase #5 (1 Popunder)</h3>
+    <pre>
+        window.aPopunder = [
+            ['http://www.heise.de']
+        ];
+    </pre>
+
+    <a href="#" onmousedown="$.popunder()" onclick="$.popunder()">Open Popunder via Link</a>
+</div>
+
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
 <script type="text/javascript">
