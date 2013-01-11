@@ -115,7 +115,7 @@
             if (aPopunder.length) {
                 while (b === false) {
                     var p = aPopunder.shift();
-                    b = h.open(p[0], p[1] || {}, aPopunder.length);
+                    b = (p) ? h.open(p[0], p[1] || {}, aPopunder.length) : true;
                 }
             }
             else if (h.last === false && (!h.g || h.c === 0)) {
