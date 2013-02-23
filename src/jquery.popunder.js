@@ -8,8 +8,8 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-/*global jQuery, window, screen, opener, top */
-(function($, window, screen) {
+/*global jQuery, window, screen, navigator, opener, top */
+(function($, window, screen, navigator) {
     "use strict";
 
     /**
@@ -35,7 +35,7 @@
             aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
             if (typeof aPopunder !== "undefined") {
                 h.c = 0;
-                h.queue(aPopunder).queue(aPopunder);
+                h.queue(aPopunder);//.queue(aPopunder);
             }
         }
 
@@ -67,6 +67,13 @@
         lastTarget: null,
 
         /**
+         * The flip-popup
+         *
+         * @var window|boolean
+         */
+        f: false,
+
+        /**
          * The counter of opened popunder
          *
          * @var int
@@ -95,11 +102,15 @@
         o: null,
 
         /**
-         * Chrome?
+         * User-Agent-Handling
          *
-         * @var boolean
+         * @var object
          */
-        g: $.browser.webkit,
+        ua: {
+            ie: !!(/msie/i.test(navigator.userAgent)),
+            o: !!(/opera/i.test(navigator.userAgent)),
+            w: !!(/webkit/i.test(navigator.userAgent))
+        },
 
         /**
          * Process the queue
@@ -118,9 +129,12 @@
                     b = (p) ? h.open(p[0], p[1] || {}, aPopunder.length) : true;
                 }
             }
-            else if (h.last === false && (!h.g || h.c === 0)) {
+            else if (h.last === false && (!h.ua.w || h.c === 0)) {
                 h.last = true;
                 h.bg().href(true);
+            }
+            else if (!h.f) {
+                h.bg();
             }
 
             return this;
@@ -137,9 +151,15 @@
          */
         bindEvents: function(aPopunder, form, trigger) {
             var a = function(event) {
-                $.popunder(aPopunder, false, false, event);
+                var r = true;
+                if (/mouse/.test(event.type)) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    r = false;
+                }
 
-                return true;
+                $.popunder(aPopunder, false, false, event);
+                return r;
             };
 
             if (form) {
@@ -149,7 +169,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
-                trigger.on((this.g === true) ? 'click mousedown' : 'click', a);
+                trigger.on((this.ua.w === true) ? 'mousedown click' : 'click', a);
             }
         },
 
@@ -208,7 +228,7 @@
         open: function(sUrl, options, iLength) {
             var h = this;
 
-            h.o = (h.g) ? h.b : sUrl;
+            h.o = sUrl;
             if (top !== window.self) {
                 try {
                     if (top.document.location.toString()) {
@@ -218,7 +238,7 @@
             }
 
             options.disableOpera = options.disableOpera || true;
-            if (options.disableOpera === true && $.browser.opera === true) {
+            if (options.disableOpera === true && h.ua.o === true) {
                 return false;
             }
 
@@ -231,8 +251,10 @@
             /* create pop-up */
             h.c++;
             h.lastTarget = sUrl;
+            h.o = (h.ua.w) ? h.b : sUrl;
             h.lastWin = (h._top.window.open(h.o, h.rand(options.name, !options.name), h.getOptions(options)) || h.lastWin);
-            if (!h.g) {
+
+            if (!h.ua.w) {
                 h.bg();
             }
 
@@ -256,7 +278,7 @@
                 t._top.window.focus();
 
                 if (this.lastTarget && !l) {
-                    if ($.browser.msie === true) {
+                    if (t.ua.ie === true) {
 
                         /* classic popunder, used for ie */
                         window.focus();
@@ -307,8 +329,12 @@
          */
         flip: function(e) {
             try {
+                var h = this;
                 if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
-                    e.window.open('about:blank').close();
+                    h.f = e.window.open('about:blank');
+                    if (h.f) {
+                        h.f.close();
+                    }
                 }
             }
             catch (err) {}
@@ -336,4 +362,4 @@
                 ',top=' + (options.top || '0');
         }
     };
-})(jQuery, window, screen);
+})(jQuery, window, screen, navigator);

@@ -26,10 +26,11 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-17
+- Mozilla Firefox 3-19
 - Google Chrome 10-24
   - Note: Currently you can only create 2 popunder in Chrome 22+
   - Note: In Chrome 23+ you'll need a separate event for the popunder-effect (@see the examples!)
+  - Note: Chrome 25 is currently not supported
 - Microsoft Internet Explorer 6-9
 - Apple Safari 5
 

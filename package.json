@@ -24,7 +24,8 @@
         "jquery.cookie":"latest"
     },
     "devDependencies":{
-        "grunt":"0.3.x"
+        "grunt":"0.3.x",
+        "grunt-shell": "0.1.x"
     },
     "homepage":"https://github.com/hpbuniat/jquery-popunder"
 }

@@ -8,14 +8,13 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-/*global window, document, navigator */
-(function(window, document, navigator) {
+/*global window, document */
+(function(window, document) {
     "use strict";
 
     // when there is no jQuery available, we'll create a fallback-object with
     if (typeof window.jQuery === "undefined") {
-        var ua = navigator.userAgent.toLowerCase(),
-            jQuery = function(param) {
+        var jQuery = function(param) {
                 return new jQuery.fn.init(param);
             };
 
@@ -127,16 +126,10 @@
 
         });
 
-        jQuery.browser = {
-            webkit:(!!(/webkit/).exec(ua) || false),
-            opera:(!!(/opera/).exec(ua) || false),
-            msie:(!!(/msie/).exec(ua) || false)
-        };
-
         // Give the init function the jQuery prototype for later instantiation
         jQuery.fn.init.prototype = jQuery.fn;
 
         window.jQuery = window.$ = jQuery;
     }
 
-})(window, document, navigator);
+})(window, document);

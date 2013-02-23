@@ -18,7 +18,7 @@
     <h3>Testcase #1 (2 Popunder)</h3>
     <pre>
         window.aPopunder = [
-            // ['http://www.google.de', {height:400, width:400, blocktime:1}],
+            // ['http://www.google.com', {height:400, width:400, blocktime:1}],
             ['http://www.github.com', {height:100, width:100}],
             ['http://www.heise.de']
         ];
@@ -37,7 +37,7 @@
             $.popunder(window.aPopunder);
         });
 
-        var sEvents = $.browser.webkit ? 'mousedown click' : 'click';
+        var sEvents = (!!(/webkit/i.test(navigator.userAgent))) ? 'mouseup mousedown click' : 'click';
         $('#submitButtonTwoClick').on(sEvents, function(e) {
             $.popunder(window.aPopunder);
         });
@@ -55,14 +55,14 @@
     <h3>Testcase #3 (1 Popunder with explicit binding)</h3>
     <pre>
         window.aOnePopunder = [
-            ['http://www.heise.de']
+            ['http://www.github.com']
         ];
 
         $('#testFormThree').on('submit', function(e) {
             $.popunder(window.aOnePopunder);
         });
 
-        var sEvents = $.browser.webkit ? 'mousedown click' : 'click';
+        var sEvents = (!!(/webkit/i.test(navigator.userAgent))) ? 'click' : 'click';
         $('#submitButtonThreeClick').on(sEvents, function(e) {
             $.popunder(window.aOnePopunder);
         });
@@ -84,20 +84,41 @@
 
         $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
     </pre>
-    <input id="submitButtonFourClick" data-target="http://www.heise.de" type="submit" value="Open Popunder via Button-Click" />
+    <input id="submitButtonFourClick" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
 </form>
 
 <div id="testFive">
     <h3>Testcase #5 (1 Popunder)</h3>
     <pre>
         window.aPopunder = [
-            ['http://www.heise.de']
+            ['http://www.github.com']
         ];
     </pre>
 
-    <a href="#" onmousedown="$.popunder()" onclick="$.popunder()">Open Popunder via Link</a>
+    <a href="#" onmouseup="$.popunder()" onmousedown="$.popunder()" onclick="$.popunder()">Open Popunder via Link</a>
 </div>
 
+<!--div id="testSix">
+    <h3>Testcase #5 (3 Popunder, using flash)</h3>
+    <pre>
+        window.aPopunder = [
+            ['http://www.heise.de'],
+            ['http://www.github.com'],
+            ['http://www.google.com'],
+        ];
+
+        window.test = function(event) {
+            var w = window.open('http://www.heise.de', 'window' + Math.random(), 'toolbar=0');
+        }
+    </pre>
+
+    <a href="#" onmousedown="window.test()" onclick="window.test()">Open Popunder via Link</a>
+</div-->
+
+<object type="application/x-shockwave-flash" data="dist/jq-pu-toolkit.swf" width="100" height="100">
+    <param name="allowScriptAccess" value="always" />
+    <param name="quality" value="high" />
+</object>
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
 <script type="text/javascript">
