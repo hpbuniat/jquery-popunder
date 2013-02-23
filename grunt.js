@@ -41,7 +41,21 @@ module.exports = function (grunt) {
                 dest:'dist/popunder.min.js'
             }
         },
-
+        shell:{
+            build: {
+                command: 'haxe compile.hxml',
+                stdout: true,
+                stderr: true,
+                execOptions: {
+                    cwd: './src/hx'
+                }
+            },
+            copy: {
+                command: 'mv ./src/hx/jq-pu-toolkit.swf ./dist/jq-pu-toolkit.swf',
+                stderr: true,
+                stdout: true
+            }
+        },
         watch:{
             files:['src/*.js'],
             tasks:'lint'
@@ -49,7 +63,9 @@ module.exports = function (grunt) {
 
     });
 
+    grunt.loadNpmTasks('grunt-shell');
+
     // This is what gets run when you don't specify an argument for grunt.
-    grunt.registerTask('default', 'lint min');
+    grunt.registerTask('default', 'lint min shell');
 
 };
