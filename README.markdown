@@ -16,30 +16,40 @@ So you leave the event-handling to the plugin. To add some flexibility to the fu
 
 Options
 -------
-- "cookie": The cookie-name (used for blocking a popunder)
-- "blocktime": The time to block popunder, in hours
-- "height": The height of the popunder
-- "width": The width of the popunder
-- "name": The window-name (optional)
+All of the options are optional!.
+
+<pre>
+{
+    "cookie": "puCookie",       The cookie-name (optional, used for blocking a popunder)
+    "name": "puWin",            The window-name (optional)
+    "blocktime": false,         The time to block popunder, in minutes
+    "window": {
+        "height": ..            The width of the popunder
+        "width": ..             The height of the popunder
+        ..: ..
+    },
+    "skip": {                   UA-Patterns to skip
+        "opera": true
+    }
+}
+</pre>
 
 Compatibility
 -------
 
 jquery-popunder was tested with:
 - Mozilla Firefox 3-19
-- Google Chrome 10-24
-  - Note: Currently you can only create 2 popunder in Chrome 22+
-  - Note: In Chrome 23+ you'll need a separate event for the popunder-effect (@see the examples!)
-  - Note: Chrome 25 is currently not supported
+- Google Chrome 10-25
+  - Note: Currently you can only create 2 popunder in Chrome 22-24
+  - Note: In Chrome 23-24 you'll need a separate event for the popunder-effect (@see the examples!)
 - Microsoft Internet Explorer 6-9
 - Apple Safari 5
 
 Known Issues
 -------
-- the script does not work with the Opera-Browser
+- the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
-- the script can create only 1 popunder in Chrome 23+ with enabled popup blocker
 
 Dependencies
 -------

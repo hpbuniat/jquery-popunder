@@ -35,7 +35,16 @@
             aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
             if (typeof aPopunder !== "undefined") {
                 h.c = 0;
-                h.queue(aPopunder);//.queue(aPopunder);
+                if (!h.ua.ie) {
+                    do {
+                        h.queue(aPopunder);
+                    }
+                    while (aPopunder.length > 0);
+                    h.queue(aPopunder);
+                }
+                else {
+                    h.queue(aPopunder);
+                }
             }
         }
 
@@ -109,7 +118,66 @@
         ua: {
             ie: !!(/msie/i.test(navigator.userAgent)),
             o: !!(/opera/i.test(navigator.userAgent)),
+            g: !!(/chrome/i.test(navigator.userAgent)),
             w: !!(/webkit/i.test(navigator.userAgent))
+        },
+
+        /**
+         * The default-options
+         *
+         * @var object
+         */
+        def: {
+
+            // properites of the opened window
+            window: {
+                'toolbar': 0,
+                'scrollbars': 1,
+                'statusbar': 1,
+                'menubar': 0,
+                'resizable': 1,
+                'width': (screen.availWidth - 122).toString(),
+                'height': (screen.availHeight - 122).toString(),
+                'screenX': 0,
+                'screenY': 0,
+                'left': 0,
+                'top': 0
+            },
+
+            // name of the popunder-cookie (defaults to a random-string, when not set)
+            name: 'puWin',
+
+            // name of the cookie
+            cookie: 'puCookie',
+
+            // the block-time of a popunder in minutes
+            blocktime: false,
+
+            // user-agents to skip
+            skip: {
+                'opera': true,
+                'ipad': true
+            }
+        },
+
+        /**
+         * The options for a specific popunder
+         *
+         * @var object
+         */
+        opt: {
+
+        },
+
+        /**
+         * Simple user-agent test
+         *
+         * @param  {string} ua The user-agent pattern
+         *
+         * @return {Boolean}
+         */
+        uaTest: function(ua) {
+            return !!(new RegExp(ua, "i").test(navigator.userAgent.toString()));
         },
 
         /**
@@ -123,21 +191,21 @@
             var b = false,
                 h = this;
 
-            if (aPopunder.length) {
+            if (aPopunder.length > 0) {
                 while (b === false) {
                     var p = aPopunder.shift();
                     b = (p) ? h.open(p[0], p[1] || {}, aPopunder.length) : true;
                 }
             }
-            else if (h.last === false && (!h.ua.w || h.c === 0)) {
+            else if (h.last === false) {
                 h.last = true;
                 h.bg().href(true);
             }
-            else if (!h.f) {
+            else if (!h.f && !h.ua.g) {
                 h.bg();
             }
 
-            return this;
+            return h;
         },
 
         /**
@@ -147,42 +215,82 @@
          * @param  {string|object} form A form, where the submit is used to open the popunder
          * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
          *
-         * @return void
+         * @return $.popunder.helper
          */
         bindEvents: function(aPopunder, form, trigger) {
-            var a = function(event) {
-                var r = true;
-                if (/mouse/.test(event.type)) {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    r = false;
-                }
+            var t = this,
+                a = function(event) {
+                    $.popunder(aPopunder, false, false, event);
+                    return true;
+                };
 
-                $.popunder(aPopunder, false, false, event);
-                return r;
-            };
-
-            if (form) {
+            if (form && !t.ua.g) {
                 form = (typeof form === 'string') ? $(form) : form;
                 form.on('submit', a);
             }
 
             if (trigger) {
                 trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
-                trigger.on((this.ua.w === true) ? 'mousedown click' : 'click', a);
+                if (t.ua.g) {
+                    t.iframe(trigger, a);
+                }
+                else {
+                    trigger.on('click mousedown', a);
+                }
             }
+
+            return t;
+        },
+
+        /**
+         * Create an iframe to catch the click over a button or link
+         *
+         * @param  {object} trigger The click-trigger (button, link, etc.)
+         * @param  {function} handler The event-handler
+         *
+         * @return $.popunder.helper
+         */
+        iframe: function(trigger, handler) {
+            trigger.each(function() {
+                var $e = $(this),
+                    c = $e.wrap('<div style="display:inline-block; position:relative;" />').parent(),
+                    i = $('<iframe frameborder="0" src="about:blank"></iframe>').css({
+                        cursor: "pointer",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: $e.width(),
+                        padding: $e.css('padding'),
+                        margin: $e.css('margin'),
+                        height: $e.height()
+                    });
+
+                i.on('load', function() {
+                    $(this.contentDocument).on('click', (function(target) {
+                        return function() {
+                            handler({
+                                target: target
+                            });
+                            target.trigger('click');
+                        };
+                    })($e));
+                });
+                c.append(i);
+            });
+
+            return this;
         },
 
         /**
          * Helper to create a (optionally) random value with prefix
          *
          * @param  {string} sUrl The url to open
-         * @param  {object} options Options for the Popunder
          *
          * @return boolean
          */
-        cookieCheck: function(sUrl, options) {
-            var name = this.rand(options.cookie, false),
+        cookieCheck: function(sUrl) {
+            var h = this,
+                name = h.rand(h.opt.cookie, false),
                 cookie = $.cookie(name),
                 ret = false;
 
@@ -197,7 +305,7 @@
             }
 
             $.cookie(name, cookie, {
-                expires: new Date((new Date()).getTime() + options.blocktime * 3600000)
+                expires: new Date((new Date()).getTime() + h.opt.blocktime * 60000)
             });
 
             return ret;
@@ -220,13 +328,17 @@
          * Open the popunder
          *
          * @param  {string} sUrl The URL to open
-         * @param  {object} options Options for the Popunder
+         * @param  {object} opts Options for the Popunder
          * @param  {int} iLength Length of the popunder-stack
          *
          * @return boolean
          */
-        open: function(sUrl, options, iLength) {
-            var h = this;
+        open: function(sUrl, opts, iLength) {
+            var h = this,
+                i, o, s;
+
+            o = $.extend(true, {}, h.def, opts);
+            s = o.skip;
 
             h.o = sUrl;
             if (top !== window.self) {
@@ -237,24 +349,23 @@
                 } catch (err) {}
             }
 
-            options.disableOpera = options.disableOpera || true;
-            if (options.disableOpera === true && h.ua.o === true) {
-                return false;
+            for (i in s) {
+                if (s.hasOwnProperty(i) && s[i] === true && h.uaTest(i)) {
+                    return false;
+                }
             }
 
-            options.blocktime = options.blocktime || false;
-            options.cookie = options.cookie || 'puCookie';
-            if (options.blocktime && (typeof $.cookie === 'object') && h.cookieCheck(sUrl, options)) {
+            if (o.blocktime && (typeof $.cookie === 'object') && h.cookieCheck(sUrl)) {
                 return false;
             }
 
             /* create pop-up */
             h.c++;
             h.lastTarget = sUrl;
-            h.o = (h.ua.w) ? h.b : sUrl;
-            h.lastWin = (h._top.window.open(h.o, h.rand(options.name, !options.name), h.getOptions(options)) || h.lastWin);
+            h.o = (h.ua.g) ? h.b : sUrl;
+            h.lastWin = (h._top.window.open(h.o, h.rand(o.name, !opts.name), h.getOptions(o.window)) || h.lastWin);
 
-            if (!h.ua.w) {
+            if (!h.ua.g) {
                 h.bg();
             }
 
@@ -273,35 +384,70 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin) {
-                t.lastWin.blur();
-                t._top.window.blur();
-                t._top.window.focus();
-
                 if (this.lastTarget && !l) {
                     if (t.ua.ie === true) {
-
-                        /* classic popunder, used for ie */
-                        window.focus();
-                        try {
-                            opener.window.focus();
-                        }
-                        catch (err) {}
+                        t.switcher.simple(t);
                     }
-                    else {
-
-                        /* popunder for e.g. ff, chrome */
-                        (function(e) {
-                            t.flip(e);
-                            try {
-                                e.opener.window.focus();
-                            }
-                            catch (err) {}
-                        })(t.lastWin);
+                    else { //if (!t.ua.g) {
+                        t.switcher.pop(t);
                     }
                 }
+
+                //if (!t.ua.ie) {
+                    t.lastWin.blur();
+                    t._top.window.blur();
+                    t._top.window.focus();
+                    window.focus();
+                //}
             }
 
-            return this;
+            return t;
+        },
+
+        /**
+         * Handle the window switching
+         *
+         * @return void
+         */
+        switcher: {
+            /**
+             * Classic popunder, used for ie
+             *
+             * @param  {$.popunder.helper} t
+             */
+            simple: function(t) {
+                t.lastWin.blur();
+                window.focus();
+                try {
+                    opener.window.focus();
+                }
+                catch (err) {}
+            },
+
+            /**
+             * Popunder for firefox & old google-chrome
+             * In ff4+, chrome21+ we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window
+             *
+             * @param  {$.popunder.helper} t
+             */
+            pop: function(t) {
+                (function(e) {
+                    try {
+                        if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
+                            t.f = e.window.open('about:blank');
+                            if (!!t.f) {
+                                t.f.close();
+                            }
+                        }
+                    }
+                    catch (err) {}
+
+                    try {
+                        e.opener.window.focus();
+                    }
+                    catch (err) {}
+                })(t.lastWin);
+            }
         },
 
         /**
@@ -321,45 +467,19 @@
         },
 
         /**
-         * In ff4+, chrome21+ we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window
-         *
-         * @param e
-         *
-         * @return void
-         */
-        flip: function(e) {
-            try {
-                var h = this;
-                if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
-                    h.f = e.window.open('about:blank');
-                    if (h.f) {
-                        h.f.close();
-                    }
-                }
-            }
-            catch (err) {}
-        },
-
-        /**
          * Get the option-string for the popup
-         *
-         * @param  {object} options
          *
          * @return {String}
          */
-        getOptions: function(options) {
-            return 'toolbar=' + (options.toolbar || '0') +
-                ',scrollbars=' + (options.scrollbars || '1') +
-                ',location=' + (options.location || '1') +
-                ',statusbar=' + (options.statusbar || '1') +
-                ',menubar=' + (options.menubar || '0') +
-                ',resizable=' + (options.resizable || '1') +
-                ',width=' + (options.width || (screen.availWidth - 122).toString()) +
-                ',height=' + (options.height || (screen.availHeight - 122).toString()) +
-                ',screenX=' + (options.screenX || '0') +
-                ',screenY=' + (options.screenY || '0') +
-                ',left=' +  (options.left || '0') +
-                ',top=' + (options.top || '0');
+        getOptions: function(opts) {
+            var a = [], i;
+            for (i in opts) {
+                if (opts.hasOwnProperty(i)) {
+                    a.push(i + '=' + opts[i]);
+                }
+            }
+
+            return a.join(',');
         }
     };
 })(jQuery, window, screen, navigator);

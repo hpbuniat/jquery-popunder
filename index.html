@@ -4,7 +4,7 @@
     <meta content="Hans-Peter Buniat" name="author">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Form-Submit Popunder with Cookie support</title>
-    <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+    <!--script type="text/javascript" src="components/jquery/jquery.min.js"></script-->
     <script type="text/javascript" src="src/jquery.compat.js"></script>
 
     <!-- Cookie support -->
@@ -15,15 +15,15 @@
 
 <h1>jQuery-Popunder Demo Page</h1>
 <form id="testForm" action="#">
-    <h3>Testcase #1 (2 Popunder)</h3>
+    <h3>Testcase #1 (3 Popunder)</h3>
     <pre>
-        window.aPopunder = [
-            // ['http://www.google.com', {height:400, width:400, blocktime:1}],
-            ['http://www.github.com', {height:100, width:100}],
+        window.aThreePopunder = [
+            ['http://www.google.com', {window: {height:400, width:400}, blocktime: 1}],
+            ['http://www.github.com', {window: {height:100, width:100}}],
             ['http://www.heise.de']
         ];
 
-        $.popunder(window.aPopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
+        $.popunder(window.aThreePopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
     </pre>
     <input id="submitButton" type="submit" value="Open Popunder via Form-Submit" />
 
@@ -31,20 +31,21 @@
 </form>
 
 <form id="testFormTwo" action="#">
-    <h3>Testcase #2 (2 Popunder with explicit binding)</h3>
+    <h3>Testcase #2 (3 Popunder with explicit binding)</h3>
     <pre>
-        $('#testFormTwo').on('submit', function(e) {
-            $.popunder(window.aPopunder);
-        });
+        var fHandler = function(e) {
+            $.popunder(window.aThreePopunder);
+        };
 
-        var sEvents = (!!(/webkit/i.test(navigator.userAgent))) ? 'mouseup mousedown click' : 'click';
-        $('#submitButtonTwoClick').on(sEvents, function(e) {
-            $.popunder(window.aPopunder);
-        });
-
-        $('#testFormTwo a').on(sEvents, function(e) {
-            $.popunder(window.aPopunder);
-        });
+        if ($.popunder.helper.ua.g) {
+            $.popunder.helper.iframe($('#submitButtonTwoClick'), fHandler);
+            $.popunder.helper.iframe($('#testFormTwo a'), fHandler);
+        }
+        else {
+            $('#submitButtonTwoClick').on('click', fHandler);
+            $('#testFormTwo a').on('click', fHandler);
+            $('#testFormTwo').on('submit', fHandler);
+        }
     </pre>
     <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
 
@@ -58,14 +59,17 @@
             ['http://www.github.com']
         ];
 
-        $('#testFormThree').on('submit', function(e) {
+        var fOneHandler = function(e) {
             $.popunder(window.aOnePopunder);
-        });
+        };
 
-        var sEvents = (!!(/webkit/i.test(navigator.userAgent))) ? 'click' : 'click';
-        $('#submitButtonThreeClick').on(sEvents, function(e) {
-            $.popunder(window.aOnePopunder);
-        });
+        if ($.popunder.helper.ua.g) {
+            $.popunder.helper.iframe($('#submitButtonThreeClick'), fOneHandler);
+        }
+        else {
+            $('#submitButtonThreeClick').on('click', fOneHandler);
+            $('#testFormThree').on('submit', fOneHandler);
+        }
     </pre>
     <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
 </form>
@@ -75,7 +79,6 @@
     <pre>
         window.fPopunder = function(event) {
             if (!window.fPopunderStack) {
-
                 window.fPopunderStack = [[$(event.target).data('target')]];
             }
 
@@ -84,41 +87,26 @@
 
         $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
     </pre>
+
     <input id="submitButtonFourClick" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
 </form>
 
 <div id="testFive">
-    <h3>Testcase #5 (1 Popunder)</h3>
+    <h3>Testcase #5 (1 Popunder, currently not working in Google Chrome!)</h3>
     <pre>
         window.aPopunder = [
             ['http://www.github.com']
         ];
     </pre>
 
-    <a href="#" onmouseup="$.popunder()" onmousedown="$.popunder()" onclick="$.popunder()">Open Popunder via Link</a>
+    <a href="#" onclick="$.popunder()">Open Popunder via Link</a>
 </div>
 
-<!--div id="testSix">
-    <h3>Testcase #5 (3 Popunder, using flash)</h3>
-    <pre>
-        window.aPopunder = [
-            ['http://www.heise.de'],
-            ['http://www.github.com'],
-            ['http://www.google.com'],
-        ];
-
-        window.test = function(event) {
-            var w = window.open('http://www.heise.de', 'window' + Math.random(), 'toolbar=0');
-        }
-    </pre>
-
-    <a href="#" onmousedown="window.test()" onclick="window.test()">Open Popunder via Link</a>
-</div-->
-
-<object type="application/x-shockwave-flash" data="dist/jq-pu-toolkit.swf" width="100" height="100">
+<!--object type="application/x-shockwave-flash" data="dist/jq-pu-toolkit.swf" width="100" height="100">
     <param name="allowScriptAccess" value="always" />
     <param name="quality" value="high" />
-</object>
+</object-->
+
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
 <script type="text/javascript">
