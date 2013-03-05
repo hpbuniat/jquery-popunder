@@ -253,12 +253,15 @@
         iframe: function(trigger, handler) {
             trigger.each(function() {
                 var $e = $(this),
-                    c = $e.wrap('<div style="display:inline-block; position:relative;" />').parent(),
+                    p = ($e.css('position') === 'absolute') ? '' : 'position:relative;',
+
+                    // build a container around the button/link - this is tricky, when it comes to the elements position
+                    c = $e.wrap('<div style="display:inline-block; ' + p + '" />').parent(),
                     i = $('<iframe frameborder="0" src="about:blank"></iframe>').css({
                         cursor: "pointer",
                         position: "absolute",
-                        top: 0,
-                        left: 0,
+                        top: ((!!p) ? 0 : $e.css('top')),
+                        left: ((!!p) ? 0 : $e.css('left')),
                         width: $e.width(),
                         padding: $e.css('padding'),
                         margin: $e.css('margin'),
@@ -388,17 +391,15 @@
                     if (t.ua.ie === true) {
                         t.switcher.simple(t);
                     }
-                    else { //if (!t.ua.g) {
+                    else {
                         t.switcher.pop(t);
                     }
                 }
 
-                //if (!t.ua.ie) {
-                    t.lastWin.blur();
-                    t._top.window.blur();
-                    t._top.window.focus();
-                    window.focus();
-                //}
+                t.lastWin.blur();
+                t._top.window.blur();
+                t._top.window.focus();
+                window.focus();
             }
 
             return t;
