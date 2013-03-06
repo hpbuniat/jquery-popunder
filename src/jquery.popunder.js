@@ -133,6 +133,7 @@
             window: {
                 'toolbar': 0,
                 'scrollbars': 1,
+                'location': 1,
                 'statusbar': 1,
                 'menubar': 0,
                 'resizable': 1,
@@ -235,7 +236,7 @@
                     t.iframe(trigger, a);
                 }
                 else {
-                    trigger.on('click mousedown', a);
+                    trigger.on('click', a);
                 }
             }
 
