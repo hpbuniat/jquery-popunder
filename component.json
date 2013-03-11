@@ -1,6 +1,6 @@
 {
     "name":"jquery-popunder",
-    "version":"0.1",
+    "version":"0.2.3",
     "repository":{
         "type":"git",
         "url":"git://github.com/hpbuniat/jquery-popunder.git"

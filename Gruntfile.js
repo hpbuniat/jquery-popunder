@@ -2,14 +2,11 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
-        pkg: '<json:package.json>',
+        pkg: grunt.file.readJSON('package.json'),
         meta: {
             banner: '/* <%= pkg.description %>, v<%= pkg.version %> <%= pkg.homepage %>\n' +
                 'Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>, <%= pkg.license.type %> license ' +
-                '<%= pkg.license.url %> */'
-        },
-        lint:{
-            all:['src/*.js']
+                '<%= pkg.license.url %>*/\n'
         },
         jshint:{
             options:{
@@ -31,14 +28,22 @@ module.exports = function (grunt) {
                 eqnull:true
             }
         },
-        min:{
+        uglify:{
             dist:{
-                src:['<banner:meta.banner>', 'src/jquery.popunder.js'],
-                dest:'dist/jquery.popunder.min.js'
+                files: {
+                    'dist/jquery.popunder.min.js': ['src/jquery.popunder.js']
+                },
+                options: {
+                    banner: '<%=meta.banner%>'
+                }
             },
             jqLess:{
-                src:['<banner:meta.banner>', 'src/jquery.compat.js', 'src/jquery.popunder.js'],
-                dest:'dist/popunder.min.js'
+                files: {
+                    'dist/popunder.min.js': ['src/jquery.min.js', 'src/jquery.popunder.js']
+                },
+                options: {
+                    banner: '<%=meta.banner%>'
+                }
             }
         },
         shell:{
@@ -63,9 +68,12 @@ module.exports = function (grunt) {
 
     });
 
+
+    // load tasks
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-shell');
 
-    // This is what gets run when you don't specify an argument for grunt.
-    grunt.registerTask('default', 'lint min shell');
-
+    // Default task(s).
+    grunt.registerTask('default', ['jshint', 'uglify', 'shell']);
 };
