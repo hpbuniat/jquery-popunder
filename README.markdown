@@ -20,8 +20,8 @@ All of the options are optional!.
 
 <pre>
 {
-    "cookie": "puCookie",       The cookie-name (optional, used for blocking a popunder)
-    "name": "puWin",            The window-name (optional)
+    "cookie": "__puc",       The cookie-name (optional, used for blocking a popunder)
+    "name": "__pu",            The window-name (optional)
     "blocktime": false,         The time to block popunder, in minutes
     "window": {
         "height": ..            The width of the popunder
@@ -39,7 +39,7 @@ Compatibility
 
 jquery-popunder was tested with:
 - Mozilla Firefox 3-19
-- Google Chrome 10-25
+- Google Chrome 10-26beta
   - Note: Currently you can only create 2 popunder in Chrome 22-24
   - Note: In Chrome 23-24 you'll need a separate event for the popunder-effect (@see the examples!)
 - Microsoft Internet Explorer 6-9

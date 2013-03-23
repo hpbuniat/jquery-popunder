@@ -1,0 +1,5 @@
+Authors ordered by first contribution
+
+Hans-Peter Buniat <hpbuniat@googlemail.com>
+shapeshifta78 (hint for chrome 22 workaround)
+tuki (alternative workaround for chrome 25+)

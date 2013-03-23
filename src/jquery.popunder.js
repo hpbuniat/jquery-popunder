@@ -8,8 +8,8 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-/*global jQuery, window, screen, navigator, opener, top */
-(function($, window, screen, navigator) {
+/*global jQuery, window, screen, navigator, opener, top, document */
+(function($, window, screen, navigator, document) {
     "use strict";
 
     /**
@@ -146,10 +146,10 @@
             },
 
             // name of the popunder-cookie (defaults to a random-string, when not set)
-            name: 'puWin',
+            name: '__pu',
 
             // name of the cookie
-            cookie: 'puCookie',
+            cookie: '__puc',
 
             // the block-time of a popunder in minutes
             blocktime: false,
@@ -166,9 +166,7 @@
          *
          * @var object
          */
-        opt: {
-
-        },
+        opt: {},
 
         /**
          * Simple user-agent test
@@ -232,7 +230,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
-                if (t.ua.g) {
+                if (t.ua.g && (typeof aPopunder === 'function' || aPopunder.length > 1)) {
                     t.iframe(trigger, a);
                 }
                 else {
@@ -359,7 +357,7 @@
                 }
             }
 
-            if (o.blocktime && (typeof $.cookie === 'object') && h.cookieCheck(sUrl)) {
+            if (o.blocktime && (typeof $.cookie === 'function') && h.cookieCheck(sUrl)) {
                 return false;
             }
 
@@ -388,19 +386,22 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin) {
+                t.lastWin.blur();
+                t._top.window.blur();
+                t._top.window.focus();
+                window.focus();
+
                 if (this.lastTarget && !l) {
                     if (t.ua.ie === true) {
                         t.switcher.simple(t);
+                    }
+                    else if (t.ua.g === true) {
+                        t.switcher.tab(t);
                     }
                     else {
                         t.switcher.pop(t);
                     }
                 }
-
-                t.lastWin.blur();
-                t._top.window.blur();
-                t._top.window.focus();
-                window.focus();
             }
 
             return t;
@@ -428,7 +429,7 @@
 
             /**
              * Popunder for firefox & old google-chrome
-             * In ff4+, chrome21+ we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window
+             * In ff4+, chrome21-23 we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window
              *
              * @param  {$.popunder.helper} t
              */
@@ -449,6 +450,26 @@
                     }
                     catch (err) {}
                 })(t.lastWin);
+            },
+
+            /**
+             * Popunder for google-chrome 25+
+             *
+             * @param  {$.popunder.helper} t
+             */
+            tab: function(t) {
+                var s = '_tab',
+                    h = 'about:blank',
+                    a = $('<a/>', {
+                        'href': h,
+                        'target': '_tab'
+                    }).appendTo('body'),
+                    e = document.createEvent("MouseEvents");
+                e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, true, 0, null);
+                a[0].dispatchEvent(e);
+
+
+                window.open(h, s).close();
             }
         },
 
@@ -484,4 +505,4 @@
             return a.join(',');
         }
     };
-})(jQuery, window, screen, navigator);
+})(jQuery, window, screen, navigator, document);
