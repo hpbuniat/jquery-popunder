@@ -51,13 +51,21 @@ Known Issues
 - the script does not work in Firefox under Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
+Installation
+-------
+Just copy the dist/jquery.popunder.min.js file into your project or use bower:
+
+    bower install jquery-popunder
+
+or add it to your compontent.json.
+
 Dependencies
 -------
+- (optional) jquery - http://www.jquery.com
+- (optional) jquery.cookie - https://github.com/carhartl/jquery-cookie
+
 The dependencies can be installed using bower
 
     bower update
-
-- (optional) jquery - http://www.jquery.com
-- (optional) jquery.cookie - https://github.com/carhartl/jquery-cookie
 
 When you're not using jquery, you could use the dist/popunder.min.js, which includes a stripped version of jquery. Mind, that there is no real selector-engine included, which limits element-selection in oldie to #ids.
