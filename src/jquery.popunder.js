@@ -255,7 +255,7 @@
                     p = ($e.css('position') === 'absolute') ? '' : 'position:relative;',
 
                     // build a container around the button/link - this is tricky, when it comes to the elements position
-                    c = $e.wrap('<div style="display:inline-block; ' + p + '" />').parent(),
+                    c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
                     i = $('<iframe frameborder="0" src="about:blank"></iframe>').css({
                         cursor: "pointer",
                         position: "absolute",
