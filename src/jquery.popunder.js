@@ -158,7 +158,10 @@
             skip: {
                 'opera': true,
                 'ipad': true
-            }
+            },
+
+            // callback function, to be executed when a popunder is opened
+            cb: null
         },
 
         /**
@@ -337,7 +340,8 @@
          */
         open: function(sUrl, opts, iLength) {
             var h = this,
-                i, o, s;
+                i, o, s,
+                f = 'function';
 
             o = $.extend(true, {}, h.def, opts);
             s = o.skip;
@@ -357,7 +361,7 @@
                 }
             }
 
-            if (o.blocktime && (typeof $.cookie === 'function') && h.cookieCheck(sUrl)) {
+            if (o.blocktime && (typeof $.cookie === f) && h.cookieCheck(sUrl)) {
                 return false;
             }
 
@@ -369,6 +373,10 @@
 
             if (!h.ua.g) {
                 h.bg();
+            }
+
+            if (typeof o.cb === f) {
+                o.cb();
             }
 
             h.href(iLength);

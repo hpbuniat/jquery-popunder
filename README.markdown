@@ -20,17 +20,18 @@ All of the options are optional!.
 
 <pre>
 {
-    "cookie": "__puc",       The cookie-name (optional, used for blocking a popunder)
-    "name": "__pu",            The window-name (optional)
-    "blocktime": false,         The time to block popunder, in minutes
+    "cookie": "__puc",     The cookie-name (optional, used for blocking a popunder)
+    "name": "__pu",        The window-name (optional)
+    "blocktime": false,    The time to block popunder, in minutes
     "window": {
-        "height": ..            The width of the popunder
-        "width": ..             The height of the popunder
-        ..: ..
+        "height": ..       The width of the popunder
+        "width": ..        The height of the popunder
+        ..: ..             more window.open-parameters ..
     },
-    "skip": {                   UA-Patterns to skip
+    "skip": {              UA-Patterns to skip
         "opera": true
-    }
+    },
+    "cb": null             Callback, after a popunder has been opened (if a function)
 }
 </pre>
 

@@ -19,7 +19,9 @@
     <pre>
         window.aThreePopunder = [
             ['http://www.google.com', {window: {height:400, width:400}, blocktime: 1}],
-            ['http://www.github.com', {window: {height:100, width:100}}],
+            ['http://www.github.com', {window: {height:100, width:100}, cb: function() {
+                console.log('github.com has been opened');
+            }}],
             ['http://www.heise.de']
         ];
 
