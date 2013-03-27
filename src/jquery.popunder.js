@@ -260,7 +260,6 @@
                     // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
                     i = $('<iframe frameborder="0" src="about:blank"></iframe>').css({
-                        cursor: "pointer",
                         position: "absolute",
                         top: ((!!p) ? 0 : $e.css('top')),
                         left: ((!!p) ? 0 : $e.css('left')),
@@ -278,7 +277,9 @@
                             });
                             target.trigger('click');
                         };
-                    })($e));
+                    })($e)).find('html').css({
+                        cursor: "pointer"
+                    });
                 });
                 c.append(i);
             });
