@@ -221,18 +221,19 @@
          */
         bindEvents: function(aPopunder, form, trigger) {
             var t = this,
+                s = 'string',
                 a = function(event) {
                     $.popunder(aPopunder, false, false, event);
                     return true;
                 };
 
             if (form && !t.ua.g) {
-                form = (typeof form === 'string') ? $(form) : form;
+                form = (typeof form === s) ? $(form) : form;
                 form.on('submit', a);
             }
 
             if (trigger) {
-                trigger = (typeof trigger === 'string') ? $(trigger) : trigger;
+                trigger = (typeof trigger === s) ? $(trigger) : trigger;
                 if (t.ua.g && (typeof aPopunder === 'function' || aPopunder.length > 1)) {
                     t.iframe(trigger, a);
                 }
@@ -255,19 +256,27 @@
         iframe: function(trigger, handler) {
             trigger.each(function() {
                 var $e = $(this),
-                    p = ($e.css('position') === 'absolute') ? '' : 'position:relative;',
+                    a = 'absolute',
+                    p = ($e.css('position') === a) ? '' : 'position:relative;',
 
-                    // build a container around the button/link - this is tricky, when it comes to the elements position
+                // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
-                    i = $('<iframe frameborder="0" src="about:blank"></iframe>').css({
-                        position: "absolute",
+                    d = {
+                        margin: 0,
+                        padding: 0,
+                        cursor: "pointer",
+                        width: $e.outerWidth(),
+                        height: $e.outerHeight()
+                    },
+                    i = $('<iframe scrolling="no" frameborder="0" src="about:blank"></iframe>').css($.extend(true, {}, d, {
+                        position: a,
                         top: ((!!p) ? 0 : $e.css('top')),
                         left: ((!!p) ? 0 : $e.css('left')),
-                        width: $e.width(),
                         padding: $e.css('padding'),
                         margin: $e.css('margin'),
+                        width: $e.width(),
                         height: $e.height()
-                    });
+                    }));
 
                 i.on('load', function() {
                     $(this.contentDocument).on('click', (function(target) {
@@ -277,9 +286,7 @@
                             });
                             target.trigger('click');
                         };
-                    })($e)).find('html').css({
-                        cursor: "pointer"
-                    });
+                    })($e)).find('html, body').css(d);
                 });
                 c.append(i);
             });
