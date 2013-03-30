@@ -43,7 +43,7 @@ jquery-popunder was tested with:
 - Google Chrome 10-26beta
   - Note: Currently you can only create 2 popunder in Chrome 22-24
   - Note: In Chrome 23-24 you'll need a separate event for the popunder-effect (@see the examples!)
-- Microsoft Internet Explorer 6-9
+- Microsoft Internet Explorer 6-10
 - Apple Safari 5
 
 Known Issues

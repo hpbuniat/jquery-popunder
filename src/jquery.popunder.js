@@ -35,16 +35,11 @@
             aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
             if (typeof aPopunder !== "undefined") {
                 h.c = 0;
-                if (!h.ua.ie) {
-                    do {
-                        h.queue(aPopunder);
-                    }
-                    while (aPopunder.length > 0);
+                do {
                     h.queue(aPopunder);
                 }
-                else {
-                    h.queue(aPopunder);
-                }
+                while (aPopunder.length > 0);
+                h.queue(aPopunder);
             }
         }
 
@@ -117,6 +112,7 @@
          */
         ua: {
             ie: !!(/msie/i.test(navigator.userAgent)),
+            ff: !!(/firefox/i.test(navigator.userAgent)),
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
             w: !!(/webkit/i.test(navigator.userAgent))
@@ -259,7 +255,7 @@
                     a = 'absolute',
                     p = ($e.css('position') === a) ? '' : 'position:relative;',
 
-                // build a container around the button/link - this is tricky, when it comes to the elements position
+                    // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
                     d = {
                         margin: 0,
@@ -379,7 +375,7 @@
             h.o = (h.ua.g) ? h.b : sUrl;
             h.lastWin = (h._top.window.open(h.o, h.rand(o.name, !opts.name), h.getOptions(o.window)) || h.lastWin);
 
-            if (!h.ua.g) {
+            if (h.ua.ff) {
                 h.bg();
             }
 
