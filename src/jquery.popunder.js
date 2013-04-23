@@ -130,7 +130,7 @@
                 'toolbar': 0,
                 'scrollbars': 1,
                 'location': 1,
-                'statusbar': 1,
+                'status': 1,
                 'menubar': 0,
                 'resizable': 1,
                 'width': (screen.availWidth - 122).toString(),
@@ -230,64 +230,10 @@
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                if (t.ua.g && (typeof aPopunder === 'function' || aPopunder.length > 1)) {
-                    t.iframe(trigger, a);
-                }
-                else {
-                    trigger.on('click', a);
-                }
+                trigger.on('click', a);
             }
 
             return t;
-        },
-
-        /**
-         * Create an iframe to catch the click over a button or link
-         *
-         * @param  {object} trigger The click-trigger (button, link, etc.)
-         * @param  {function} handler The event-handler
-         *
-         * @return $.popunder.helper
-         */
-        iframe: function(trigger, handler) {
-            trigger.each(function() {
-                var $e = $(this),
-                    a = 'absolute',
-                    p = ($e.css('position') === a) ? '' : 'position:relative;',
-
-                    // build a container around the button/link - this is tricky, when it comes to the elements position
-                    c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
-                    d = {
-                        margin: 0,
-                        padding: 0,
-                        cursor: "pointer",
-                        width: $e.outerWidth(),
-                        height: $e.outerHeight()
-                    },
-                    i = $('<iframe scrolling="no" frameborder="0" src="about:blank"></iframe>').css($.extend(true, {}, d, {
-                        position: a,
-                        top: ((!!p) ? 0 : $e.css('top')),
-                        left: ((!!p) ? 0 : $e.css('left')),
-                        padding: $e.css('padding'),
-                        margin: $e.css('margin'),
-                        width: $e.width(),
-                        height: $e.height()
-                    }));
-
-                i.on('load', function() {
-                    $(this.contentDocument).on('click', (function(target) {
-                        return function() {
-                            handler({
-                                target: target
-                            });
-                            target.trigger('click');
-                        };
-                    })($e)).find('html, body').css(d);
-                });
-                c.append(i);
-            });
-
-            return this;
         },
 
         /**
@@ -373,17 +319,16 @@
             h.c++;
             h.lastTarget = sUrl;
             h.o = (h.ua.g) ? h.b : sUrl;
+            window.open("javascript:window.focus()", "_self", "");
             h.lastWin = (h._top.window.open(h.o, h.rand(o.name, !opts.name), h.getOptions(o.window)) || h.lastWin);
-
             if (h.ua.ff) {
                 h.bg();
             }
 
+            h.href(iLength);
             if (typeof o.cb === f) {
                 o.cb();
             }
-
-            h.href(iLength);
 
             return true;
         },
@@ -403,7 +348,7 @@
                 t._top.window.focus();
                 window.focus();
 
-                if (this.lastTarget && !l) {
+                if (t.lastTarget && !l) {
                     if (t.ua.ie === true) {
                         t.switcher.simple(t);
                     }
@@ -474,12 +419,11 @@
                     h = 'about:blank',
                     a = $('<a/>', {
                         'href': h,
-                        'target': '_tab'
+                        'target': s
                     }).appendTo('body'),
                     e = document.createEvent("MouseEvents");
                 e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, true, 0, null);
                 a[0].dispatchEvent(e);
-
 
                 window.open(h, s).close();
             }
@@ -493,12 +437,24 @@
          * @return $.popunder.helper
          */
         href: function(l) {
-            var h = this;
-            if (l && h.lastTarget && h.lastWin && h.lastTarget !== h.b && h.lastTarget !== h.o) {
-                h.lastWin.document.location.href = h.lastTarget;
+            var t = this;
+            if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
+                if (t.ua.g === true) {
+                    var d = t.lastWin.document;
+                    d.open();
+                    d.write("<html><head><title>" + document.title + "</title>");
+                    d.write('<script type="text/javascript">\n');
+                    d.write('window.location="' + t.lastTarget + '";');
+                    d.write("<\/script>\n");
+                    d.write("</head><body></body></html>");
+                    d.close();
+                }
+                else {
+                    t.lastWin.document.location.href = t.lastTarget;
+                }
             }
 
-            return h;
+            return t;
         },
 
         /**

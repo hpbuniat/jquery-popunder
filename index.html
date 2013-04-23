@@ -39,15 +39,9 @@
             $.popunder(window.aThreePopunder);
         };
 
-        if ($.popunder.helper.ua.g) {
-            $.popunder.helper.iframe($('#submitButtonTwoClick'), fHandler);
-            $.popunder.helper.iframe($('#testFormTwo a'), fHandler);
-        }
-        else {
-            $('#submitButtonTwoClick').on('click', fHandler);
-            $('#testFormTwo a').on('click', fHandler);
-            $('#testFormTwo').on('submit', fHandler);
-        }
+        $('#submitButtonTwoClick').on('click', fHandler);
+        $('#testFormTwo a').on('click', fHandler);
+        $('#testFormTwo').on('submit', fHandler);
     </pre>
     <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
 
@@ -65,13 +59,8 @@
             $.popunder(window.aOnePopunder);
         };
 
-        if ($.popunder.helper.ua.g) {
-            $.popunder.helper.iframe($('#submitButtonThreeClick'), fOneHandler);
-        }
-        else {
-            $('#submitButtonThreeClick').on('click', fOneHandler);
-            $('#testFormThree').on('submit', fOneHandler);
-        }
+        $('#submitButtonThreeClick').on('click', fOneHandler);
+        $('#testFormThree').on('submit', fOneHandler);
     </pre>
     <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
 </form>
