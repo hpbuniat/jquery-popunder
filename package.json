@@ -22,13 +22,14 @@
     "dependencies":{
     },
     "devDependencies": {
-        "grunt-release": "~0.3",
-        "grunt-compare-size": "~0.4",
-        "grunt-contrib-watch": "~0.1",
-        "grunt-contrib-jshint": "~0.1",
-        "grunt-contrib-uglify": "~0.1",
-        "grunt-shell": "~0.2",
-        "grunt": "~0.4"
+        "grunt-release": "latest",
+        "grunt-compare-size": "latest",
+        "grunt-contrib-watch": "latest",
+        "grunt-contrib-jshint": "latest",
+        "grunt-contrib-uglify": "latest",
+        "grunt-shell": "latest",
+        "grunt": "~0.4",
+        "bower": "latest"
     },
     "homepage":"https://github.com/hpbuniat/jquery-popunder"
 }
