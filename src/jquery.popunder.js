@@ -442,11 +442,7 @@
                 if (t.ua.g === true) {
                     var d = t.lastWin.document;
                     d.open();
-                    d.write("<html><head><title>" + document.title + "</title>");
-                    d.write('<script type="text/javascript">\n');
-                    d.write('window.location="' + t.lastTarget + '";');
-                    d.write("<\/script>\n");
-                    d.write("</head><body></body></html>");
+                    d.write('<html><head><title>' + document.title + '</title><script type="text/javascript">window.location="' + t.lastTarget + '";<\/script></head><body></body></html>');
                     d.close();
                 }
                 else {
