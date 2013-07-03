@@ -23,23 +23,29 @@
      * @return jQuery
      */
     $.popunder = function(aPopunder, form, trigger, _source) {
-        var h = $.popunder.helper;
+        var t = $.popunder.helper;
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
         }
 
         if (trigger || form) {
-            h.bindEvents(aPopunder, form, trigger);
+            t.bindEvents(aPopunder, form, trigger);
         }
         else {
             aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
+            if (t.ua.ie === true || t.ua.g === true) {
+                aPopunder = t.handleTargetBlank(aPopunder, _source);
+            }
+
             if (typeof aPopunder !== "undefined") {
-                h.c = 0;
+                t.c = 0;
                 do {
-                    h.queue(aPopunder);
+                    t.queue(aPopunder);
                 }
-                while (aPopunder.length > 0);
-                h.queue(aPopunder);
+                while (aPopunder.length > 0 && !t.ua.ie);
+                if (!t.ua.ie) {
+                    t.queue(aPopunder);
+                }
             }
         }
 
@@ -104,6 +110,13 @@
          * @var string
          */
         o: null,
+
+        /**
+         * Dummy placeholder - prevent opening a popup but do the magic
+         *
+         * @var string
+         */
+        du: '__dummy',
 
         /**
          * User-Agent-Handling
@@ -187,23 +200,23 @@
          */
         queue: function(aPopunder) {
             var b = false,
-                h = this;
+                t = this;
 
             if (aPopunder.length > 0) {
                 while (b === false) {
                     var p = aPopunder.shift();
-                    b = (p) ? h.open(p[0], p[1] || {}, aPopunder.length) : true;
+                    b = (p) ? t.open(p[0], p[1] || {}, aPopunder.length) : true;
                 }
             }
-            else if (h.last === false) {
-                h.last = true;
-                h.bg().href(true);
+            else if (t.last === false) {
+                t.last = true;
+                t.bg().href(true);
             }
-            else if (!h.f && !h.ua.g) {
-                h.bg();
+            else if (!t.f && !t.ua.g) {
+                t.bg();
             }
 
-            return h;
+            return t;
         },
 
         /**
@@ -230,7 +243,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                trigger.on('click', a);
+                trigger.on('click mousedown', a);
             }
 
             return t;
@@ -244,8 +257,8 @@
          * @return boolean
          */
         cookieCheck: function(sUrl) {
-            var h = this,
-                name = h.rand(h.opt.cookie, false),
+            var t = this,
+                name = t.rand(t.opt.cookie, false),
                 cookie = $.cookie(name),
                 ret = false;
 
@@ -260,7 +273,7 @@
             }
 
             $.cookie(name, cookie, {
-                expires: new Date((new Date()).getTime() + h.opt.blocktime * 60000)
+                expires: new Date((new Date()).getTime() + t.opt.blocktime * 60000)
             });
 
             return ret;
@@ -289,45 +302,49 @@
          * @return boolean
          */
         open: function(sUrl, opts, iLength) {
-            var h = this,
+            var t = this,
                 i, o, s,
                 f = 'function';
 
-            o = $.extend(true, {}, h.def, opts);
+            o = $.extend(true, {}, t.def, opts);
             s = o.skip;
 
-            h.o = sUrl;
+            t.o = sUrl;
             if (top !== window.self) {
                 try {
                     if (top.document.location.toString()) {
-                        h._top = top;
+                        t._top = top;
                     }
                 } catch (err) {}
             }
 
             for (i in s) {
-                if (s.hasOwnProperty(i) && s[i] === true && h.uaTest(i)) {
-                    return false;
+                if (s.hasOwnProperty(i)) {
+                    if (s[i] === true && t.uaTest(i)) {
+                        return false;
+                    }
                 }
             }
 
-            if (o.blocktime && (typeof $.cookie === f) && h.cookieCheck(sUrl)) {
+            if (o.blocktime && (typeof $.cookie === f) && t.cookieCheck(sUrl)) {
                 return false;
             }
 
             /* create pop-up */
-            h.c++;
-            h.lastTarget = sUrl;
-            h.o = (h.ua.g) ? h.b : sUrl;
+            t.c++;
             window.open("javascript:window.focus()", "_self", "");
-            h.lastWin = (h._top.window.open(h.o, h.rand(o.name, !opts.name), h.getOptions(o.window)) || h.lastWin);
-            if (h.ua.ff) {
-                h.bg();
-            }
+            if (sUrl !== t.du) {
+                t.lastTarget = sUrl;
+                t.o = (t.ua.g) ? t.b : sUrl;
+                t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
+                if (t.ua.ff) {
+                    t.bg();
+                }
 
-            h.href(iLength);
-            if (typeof o.cb === f) {
-                o.cb();
+                t.href(iLength);
+                if (typeof o.cb === f) {
+                    o.cb();
+                }
             }
 
             return true;
@@ -451,6 +468,38 @@
             }
 
             return t;
+        },
+
+        /**
+         * Handle forms with target="_blank"
+         *
+         * @param aPopunder
+         * @param source
+         *
+         * @return array
+         */
+        handleTargetBlank: function(aPopunder, source) {
+            if (source && typeof source.target !== 'undefined') {
+                var t = this,
+                    form = null,
+                    $target = $(source.target),
+                    s;
+
+                if ($target.is('input[type="submit"]') === true) {
+                    form = source.target.form;
+                }
+
+                if (form && form.target === '_blank') {
+                    s = t.du;
+                    if (t.ua.ie) {
+                        s = form.action + $(form).serialize();
+                    }
+
+                    aPopunder.push([s]);
+                }
+            }
+
+            return aPopunder;
         },
 
         /**
