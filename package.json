@@ -1,7 +1,7 @@
 {
     "name":"jquery-popunder",
     "description":"jquery-plugin to create popunders in major browsers.",
-    "version":"dev-master",
+    "version":"0.2.10",
     "keywords":["popunder"],
     "author":{
         "name":"Hans-Peter Buniat",

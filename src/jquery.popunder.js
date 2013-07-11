@@ -42,10 +42,8 @@
                 do {
                     t.queue(aPopunder);
                 }
-                while (aPopunder.length > 0 && !t.ua.ie);
-                if (!t.ua.ie) {
-                    t.queue(aPopunder);
-                }
+                while (aPopunder.length > 0);
+                t.queue(aPopunder);
             }
         }
 
@@ -143,7 +141,7 @@
                 'toolbar': 0,
                 'scrollbars': 1,
                 'location': 1,
-                'status': 1,
+                'statusbar': 1,
                 'menubar': 0,
                 'resizable': 1,
                 'width': (screen.availWidth - 122).toString(),
@@ -243,7 +241,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                trigger.on('click mousedown', a);
+                trigger.on('click', a);
             }
 
             return t;
@@ -332,12 +330,16 @@
 
             /* create pop-up */
             t.c++;
-            window.open("javascript:window.focus()", "_self", "");
+
+            if (t.ua.g === true) {
+                window.open("javascript:window.focus()", "_self", "");
+            }
+
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                t.o = (t.ua.g) ? t.b : sUrl;
+                t.o = (t.ua.g === true) ? t.b : sUrl;
                 t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
-                if (t.ua.ff) {
+                if (t.ua.ff === true) {
                     t.bg();
                 }
 
@@ -360,11 +362,6 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin) {
-                t.lastWin.blur();
-                t._top.window.blur();
-                t._top.window.focus();
-                window.focus();
-
                 if (t.lastTarget && !l) {
                     if (t.ua.ie === true) {
                         t.switcher.simple(t);
@@ -393,12 +390,11 @@
              * @param  {$.popunder.helper} t
              */
             simple: function(t) {
-                t.lastWin.blur();
-                window.focus();
                 try {
-                    opener.window.focus();
+                    t.lastWin.blur();
                 }
                 catch (err) {}
+                window.focus();
             },
 
             /**
@@ -433,14 +429,15 @@
              */
             tab: function(t) {
                 var s = '_tab',
-                    h = 'about:blank',
+                    h = t.b,
                     a = $('<a/>', {
                         'href': h,
                         'target': s
-                    }).appendTo('body'),
+                    }).appendTo(document.body),
                     e = document.createEvent("MouseEvents");
                 e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, true, 0, null);
                 a[0].dispatchEvent(e);
+                a[0].parentNode.removeChild(a[0]);
 
                 window.open(h, s).close();
             }
@@ -492,10 +489,10 @@
                 if (form && form.target === '_blank') {
                     s = t.du;
                     if (t.ua.ie) {
-                        s = form.action + $(form).serialize();
+                        s = form.action + '/?' + $(form).serialize();
                     }
 
-                    aPopunder.push([s]);
+                    aPopunder.unshift([s]);
                 }
             }
 
