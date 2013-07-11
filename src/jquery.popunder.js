@@ -63,7 +63,7 @@
         /**
          * Reference to the last popup-window
          *
-         * @var boolean
+         * @var object
          */
         lastWin: null,
 
@@ -168,7 +168,10 @@
             },
 
             // callback function, to be executed when a popunder is opened
-            cb: null
+            cb: null,
+
+            // set to true, if the url should be opened in a popup instead of a popunder
+            popup: false
         },
 
         /**
@@ -361,17 +364,15 @@
          */
         bg: function(l) {
             var t = this;
-            if (t.lastWin) {
-                if (t.lastTarget && !l) {
-                    if (t.ua.ie === true) {
-                        t.switcher.simple(t);
-                    }
-                    else if (t.ua.g === true) {
-                        t.switcher.tab(t);
-                    }
-                    else {
-                        t.switcher.pop(t);
-                    }
+            if (t.lastWin && t.lastTarget && !l) {
+                if (t.ua.ie === true) {
+                    t.switcher.simple(t);
+                }
+                else if (t.ua.g === true) {
+                    t.switcher.tab(t);
+                }
+                else {
+                    t.switcher.pop(t);
                 }
             }
 
@@ -428,18 +429,14 @@
              * @param  {$.popunder.helper} t
              */
             tab: function(t) {
-                var s = '_tab',
-                    h = t.b,
+                var h = t.b,
                     a = $('<a/>', {
-                        'href': h,
-                        'target': s
+                        'href': h
                     }).appendTo(document.body),
                     e = document.createEvent("MouseEvents");
                 e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, true, 0, null);
                 a[0].dispatchEvent(e);
                 a[0].parentNode.removeChild(a[0]);
-
-                window.open(h, s).close();
             }
         },
 
@@ -487,12 +484,10 @@
                 }
 
                 if (form && form.target === '_blank') {
-                    s = t.du;
-                    if (t.ua.ie) {
-                        s = form.action + '/?' + $(form).serialize();
-                    }
-
-                    aPopunder.unshift([s]);
+                    s = form.action + '/?' + $(form).serialize();
+                    aPopunder.unshift([s, {
+                        popup: true
+                    }]);
                 }
             }
 
