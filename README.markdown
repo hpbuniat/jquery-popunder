@@ -46,7 +46,7 @@ jquery-popunder was tested with:
 
 Known Issues
 -------
-- attention: the script can open only 1 popunder in google chrome 28+
+- attention: the window-properties are currently not working in google chrome 28+
 - the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated

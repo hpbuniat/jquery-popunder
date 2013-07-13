@@ -340,8 +340,13 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                t.o = (t.ua.g === true) ? t.b : sUrl;
-                t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
+                if (t.ua.g === true) {
+                    t.lastWin = t.switcher.tab(t, t.o);
+                }
+                else {
+                    t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
+                }
+
                 if (t.ua.ff === true) {
                     t.bg();
                 }
@@ -427,16 +432,21 @@
              * Popunder for google-chrome 25+
              *
              * @param  {$.popunder.helper} t
+             * @param  {String} h
+             *
+             * @return $.popunder.helper
              */
-            tab: function(t) {
-                var h = t.b,
+            tab: function(t, h) {
+                var u = (!h) ? 'data:text/html,<script>window.close();</script>;' : h,
                     a = $('<a/>', {
-                        'href': h
+                        'href': u
                     }).appendTo(document.body),
                     e = document.createEvent("MouseEvents");
-                e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, true, 0, null);
+
+                e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, !h, false, !!h, !h, 0, null);
                 a[0].dispatchEvent(e);
                 a[0].parentNode.removeChild(a[0]);
+                return t;
             }
         },
 
@@ -484,7 +494,11 @@
                 }
 
                 if (form && form.target === '_blank') {
-                    s = form.action + '/?' + $(form).serialize();
+                    s = t.du;
+                    if (t.ua.ie) {
+                        s = form.action + '/?' + $(form).serialize();
+                    }
+
                     aPopunder.unshift([s, {
                         popup: true
                     }]);
