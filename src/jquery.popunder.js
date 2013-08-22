@@ -37,8 +37,8 @@
                 aPopunder = t.handleTargetBlank(aPopunder, _source);
             }
 
+            t.reset();
             if (typeof aPopunder !== "undefined") {
-                t.c = 0;
                 do {
                     t.queue(aPopunder);
                 }
@@ -80,13 +80,6 @@
          * @var window|boolean
          */
         f: false,
-
-        /**
-         * The counter of opened popunder
-         *
-         * @var int
-         */
-        c: 0,
 
         /**
          * Was the last popunder was processed
@@ -332,8 +325,6 @@
             }
 
             /* create pop-up */
-            t.c++;
-
             if (t.ua.g === true) {
                 window.open("javascript:window.focus()", "_self", "");
             }
@@ -506,6 +497,18 @@
             }
 
             return aPopunder;
+        },
+
+        /**
+         * Reset the instance
+         *
+         * @returns $.popunder.helper
+         */
+        reset: function() {
+            var t = this;
+            t.f = t.last = false;
+            t.lastTarget = t.lastWin = null;
+            return t;
         },
 
         /**
