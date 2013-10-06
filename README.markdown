@@ -11,7 +11,7 @@ This script will only work, if the popunder is opened on a user-generated event 
 
 For examples, take a look at the index.html.
 
-The recommended usage is the 4th example: a function to build the url-stack.
+The recommended usage is the first example: a function to build the url-stack.
 So you leave the event-handling to the plugin. To add some flexibility to the function, the plugin will pass the initial event to the function - from which you may access e.g. DOM-data of the activated DOM-element.
 
 Options
@@ -39,8 +39,8 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-23
-- Google Chrome 10-29
+- Mozilla Firefox 3-24
+- Google Chrome 10-30
 - Microsoft Internet Explorer 6-10
 - Apple Safari 5
 
@@ -49,12 +49,12 @@ Known Issues
 - attention: the window-properties are currently not working in google chrome 28+
 - the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome
+- the script does not work in Google Chrome on OSX
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
 Legacy Notes
 ------
-- You could create only 2 popunder in Chrome 22-24
-- In Chrome 23-24 you'll need a separate event for the popunder-effect (@see the examples!)
+- You could create only 1 popunder in Chrome 30
 
 Installation
 -------

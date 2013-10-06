@@ -16,8 +16,26 @@
 <h1>jQuery-Popunder Demo Page</h1>
 <h4>&copy; Hans-Peter Buniat (<a href="https://github.com/hpbuniat/jquery-popunder/blob/master/LICENCE">LICENCE</a>) - (<a href="https://github.com/hpbuniat/jquery-popunder">Github Project</a>)</h4>
 <hr />
+
+<form id="testFormFour" action="#">
+    <h3>Testcase #1 (1 Popunder, use a function as parameter)</h3>
+    <pre>
+        window.fPopunder = function(event) {
+            if (!window.fPopunderStack) {
+                window.fPopunderStack = [[$(event.target).data('target')]];
+            }
+
+            return window.fPopunderStack;
+        };
+
+        $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
+    </pre>
+
+    <input id="submitButtonFourClick" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
+</form>
+
 <form id="testForm" action="#">
-    <h3>Testcase #1 (3 Popunder)</h3>
+    <h3>Testcase #2 (3 Popunder)</h3>
     <pre>
         window.aThreePopunder = [
             ['http://www.google.com', {window: {height:400, width:400}, blocktime: 1}],
@@ -34,58 +52,8 @@
     <a href="#">Open Popunder via Link</a>
 </form>
 
-<form id="testFormTwo" action="#">
-    <h3>Testcase #2 (3 Popunder with explicit binding)</h3>
-    <pre>
-        var fHandler = function(e) {
-            $.popunder(window.aThreePopunder);
-        };
-
-        $('#submitButtonTwoClick').on('click', fHandler);
-        $('#testFormTwo a').on('click', fHandler);
-        $('#testFormTwo').on('submit', fHandler);
-    </pre>
-    <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
-
-    <a href="#">Open Popunder via Link</a>
-</form>
-
-<form id="testFormThree" action="#">
-    <h3>Testcase #3 (1 Popunder with explicit binding)</h3>
-    <pre>
-        window.aOnePopunder = [
-            ['http://www.github.com']
-        ];
-
-        var fOneHandler = function(e) {
-            $.popunder(window.aOnePopunder);
-        };
-
-        $('#submitButtonThreeClick').on('click', fOneHandler);
-        $('#testFormThree').on('submit', fOneHandler);
-    </pre>
-    <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
-</form>
-
-<form id="testFormFour" action="#">
-    <h3>Testcase #4 (1 Popunder, use a function as parameter)</h3>
-    <pre>
-        window.fPopunder = function(event) {
-            if (!window.fPopunderStack) {
-                window.fPopunderStack = [[$(event.target).data('target')]];
-            }
-
-            return window.fPopunderStack;
-        };
-
-        $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
-    </pre>
-
-    <input id="submitButtonFourClick" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
-</form>
-
 <div id="testFive">
-    <h3>Testcase #5 (1 Popunder)</h3>
+    <h3>Testcase #3 (1 Popunder)</h3>
     <pre>
         window.aPopunder = [
             ['http://www.github.com']
@@ -115,10 +83,38 @@
     <input id="submitButtonSix" type="submit" data-target="http://www.google.com" value="Open Popunder via Button-Click" />
 </form>
 
-<!--object type="application/x-shockwave-flash" data="dist/jq-pu-toolkit.swf" width="100" height="100">
-    <param name="allowScriptAccess" value="always" />
-    <param name="quality" value="high" />
-</object-->
+<form id="testFormTwo" action="#">
+    <h3>Not supported, legacy Testcase #5 (3 Popunder with explicit binding)</h3>
+    <pre>
+        var fHandler = function(e) {
+            $.popunder(window.aThreePopunder);
+        };
+
+        $('#submitButtonTwoClick').on('click', fHandler);
+        $('#testFormTwo a').on('click', fHandler);
+        $('#testFormTwo').on('submit', fHandler);
+    </pre>
+    <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
+
+    <a href="#">Open Popunder via Link</a>
+</form>
+
+<form id="testFormThree" action="#">
+    <h3>Not supported, legacy Testcase #6 (1 Popunder with explicit binding)</h3>
+    <pre>
+        window.aOnePopunder = [
+            ['http://www.github.com']
+        ];
+
+        var fOneHandler = function(e) {
+            $.popunder(window.aOnePopunder);
+        };
+
+        $('#submitButtonThreeClick').on('click', fOneHandler);
+        $('#testFormThree').on('submit', fOneHandler);
+    </pre>
+    <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
+</form>
 
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 

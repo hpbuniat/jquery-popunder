@@ -403,11 +403,9 @@
             pop: function(t) {
                 (function(e) {
                     try {
-                        if (typeof e.window.mozPaintCount !== 'undefined' || typeof e.navigator.webkitGetUserMedia === "function") {
-                            t.f = e.window.open('about:blank');
-                            if (!!t.f) {
-                                t.f.close();
-                            }
+                        t.f = e.window.open('about:blank');
+                        if (!!t.f) {
+                            t.f.close();
                         }
                     }
                     catch (err) {}
@@ -435,8 +433,12 @@
                     e = document.createEvent("MouseEvents");
 
                 e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, !h, false, !!h, !h, 0, null);
+                a[0].webkitRequestFullscreen();
                 a[0].dispatchEvent(e);
+                document.webkitCancelFullScreen();
                 a[0].parentNode.removeChild(a[0]);
+
+                setTimeout(function() {window.getSelection().empty();}, 250);
                 return t;
             }
         },
