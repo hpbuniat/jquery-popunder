@@ -332,12 +332,10 @@
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
                 if (t.ua.g === true) {
-                    t.lastWin = t.switcher.tab(t, t.o);
-                }
-                else {
-                    t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
+                    document.documentElement.webkitRequestFullscreen();
                 }
 
+                t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                 if (t.ua.ff === true) {
                     t.bg();
                 }
@@ -365,7 +363,7 @@
                     t.switcher.simple(t);
                 }
                 else if (t.ua.g === true) {
-                    t.switcher.tab(t);
+                    t.switcher.flicker(t);
                 }
                 else {
                     t.switcher.pop(t);
@@ -433,12 +431,25 @@
                     e = document.createEvent("MouseEvents");
 
                 e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, !h, false, !!h, !h, 0, null);
-                a[0].webkitRequestFullscreen();
                 a[0].dispatchEvent(e);
-                document.webkitCancelFullScreen();
                 a[0].parentNode.removeChild(a[0]);
 
-                setTimeout(function() {window.getSelection().empty();}, 250);
+                return t;
+            },
+
+            /**
+             * Popunder for google-chrome 30
+             *
+             * @param  {$.popunder.helper} t
+             *
+             * @return $.popunder.helper
+             */
+            flicker: function(t) {
+                document.webkitCancelFullScreen();
+                setTimeout(function() {
+                    window.getSelection().empty();
+                }, 250);
+
                 return t;
             }
         },
