@@ -121,6 +121,9 @@
             g: !!(/chrome/i.test(navigator.userAgent)),
             w: !!(/webkit/i.test(navigator.userAgent))
         },
+        m: {
+            g: 'tab'
+        },
 
         /**
          * The default-options
@@ -331,11 +334,17 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (t.ua.g === true) {
+                if (t.ua.g === true && t.m.g === 'flicker') {
                     document.documentElement.webkitRequestFullscreen();
                 }
 
-                t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
+                if (t.ua.g === true && t.m.g === 'tab') {
+                    t.switcher.tab(t, t.o);
+                }
+                else {
+                    t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
+                }
+
                 if (t.ua.ff === true) {
                     t.bg();
                 }
@@ -363,7 +372,7 @@
                     t.switcher.simple(t);
                 }
                 else if (t.ua.g === true) {
-                    t.switcher.flicker(t);
+                    //t.switcher.flicker(t);
                 }
                 else {
                     t.switcher.pop(t);
@@ -425,12 +434,14 @@
              */
             tab: function(t, h) {
                 var u = (!h) ? 'data:text/html,<script>window.close();</script>;' : h,
+                    p = !h,
                     a = $('<a/>', {
                         'href': u
                     }).appendTo(document.body),
                     e = document.createEvent("MouseEvents");
 
-                e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, !h, false, !!h, !h, 0, null);
+                p = (t.m.g === 'tab') ? !p : p;
+                e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, p, false, !p, p, 0, null);
                 a[0].dispatchEvent(e);
                 a[0].parentNode.removeChild(a[0]);
 

@@ -40,21 +40,18 @@ Compatibility
 
 jquery-popunder was tested with:
 - Mozilla Firefox 3-24
-- Google Chrome 10-30
+- Google Chrome 10-31
 - Microsoft Internet Explorer 6-10
 - Apple Safari 5
 
 Known Issues
 -------
+- since chrome 31 it's only possible to open a tab in the background
 - attention: the window-properties are currently not working in google chrome 28+
 - the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome
-- the script does not work in Google Chrome on OSX
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
-Legacy Notes
-------
-- You could create only 1 popunder in Chrome 30
 
 Installation
 -------
