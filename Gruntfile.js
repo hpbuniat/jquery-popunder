@@ -29,7 +29,7 @@ module.exports = function (grunt) {
             }
         },
         uglify:{
-            dist:{
+            dist: {
                 files: {
                     'dist/jquery.popunder.min.js': ['src/jquery.popunder.js']
                 },
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
                     banner: '<%=meta.banner%>'
                 }
             },
-            jqLess:{
+            jqLess: {
                 files: {
                     'dist/popunder.min.js': ['src/jquery.min.js', 'src/jquery.popunder.js']
                 },
@@ -47,18 +47,35 @@ module.exports = function (grunt) {
             }
         },
         shell:{
-            build: {
-                command: 'haxe compile.hxml',
-                stdout: true,
-                stderr: true,
-                execOptions: {
-                    cwd: './src/hx'
+            bower: {
+                command: 'bower update',
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    failOnError: true
                 }
             },
-            copy: {
-                command: 'mv ./src/hx/jq-pu-toolkit.swf ./dist/jq-pu-toolkit.swf',
-                stderr: true,
-                stdout: true
+            prepare: {
+                command: 'mkdir ./bower_components/jquery-raw'
+            },
+            buildJquery: {
+                command: [
+                    'rm -rf jquery',
+                    'git clone git://github.com/jquery/jquery.git',
+                    'cd jquery',
+                    'git checkout tags/`git tag | grep -v "-" | tail -n 1`',
+                    'npm install',
+                    'grunt custom:-sizzle,-wrap,-css,-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-offset,-dimensions,-deprecated,-deferred,-exports/amd',
+                    'cp -f dist/jquery.min.js ../../../src/jquery.min.js'
+                ].join(' && '),
+                options: {
+                    execOptions: {
+                        cwd: './bower_components/jquery-raw'
+                    },
+                    stdout: true,
+                    stderr: true,
+                    failOnError: true
+                }
             }
         },
         watch:{
@@ -74,5 +91,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
-    grunt.registerTask('default', ['jshint', 'uglify', 'shell']);
+    grunt.registerTask('update', ['shell', 'default']);
+    grunt.registerTask('default', ['jshint', 'uglify']);
 };
