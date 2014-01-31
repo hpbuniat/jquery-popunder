@@ -4,7 +4,7 @@
  * @fileoverview jquery-popunder plugin
  *
  * @author Hans-Peter Buniat <hpbuniat@googlemail.com>
- * @copyright 2012-2013 Hans-Peter Buniat <hpbuniat@googlemail.com>
+ * @copyright 2012-2014 Hans-Peter Buniat <hpbuniat@googlemail.com>
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
@@ -43,7 +43,9 @@
                     t.queue(aPopunder);
                 }
                 while (aPopunder.length > 0);
-                t.queue(aPopunder);
+                if (!t.ua.g || !t.m.g === 'simple') {
+                    t.queue(aPopunder);
+                }
             }
         }
 
@@ -107,7 +109,7 @@
          *
          * @var string
          */
-        du: '__dummy',
+        du: '__jqpu',
 
         /**
          * User-Agent-Handling
@@ -240,10 +242,67 @@
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                trigger.on('click', a);
+                if (t.ua.g && t.m.g === 'simple') {
+                    t.iframe(trigger, a);
+                }
+                else {
+                    trigger.on('click', a);
+                }
             }
 
             return t;
+        },
+
+        /**
+         * Create an iframe to catch the click over a button or link
+         *
+         * @param  {object} trigger The click-trigger (button, link, etc.)
+         * @param  {function} handler The event-handler
+         *
+         * @return $.popunder.helper
+         */
+        iframe: function(trigger, handler) {
+            trigger.each(function() {
+                var $e = $(this),
+                    a = 'absolute',
+                    p = ($e.css('position') === a) ? '' : 'position:relative;',
+
+                    // build a container around the button/link - this is tricky, when it comes to the elements position
+                    c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
+                    d = {
+                        margin: 0,
+                        padding: 0,
+                        cursor: "pointer",
+                        width: $e.outerWidth(),
+                        height: $e.outerHeight()
+                    },
+                    i = $('<iframe scrolling="no" frameborder="0" src="about:blank"></iframe>').css($.extend(true, {}, d, {
+                        position: a,
+                        top: ((!!p) ? 0 : $e.css('top')),
+                        left: ((!!p) ? 0 : $e.css('left')),
+                        padding: $e.css('padding'),
+                        margin: $e.css('margin'),
+                        width: $e.width(),
+                        height: $e.height()
+                    }));
+
+                i.on('load', function() {
+                    $(this.contentDocument).on('mousedown mouseup', (function(target) {
+                        return function(event) {
+                            handler({
+                                target: target,
+                                type: event.type
+                            });
+                            if (event.type !== 'mouseup') {
+                                target.trigger(event.type);
+                            }
+                        };
+                    })($e)).find('html, body').css(d);
+                });
+                c.append(i);
+            });
+
+            return this;
         },
 
         /**
@@ -328,7 +387,7 @@
             }
 
             /* create pop-up */
-            if (t.ua.g === true) {
+            if (t.ua.g === true && t.ua.g !== 'simple') {
                 window.open("javascript:window.focus()", "_self", "");
             }
 
@@ -345,7 +404,7 @@
                     t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                 }
 
-                if (t.ua.ff === true) {
+                if (t.ua.ff === true || t.m.g === 'simple') {
                     t.bg();
                 }
 
@@ -371,12 +430,15 @@
                 if (t.ua.ie === true) {
                     t.switcher.simple(t);
                 }
-                else if (t.ua.g === true) {
-                    //t.switcher.flicker(t);
+                else if (t.ua.g === true && t.m.g === 'flicker') {
+                    t.switcher.flicker(t);
                 }
-                else {
+                else if (!t.ua.g) {
                     t.switcher.pop(t);
                 }
+            }
+            else if (t.m.g === 'simple' && t.ua.g === true) {
+                t.switcher.simple(t);
             }
 
             return t;
@@ -394,11 +456,20 @@
              * @param  {$.popunder.helper} t
              */
             simple: function(t) {
-                try {
-                    t.lastWin.blur();
+                if (t.last === true) {
+                    try {
+                        window.name = (t.du + Math.random() + "").replace(".", "");
+                        window.open('', window.name);
+                    }
+                    catch (err) {}
                 }
-                catch (err) {}
-                window.focus();
+                else {
+                    try {
+                        t.lastWin.blur();
+                    }
+                    catch (err) {}
+                    window.focus();
+                }
             },
 
             /**
@@ -475,7 +546,7 @@
         href: function(l) {
             var t = this;
             if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
-                if (t.ua.g === true) {
+                if (t.ua.g === true && t.m.g !== 'simple') {
                     var d = t.lastWin.document;
                     d.open();
                     d.write('<html><head><title>' + document.title + '</title><script type="text/javascript">window.location="' + t.lastTarget + '";<\/script></head><body></body></html>');

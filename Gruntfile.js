@@ -34,7 +34,9 @@ module.exports = function (grunt) {
                     'dist/jquery.popunder.min.js': ['src/jquery.popunder.js']
                 },
                 options: {
-                    banner: '<%=meta.banner%>'
+                    banner: '<%=meta.banner%>',
+                    report: 'min',
+                    preserveComments: false
                 }
             },
             jqLess: {
@@ -42,12 +44,27 @@ module.exports = function (grunt) {
                     'dist/popunder.min.js': ['src/jquery.min.js', 'src/jquery.popunder.js']
                 },
                 options: {
-                    banner: '<%=meta.banner%>'
+                    banner: '<%=meta.banner%>',
+                    report: 'min',
+                    preserveComments: false
                 }
             }
         },
         shell:{
-            bower: {
+            haxe: {
+                command: [
+                    'haxe compile.hxml',
+                    'mv -f jq-pu-toolkit.swf ../..//dist/jq-pu-toolkit.swf'
+                ].join(' && '),
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    execOptions: {
+                        cwd: './src/hx'
+                    }
+                }
+            },
+            update_bower: {
                 command: 'bower update',
                 options: {
                     stdout: true,
@@ -55,17 +72,17 @@ module.exports = function (grunt) {
                     failOnError: true
                 }
             },
-            prepare: {
+            update_prepare: {
                 command: 'mkdir ./bower_components/jquery-raw'
             },
-            buildJquery: {
+            update_buildJquery: {
                 command: [
                     'rm -rf jquery',
                     'git clone git://github.com/jquery/jquery.git',
                     'cd jquery',
                     'git checkout tags/`git tag | grep -v "-" | tail -n 1`',
                     'npm install',
-                    'grunt custom:-sizzle,-wrap,-css,-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-offset,-dimensions,-deprecated,-deferred,-exports/amd',
+                    'grunt custom:-sizzle,-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-deprecated,-deferred,-exports/amd',
                     'cp -f dist/jquery.min.js ../../../src/jquery.min.js'
                 ].join(' && '),
                 options: {
@@ -91,6 +108,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
-    grunt.registerTask('update', ['shell', 'default']);
-    grunt.registerTask('default', ['jshint', 'uglify']);
+    grunt.registerTask('update', ['shell:update_bower', 'shell:update_prepare', 'shell:update_buildJquery', 'default']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'shell:haxe']);
 };
