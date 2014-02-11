@@ -117,7 +117,7 @@
          * @var object
          */
         ua: {
-            ie: !!(/msie/i.test(navigator.userAgent)),
+            ie: !!((/msie/i.test(navigator.userAgent)) || (/trident/i.test(navigator.userAgent))),//IE 11 user agent doen't have msie in it
             ff: !!(/firefox/i.test(navigator.userAgent)),
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
