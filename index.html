@@ -4,7 +4,7 @@
     <meta content="Hans-Peter Buniat" name="author">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Popunder with Cookie support</title>
-    <script type="text/javascript" src="bower_components/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
     <!-- script type="text/javascript" src="src/jquery.min.js"></script-->
 
     <!-- Cookie support -->
@@ -17,7 +17,7 @@
 <h4>&copy; Hans-Peter Buniat (<a href="https://github.com/hpbuniat/jquery-popunder/blob/master/LICENCE">LICENCE</a>) - (<a href="https://github.com/hpbuniat/jquery-popunder">Github Project</a>)</h4>
 <hr />
 
-<form id="testFormFour" action="#">
+<form id="testFormFour" action="http://www.google.de" method="GET">
     <h3>Testcase #1 (1 Popunder, use a function as parameter)</h3>
     <pre>
         window.fPopunder = function(event) {
@@ -28,13 +28,15 @@
             return window.fPopunderStack;
         };
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
     </pre>
 
+    <input type="hidden" name="q" value="jquery-popunder" />
     <input id="submitButtonFourClick" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
 </form>
 
-<form id="testForm" action="#">
+<form id="testForm" action="http://www.google.de" method="GET">
     <h3>Testcase #2 (3 Popunder)</h3>
     <pre>
         window.aThreePopunder = [
@@ -45,8 +47,11 @@
             ['http://www.heise.de']
         ];
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.aThreePopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
     </pre>
+
+    <input type="hidden" name="q" value="jquery-popunder" />
     <input id="submitButton" type="submit" value="Open Popunder via Form-Submit" />
 
     <a href="#">Open Popunder via Link</a>
@@ -58,6 +63,8 @@
         window.aPopunder = [
             ['http://www.github.com']
         ];
+
+        $.popunder.helper.def.fs = false;
     </pre>
 
     <a href="#" onclick="$.popunder()">Open Popunder via Link</a>
@@ -76,6 +83,7 @@
             return window.fPopunderStack;
         };
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormSix', '#testFormSix input[type="submit"]');
     </pre>
 
@@ -93,6 +101,8 @@
         $('#submitButtonTwoClick').on('click', fHandler);
         $('#testFormTwo a').on('click', fHandler);
         $('#testFormTwo').on('submit', fHandler);
+
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
     </pre>
     <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
 
@@ -112,6 +122,8 @@
 
         $('#submitButtonThreeClick').on('click', fOneHandler);
         $('#testFormThree').on('submit', fOneHandler);
+
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
     </pre>
     <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
 </form>
@@ -120,7 +132,7 @@
 
 <script type="text/javascript">
     $(function() {
-        $('form[target!="_blank"]').attr('action', document.location.href);
+        $('form[action="#"]').attr('action', document.location.href);
         $('pre').each(function(i, e) {
             eval(e.innerHTML);
         });

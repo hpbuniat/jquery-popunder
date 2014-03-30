@@ -3,6 +3,8 @@ package;
 import flash.external.ExternalInterface;
 import flash.display.MovieClip;
 import flash.events.MouseEvent;
+import flash.Lib;
+import flash.display.Sprite;
 import flash.display.StageScaleMode;
 
 /**
@@ -10,6 +12,9 @@ import flash.display.StageScaleMode;
  */
 class Toolkit extends MovieClip {
 
+    /**
+     * construct-wrapper
+     */
     public static function main() {
         new Toolkit();
     }
@@ -21,20 +26,46 @@ class Toolkit extends MovieClip {
      */
     public function new() {
         super();
-        ExternalInterface.addCallback("command", jsCommand);
-        if (cast(this.loaderInfo.parameters.whenLoaded, Bool)) {
-            ExternalInterface.call(this.loaderInfo.parameters.whenLoaded);
-        }
+        var overlay:Sprite = new Sprite();
+        overlay.graphics.beginFill(16777215);
+        overlay.graphics.drawRect(0, 0, flash.Lib.current.stage.stageWidth, flash.Lib.current.stage.stageHeight);
+        overlay.graphics.endFill();
+        overlay.alpha = 0;
+        overlay.mouseChildren = false;
+        overlay.useHandCursor = true;
+        overlay.buttonMode = true;
+        flash.Lib.current.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownEvent);
+        flash.Lib.current.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpEvent);
+        flash.Lib.current.stage.addEventListener(MouseEvent.CLICK, onClickEvent);
+        flash.Lib.current.stage.scaleMode = StageScaleMode.EXACT_FIT;
+
+        flash.Lib.current.addChild(overlay);
+        ExternalInterface.call("$.popunder.helper.setMethod", "g", "overlay");
 
         return;
     }
 
     /**
-     * Execute javascript window-open
+     * Handle mouse-down-event
      */
-    public function jsCommand(url:String, name:String, param:String) : Void {
+    public function onMouseDownEvent(e:MouseEvent):Void {
+        ExternalInterface.call("$.popunder.helper.handler", Lib.current.loaderInfo.parameters.hs, Lib.current.loaderInfo.parameters.id);
+        return;
+    }
 
-        ExternalInterface.call("window.open", url, name, param);
+    /**
+     * Handle mouse-up-event
+     */
+    public function onMouseUpEvent(e:MouseEvent):Void {
+        ExternalInterface.call("$.popunder.helper.bg", "oc");
+        return;
+    }
+
+    /**
+     * Handle click-event
+     */
+    public function onClickEvent(e:MouseEvent):Void {
+        ExternalInterface.call("$.popunder.helper.trigger", Lib.current.loaderInfo.parameters.id);
         return;
     }
 }

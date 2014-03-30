@@ -23,7 +23,8 @@
      * @return jQuery
      */
     $.popunder = function(aPopunder, form, trigger, _source) {
-        var t = $.popunder.helper;
+        var t = $.popunder.helper,
+            u = 'undefined';
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
         }
@@ -38,12 +39,12 @@
             }
 
             t.reset();
-            if (typeof aPopunder !== "undefined") {
+            if (typeof aPopunder !== u) {
                 do {
                     t.queue(aPopunder);
                 }
                 while (aPopunder.length > 0);
-                if (!t.ua.g || !t.m.g === 'simple') {
+                if (!t.ua.g || t.m.g !== 'simple') {
                     t.queue(aPopunder);
                 }
             }
@@ -128,6 +129,13 @@
         },
 
         /**
+         * The handler-stack
+         *
+         * @var Array
+         */
+        hs: [],
+
+        /**
          * The default-options
          *
          * @var object
@@ -168,6 +176,9 @@
             // callback function, to be executed when a popunder is opened
             cb: null,
 
+            // flash-url (e.g. jq-pu-toolkit.swf)
+            fs: false,
+
             // set to true, if the url should be opened in a popup instead of a popunder
             popup: false
         },
@@ -178,6 +189,21 @@
          * @var object
          */
         opt: {},
+
+        /**
+         * Set the method for a specific agent
+         *
+         * @param {String} ua The agent
+         * @param {String} m The method
+         *
+         * @returns $.popunder.helper
+         */
+        setMethod: function (ua, m) {
+            var t = this;
+            t.m[ua] = m;
+
+            return t;
+        },
 
         /**
          * Simple user-agent test
@@ -219,34 +245,85 @@
         },
 
         /**
+         * A handler-stub
+         *
+         * @param  {int} i The handler-stack-index
+         * @param  {string|jQuery.Event} trigger The trigger-source
+         *
+         * @return void
+         */
+        handler: function(i, trigger) {
+            var t = this;
+            if (typeof t.hs[i] === 'function') {
+                t.hs[i](trigger);
+            }
+        },
+
+        /**
+         * Get the element to trigger by id
+         *
+         * @param  {string} trigger The id
+         *
+         * @returns jQuery
+         */
+
+        getTrigger: function(trigger) {
+            return $('#' + trigger).parents('.jq-pu').children().eq(0);
+        },
+
+        /**
+         * Trigger click
+         *
+         * @param  {string} trigger
+         *
+         * @return void
+         */
+        trigger: function(trigger) {
+            this.getTrigger(trigger).trigger('click');
+        },
+
+        /**
          * Create a popunder
          *
          * @param  {Array} aPopunder The popunder(s) to open
-         * @param  {string|object} form A form, where the submit is used to open the popunder
-         * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
+         * @param  {string|jQuery} form A form, where the submit is used to open the popunder
+         * @param  {string|jQuery} trigger A button, where the mousedown & click is used to open the popunder
          *
          * @return $.popunder.helper
          */
         bindEvents: function(aPopunder, form, trigger) {
             var t = this,
                 s = 'string',
-                a = function(event) {
+                hs = t.hs.length,
+                c = (function(i) {
+                    return function(event) {
+                        t.handler(i, event);
+                    };
+                }(hs));
+
+            t.hs[hs] = (function(aPopunder){
+                return function(event) {
+                    if (event && !event.target) {
+                        event = {
+                            target: t.getTrigger(event)
+                        };
+                    }
+
                     $.popunder(aPopunder, false, false, event);
                     return true;
                 };
+            })(aPopunder);
 
             if (form && !t.ua.g) {
                 form = (typeof form === s) ? $(form) : form;
-                form.on('submit', a);
+                form.on('submit', c);
             }
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                if (t.ua.g && t.m.g === 'simple') {
-                    t.iframe(trigger, a);
-                }
-                else {
-                    trigger.on('click', a);
+                trigger.on('click', c);
+                if (t.ua.g && t.def.fs) {
+                    t.overlay(trigger, hs);
                 }
             }
 
@@ -254,30 +331,26 @@
         },
 
         /**
-         * Create an iframe to catch the click over a button or link
+         * Create an flash-overlay to catch the click over a button or link
          *
          * @param  {object} trigger The click-trigger (button, link, etc.)
-         * @param  {function} handler The event-handler
+         * @param  {int} hs The handler-stack index
          *
          * @return $.popunder.helper
          */
-        iframe: function(trigger, handler) {
+        overlay: function(trigger, hs) {
+            var t = this;
             trigger.each(function() {
                 var $e = $(this),
                     a = 'absolute',
                     p = ($e.css('position') === a) ? '' : 'position:relative;',
+                    i = t.rand('pub'),
 
                     // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
-                    d = {
-                        margin: 0,
-                        padding: 0,
-                        cursor: "pointer",
-                        width: $e.outerWidth(),
-                        height: $e.outerHeight()
-                    },
-                    i = $('<iframe scrolling="no" frameborder="0" src="about:blank"></iframe>').css($.extend(true, {}, d, {
+                    o = $('<object id="' + i + '" type="application/x-shockwave-flash" data="' + t.def.fs + '" />').css($.extend(true, {}, {
                         position: a,
+                        cursor: "pointer",
                         top: ((!!p) ? 0 : $e.css('top')),
                         left: ((!!p) ? 0 : $e.css('left')),
                         padding: $e.css('padding'),
@@ -286,23 +359,13 @@
                         height: $e.height()
                     }));
 
-                i.on('load', function() {
-                    $(this.contentDocument).on('mousedown mouseup', (function(target) {
-                        return function(event) {
-                            handler({
-                                target: target,
-                                type: event.type
-                            });
-                            if (event.type !== 'mouseup') {
-                                target.trigger(event.type);
-                            }
-                        };
-                    })($e)).find('html, body').css(d);
-                });
-                c.append(i);
+                o.append('<param name="wmode" value="transparent" />');
+                o.append('<param name="menu" value="false" />');
+                o.append('<param name="flashvars" value="id=' + i + '&hs=' + hs + '" /">');
+                c.append(o);
             });
 
-            return this;
+            return t;
         },
 
         /**
@@ -393,10 +456,6 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (t.ua.g === true && t.m.g === 'flicker') {
-                    document.documentElement.webkitRequestFullscreen();
-                }
-
                 if (t.ua.g === true && t.m.g === 'tab') {
                     t.switcher.tab(t, t.o);
                 }
@@ -420,7 +479,7 @@
         /**
          * Move a popup to the background
          *
-         * @param  {int|boolean} l True, if the url should be set
+         * @param  {int|boolean|string} l True, if the url should be set
          *
          * @return $.popunder.helper
          */
@@ -430,15 +489,15 @@
                 if (t.ua.ie === true) {
                     t.switcher.simple(t);
                 }
-                else if (t.ua.g === true && t.m.g === 'flicker') {
-                    t.switcher.flicker(t);
-                }
                 else if (!t.ua.g) {
                     t.switcher.pop(t);
                 }
             }
             else if (t.m.g === 'simple' && t.ua.g === true) {
                 t.switcher.simple(t);
+            }
+            else if (l === 'oc') {
+                t.switcher.pop(t);
             }
 
             return t;
@@ -450,6 +509,7 @@
          * @return void
          */
         switcher: {
+
             /**
              * Classic popunder, used for ie
              *
@@ -496,7 +556,7 @@
             },
 
             /**
-             * Popunder for google-chrome 25+
+             * "tab"-under for google-chrome 31+
              *
              * @param  {$.popunder.helper} t
              * @param  {String} h
@@ -515,22 +575,6 @@
                 e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, p, false, !p, p, 0, null);
                 a[0].dispatchEvent(e);
                 a[0].parentNode.removeChild(a[0]);
-
-                return t;
-            },
-
-            /**
-             * Popunder for google-chrome 30
-             *
-             * @param  {$.popunder.helper} t
-             *
-             * @return $.popunder.helper
-             */
-            flicker: function(t) {
-                document.webkitCancelFullScreen();
-                setTimeout(function() {
-                    window.getSelection().empty();
-                }, 250);
 
                 return t;
             }
@@ -563,10 +607,10 @@
         /**
          * Handle forms with target="_blank"
          *
-         * @param aPopunder
-         * @param source
+         * @param  {Array} aPopunder
+         * @param  {jQuery.Event} source
          *
-         * @return array
+         * @return Array
          */
         handleTargetBlank: function(aPopunder, source) {
             if (source && typeof source.target !== 'undefined') {
