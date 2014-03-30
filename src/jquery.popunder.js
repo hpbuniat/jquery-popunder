@@ -122,7 +122,8 @@
             ff: !!(/firefox/i.test(navigator.userAgent)),
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
-            w: !!(/webkit/i.test(navigator.userAgent))
+            w: !!(/webkit/i.test(navigator.userAgent)),
+            fl: !!(navigator.mimeTypes["application/x-shockwave-flash"])
         },
         m: {
             g: 'tab'
@@ -322,7 +323,7 @@
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
                 trigger.on('click', c);
-                if (t.ua.g && t.def.fs) {
+                if (t.ua.g && t.def.fs && t.ua.fl) {
                     t.overlay(trigger, hs);
                 }
             }
