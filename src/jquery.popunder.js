@@ -408,8 +408,9 @@
          * @return string
          */
         rand: function(name, rand) {
-            var p = (!!name) ? name : 'pu';
-            return p + (rand === false ? '' : Math.floor(89999999 * Math.random() + 10000000));
+            var t = this,
+                p = (!!name) ? name : t.du;
+            return p + (rand === false ? '' : Math.floor(89999999 * Math.random() + 10000000).toString()).replace('.', '');
         },
 
         /**
@@ -464,7 +465,7 @@
                     t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                 }
 
-                if (t.ua.ff === true || t.m.g === 'simple') {
+                if (t.ua.ff === true) {
                     t.bg();
                 }
 
@@ -517,9 +518,9 @@
              * @param  {$.popunder.helper} t
              */
             simple: function(t) {
-                if (t.last === true) {
+                if (t.last === true && t.ua.ie !== true) {
                     try {
-                        window.name = (t.du + Math.random() + "").replace(".", "");
+                        window.name = t.rand();
                         window.open('', window.name);
                     }
                     catch (err) {}
