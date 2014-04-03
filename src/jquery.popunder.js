@@ -44,7 +44,7 @@
                     t.queue(aPopunder);
                 }
                 while (aPopunder.length > 0);
-                if (!t.ua.g || t.m.g !== 'simple') {
+                if (!t.ua.ie && (!t.ua.g || t.m.g !== 'simple')) {
                     t.queue(aPopunder);
                 }
             }
