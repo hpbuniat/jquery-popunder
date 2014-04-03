@@ -44,7 +44,7 @@
                     t.queue(aPopunder);
                 }
                 while (aPopunder.length > 0);
-                if (!t.ua.ie && (!t.ua.g || t.m.g !== 'simple')) {
+                if (!t.ua.ie || t.ua.oldIE) {
                     t.queue(aPopunder);
                 }
             }
@@ -119,6 +119,7 @@
          */
         ua: {
             ie: !!(/msie|trident/i.test(navigator.userAgent)),
+            oldIE: !!(/msie/i.test(navigator.userAgent)),
             ff: !!(/firefox/i.test(navigator.userAgent)),
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
@@ -183,13 +184,6 @@
             // set to true, if the url should be opened in a popup instead of a popunder
             popup: false
         },
-
-        /**
-         * The options for a specific popunder
-         *
-         * @var object
-         */
-        opt: {},
 
         /**
          * Set the method for a specific agent
@@ -373,12 +367,13 @@
          * Helper to create a (optionally) random value with prefix
          *
          * @param  {string} sUrl The url to open
+         * @param  {Object} o The options
          *
          * @return boolean
          */
-        cookieCheck: function(sUrl) {
+        cookieCheck: function(sUrl, o) {
             var t = this,
-                name = t.rand(t.opt.cookie, false),
+                name = t.rand(o.cookie, false),
                 cookie = $.cookie(name),
                 ret = false;
 
@@ -393,7 +388,7 @@
             }
 
             $.cookie(name, cookie, {
-                expires: new Date((new Date()).getTime() + t.opt.blocktime * 60000)
+                expires: new Date((new Date()).getTime() + o.blocktime * 60000)
             });
 
             return ret;
@@ -447,7 +442,7 @@
                 }
             }
 
-            if (o.blocktime && (typeof $.cookie === f) && t.cookieCheck(sUrl)) {
+            if (o.blocktime && (typeof $.cookie === f) && t.cookieCheck(sUrl, o)) {
                 return false;
             }
 
@@ -469,7 +464,10 @@
                     t.bg();
                 }
 
-                t.href(iLength);
+                if (t.ua.ie !== true) {
+                    t.href(iLength);
+                }
+
                 if (typeof o.cb === f) {
                     o.cb();
                 }
@@ -488,7 +486,7 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin && t.lastTarget && !l) {
-                if (t.ua.ie === true) {
+                if (t.ua.oldIE === true) {
                     t.switcher.simple(t);
                 }
                 else if (!t.ua.g) {
@@ -518,7 +516,7 @@
              * @param  {$.popunder.helper} t
              */
             simple: function(t) {
-                if (t.last === true && t.ua.ie !== true) {
+                if (t.last === true && t.ua.oldIE !== true) {
                     try {
                         window.name = t.rand();
                         window.open('', window.name);

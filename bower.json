@@ -7,7 +7,7 @@
         "url":"git://github.com/hpbuniat/jquery-popunder.git"
     },
     "dependencies":{
-        "jquery":">=1.9",
+        "jquery":"<2.0",
         "jquery.cookie":"~1.3"
     }
 }
