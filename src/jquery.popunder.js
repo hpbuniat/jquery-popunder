@@ -44,9 +44,7 @@
                     t.queue(aPopunder);
                 }
                 while (aPopunder.length > 0);
-                if (!t.ua.ie || t.ua.oldIE) {
-                    t.queue(aPopunder);
-                }
+                t.queue(aPopunder);
             }
         }
 
@@ -464,10 +462,7 @@
                     t.bg();
                 }
 
-                if (t.ua.ie !== true) {
-                    t.href(iLength);
-                }
-
+                t.href(iLength);
                 if (typeof o.cb === f) {
                     o.cb();
                 }
@@ -489,12 +484,12 @@
                 if (t.ua.oldIE === true) {
                     t.switcher.simple(t);
                 }
+                else if (t.ua.ie === true) {
+                    t.switcher.tab(t);
+                }
                 else if (!t.ua.g) {
                     t.switcher.pop(t);
                 }
-            }
-            else if (t.m.g === 'simple' && t.ua.g === true) {
-                t.switcher.simple(t);
             }
             else if (l === 'oc') {
                 t.switcher.pop(t);
@@ -516,20 +511,11 @@
              * @param  {$.popunder.helper} t
              */
             simple: function(t) {
-                if (t.last === true && t.ua.oldIE !== true) {
-                    try {
-                        window.name = t.rand();
-                        window.open('', window.name);
-                    }
-                    catch (err) {}
+                try {
+                    t.lastWin.blur();
                 }
-                else {
-                    try {
-                        t.lastWin.blur();
-                    }
-                    catch (err) {}
-                    window.focus();
-                }
+                catch (err) {}
+                window.focus();
             },
 
             /**
@@ -588,10 +574,10 @@
          * @return $.popunder.helper
          */
         href: function(l) {
-            var t = this;
+            var t = this, d;
             if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
                 if (t.ua.g === true && t.m.g !== 'simple') {
-                    var d = t.lastWin.document;
+                    d = t.lastWin.document;
                     d.open();
                     d.write('<html><head><title>' + document.title + '</title><script type="text/javascript">window.location="' + t.lastTarget + '";<\/script></head><body></body></html>');
                     d.close();
