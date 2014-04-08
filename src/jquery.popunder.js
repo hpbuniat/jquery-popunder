@@ -230,7 +230,7 @@
                 t.last = true;
                 t.bg().href(true);
             }
-            else if (!t.f && !t.ua.g) {
+            else if (!t.f && !t.ua.g && !t.ua.ie) {
                 t.bg();
             }
 
@@ -481,11 +481,8 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin && t.lastTarget && !l) {
-                if (t.ua.oldIE === true) {
+                if (t.ua.ie === true) {
                     t.switcher.simple(t);
-                }
-                else if (t.ua.ie === true) {
-                    t.switcher.tab(t);
                 }
                 else if (!t.ua.g) {
                     t.switcher.pop(t);
