@@ -8,8 +8,8 @@
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="page-type" content="html"/>
     <title>Popunder with Cookie support</title>
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-    <!-- script type="text/javascript" src="src/jquery.min.js"></script-->
+    <!-- script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script-->
+    <script type="text/javascript" src="src/jquery.min.js"></script>
 
     <!-- Cookie support -->
     <script type="text/javascript" src="bower_components/jquery.cookie/jquery.cookie.js"></script>
@@ -32,7 +32,7 @@
             return window.fPopunderStack;
         };
 
-        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
+        //$.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
     </pre>
 
@@ -51,7 +51,7 @@
             ['http://www.heise.de']
         ];
 
-        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
+        //$.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.aThreePopunder, '#testForm', '#testForm input[type="submit"], #testForm a');
     </pre>
 
@@ -87,7 +87,7 @@
             return window.fPopunderStack;
         };
 
-        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
+        //$.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormSix', '#testFormSix input[type="submit"]');
     </pre>
 
@@ -106,7 +106,7 @@
         $('#testFormTwo a').on('click', fHandler);
         $('#testFormTwo').on('submit', fHandler);
 
-        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
+        //$.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
     </pre>
     <input id="submitButtonTwoClick" type="submit" value="Open Popunder via Button-Click" />
 
@@ -127,7 +127,7 @@
         $('#submitButtonThreeClick').on('click', fOneHandler);
         $('#testFormThree').on('submit', fOneHandler);
 
-        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
+        //$.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
     </pre>
     <input id="submitButtonThreeClick" type="submit" value="Open Popunder via Button-Click" />
 </form>
