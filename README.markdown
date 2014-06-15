@@ -42,6 +42,7 @@ jquery-popunder was tested with:
 - Mozilla Firefox 3-30
 - Google Chrome 10-35
 - Microsoft Internet Explorer 6-11
+-- MSIE 6-8 requires jquery 1.x
 - Apple Safari 5
 
 Known Issues
