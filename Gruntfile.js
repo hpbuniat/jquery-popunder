@@ -73,7 +73,10 @@ module.exports = function (grunt) {
                 }
             },
             update_prepare: {
-                command: 'mkdir ./bower_components/jquery-raw'
+                command: [
+                    'rm -rf ./bower_components/jquery-raw',
+                    'mkdir ./bower_components/jquery-raw'
+                ].join(' && ')
             },
             update_buildJquery: {
                 command: [
@@ -82,7 +85,7 @@ module.exports = function (grunt) {
                     'cd jquery',
                     'git checkout tags/`git tag | grep -v "-" | tail -n 1`',
                     'npm install',
-                    'grunt custom:-sizzle,-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-deprecated,-deferred,-exports/amd',
+                    'grunt custom:-sizzle,-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-deprecated,-exports/amd',
                     'cp -f dist/jquery.min.js ../../../src/jquery.min.js'
                 ].join(' && '),
                 options: {
