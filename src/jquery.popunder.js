@@ -171,6 +171,8 @@
             skip: {
                 'opera': true,
                 'linux': true,
+                'android': true,
+                'iphone': true,
                 'ipad': true
             },
 
