@@ -170,6 +170,7 @@
             // user-agents to skip
             skip: {
                 'opera': true,
+                'linux': true,
                 'ipad': true
             },
 
