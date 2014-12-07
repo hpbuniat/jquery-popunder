@@ -65,8 +65,6 @@
         window.aPopunder = [
             ['http://www.github.com']
         ];
-
-        $.popunder.helper.def.fs = false;
     </pre>
 
     <a href="#" onclick="$.popunder()">Open Popunder via Link</a>
@@ -93,7 +91,7 @@
 </form>
 
 <form id="testFormFive" action="#">
-    <h3>Testcase #4 (1 Popunder, use a function as parameter and check for enabled checkboxes)</h3>
+    <h3>Testcase #5 (1 Popunder, use a function as parameter and check for enabled checkboxes)</h3>
     <pre>
         window.fPopunder = function(event) {
             if (!window.fPopunderStack) {
@@ -117,6 +115,13 @@
 
     <a href="#">Open Popunder via Link</a>
 </form>
+
+<div id="testSix">
+    <h3>Example #6 (unbind a popunder)</h3>
+    <pre>
+        $.popunder.helper.unbind('#testSix', '#testSix input[type="submit"]');
+    </pre>
+</div>
 
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 

@@ -136,6 +136,13 @@
         hs: [],
 
         /**
+         * The event-namespace
+         *
+         * @var String
+         */
+        ns: 'jqpu',
+
+        /**
          * The default-options
          *
          * @var object
@@ -312,12 +319,12 @@
 
             if (form && !t.ua.g) {
                 form = (typeof form === s) ? $(form) : form;
-                form.on('submit', c);
+                form.on('submit.' + t.ns, c);
             }
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                trigger.on('click', c);
+                trigger.on('click.' + t.ns, c);
                 if (t.ua.g && t.def.fs && t.ua.fl) {
                     t.overlay(trigger, hs);
                 }
@@ -627,12 +634,31 @@
         /**
          * Reset the instance
          *
-         * @returns $.popunder.helper
+         * @return $.popunder.helper
          */
         reset: function() {
             var t = this;
             t.f = t.last = false;
             t.lastTarget = t.lastWin = null;
+            return t;
+        },
+
+        /**
+         * Unbind a popunder-handler
+         *
+         * @return $.popunder.helper
+         */
+        unbind: function(form, trigger) {
+            var t = this,
+                s = 'string';
+
+            t.reset();
+            form = (typeof form === s) ? $(form) : form;
+            form.off('submit.' + t.ns);
+            trigger = (typeof trigger === s) ? $(trigger) : trigger;
+            trigger.off('click.' + t.ns);
+            window.aPopunder = [];
+
             return t;
         },
 
