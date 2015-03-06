@@ -1,12 +1,12 @@
 jquery-popunder
 =====
 
-**jquery-popunder** is a jquery-plugin to create popunder in major browsers.
+**jquery-popunder** is a jquery-plugin to create popunders in major browsers.
 
 Usage
 -----
 
-Popunder are popups which are opened in the background of a browser-window.
+Popunders are popups which are opened in the background of a browser-window.
 This script will only work, if the popunder is opened on a user-generated event (e.g. click or submit).
 
 For examples, take a look at the index.html.
@@ -39,15 +39,16 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-34
-- Google Chrome 10-39
+- Mozilla Firefox 3-36
+- Google Chrome 10-40
 - Microsoft Internet Explorer 6-11
--- MSIE 6-8 requires jquery 1.x
 - Apple Safari 5
 
 Known Issues
 -------
 - since chrome 31 it's only possible to open a tab in the background
+-- popunder are possible by using a flash-layer (see examples)
+- chrome 41 killed the background-tab
 - attention: the window-properties are currently not working in google chrome 28+
 - the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome

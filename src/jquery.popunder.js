@@ -176,6 +176,7 @@
 
             // user-agents to skip
             skip: {
+                'chrome\/(4[1-9]|[5-9][\d])\.': true,
                 'opera': true,
                 'linux': true,
                 'android': true,
