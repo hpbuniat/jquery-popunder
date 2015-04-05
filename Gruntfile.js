@@ -52,10 +52,7 @@ module.exports = function (grunt) {
         },
         shell:{
             haxe: {
-                command: [
-                    'haxe compile.hxml',
-                    'mv -f jq-pu-toolkit.swf ../..//dist/jq-pu-toolkit.swf'
-                ].join(' && '),
+                command: 'node ../../node_modules/haxe/bin/haxe-cli.js compile.hxml',
                 options: {
                     stdout: true,
                     stderr: true,

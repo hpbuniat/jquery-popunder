@@ -40,7 +40,7 @@ class Toolkit extends MovieClip {
         flash.Lib.current.stage.scaleMode = StageScaleMode.EXACT_FIT;
 
         flash.Lib.current.addChild(overlay);
-        ExternalInterface.call("$.popunder.helper.setMethod", "g", "overlay");
+        ExternalInterface.call("jQuery.popunder.helper.setMethod", "g", "overlay");
 
         return;
     }
@@ -49,7 +49,7 @@ class Toolkit extends MovieClip {
      * Handle mouse-down-event
      */
     public function onMouseDownEvent(e:MouseEvent):Void {
-        ExternalInterface.call("$.popunder.helper.handler", Lib.current.loaderInfo.parameters.hs, Lib.current.loaderInfo.parameters.id);
+        ExternalInterface.call("jQuery.popunder.helper.handler", Lib.current.loaderInfo.parameters.hs, Lib.current.loaderInfo.parameters.id);
         return;
     }
 
@@ -57,7 +57,7 @@ class Toolkit extends MovieClip {
      * Handle mouse-up-event
      */
     public function onMouseUpEvent(e:MouseEvent):Void {
-        ExternalInterface.call("$.popunder.helper.bg", "oc");
+        ExternalInterface.call("jQuery.popunder.helper.bg", "oc");
         return;
     }
 
@@ -65,7 +65,7 @@ class Toolkit extends MovieClip {
      * Handle click-event
      */
     public function onClickEvent(e:MouseEvent):Void {
-        ExternalInterface.call("$.popunder.helper.trigger", Lib.current.loaderInfo.parameters.id);
+        ExternalInterface.call("jQuery.popunder.helper.trigger", Lib.current.loaderInfo.parameters.id);
         return;
     }
 }
