@@ -6,6 +6,7 @@ import flash.events.MouseEvent;
 import flash.Lib;
 import flash.display.Sprite;
 import flash.display.StageScaleMode;
+import flash.net.URLRequest;
 
 /**
  * Toolkit-Class for jquery-popunder
@@ -57,7 +58,12 @@ class Toolkit extends MovieClip {
      * Handle mouse-up-event
      */
     public function onMouseUpEvent(e:MouseEvent):Void {
-        ExternalInterface.call("jQuery.popunder.helper.bg", "oc");
+		var closeLink:String = Lib.current.loaderInfo.parameters.closeLink;
+		if((!(closeLink == null)) && (!(closeLink == ""))){ 
+			Lib.getURL(new URLRequest(closeLink), "_blank"); 
+		}else{
+			ExternalInterface.call("jQuery.popunder.helper.bg", "oc");
+		}
         return;
     }
 

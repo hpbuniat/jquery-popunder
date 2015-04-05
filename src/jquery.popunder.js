@@ -189,6 +189,9 @@
 
             // flash-url (e.g. jq-pu-toolkit.swf)
             fs: false,
+			
+			// the background tab to open from the flash (e.g close.html)
+			fsCloseLink: '',
 
             // set to true, if the url should be opened in a popup instead of a popunder
             popup: false
@@ -283,6 +286,12 @@
          * @return void
          */
         trigger: function(trigger) {
+			// remove flash overlay
+			if(this.last){
+				setTimeout($.proxy(function(trigger){
+					$('#'+trigger).unwrap().remove();
+				},null,trigger),1);
+			}
             this.getTrigger(trigger).trigger('click');
         },
 
@@ -366,8 +375,12 @@
                 o.append('<param name="wmode" value="transparent" />');
                 o.append('<param name="menu" value="false" />');
 				o.append('<param name="allowScriptAccess" value="always" />');
-                o.append('<param name="flashvars" value="id=' + i + '&hs=' + hs + '" /">');
-                c.append(o);
+                o.append('<param name="flashvars" value="'+$.param({
+								id: i,
+								hs: hs,
+								closeLink: t.def.fsCloseLink
+							}) + '" /">');
+				c.append(o);
             });
 
             return t;
@@ -658,7 +671,8 @@
             form = (typeof form === s) ? $(form) : form;
             form.off('submit.' + t.ns);
             trigger = (typeof trigger === s) ? $(trigger) : trigger;
-            trigger.off('click.' + t.ns);
+            trigger.off('click.' + t.ns).next('.jq-pu object').remove().unwrap();
+
             window.aPopunder = [];
 
             return t;

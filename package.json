@@ -26,6 +26,7 @@
         "grunt-contrib-watch": "latest",
         "grunt-contrib-jshint": "latest",
         "grunt-contrib-uglify": "latest",
+		"grunt-contrib-copy": "latest",
         "grunt-shell": "latest",
         "grunt": "^0.4.0",
         "bower": "latest",
