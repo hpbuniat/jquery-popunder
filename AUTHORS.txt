@@ -4,3 +4,4 @@ Hans-Peter Buniat <hpbuniat@googlemail.com>
 shapeshifta78 (hint for chrome 22 workaround)
 tuki (alternative workaround for chrome 25+)
 gibigate (hint for chrome 30 workaround)
+SBD580 (chrome 41 workaround)

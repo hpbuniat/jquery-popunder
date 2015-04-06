@@ -32,6 +32,7 @@
             return window.fPopunderStack;
         };
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormOne', '#testFormOne input[type="submit"]');
     </pre>
 
@@ -50,6 +51,7 @@
             ['http://www.heise.de']
         ];
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.aThreePopunder, '#testFormTwo', '#testFormTwo input[type="submit"], #testForm a');
     </pre>
 
@@ -75,14 +77,15 @@
     <pre>
         window.fPopunder = function(event) {
             if (!window.fPopunderStack) {
-                window.fPopunderStack = [[$(event.target).data('target'), {window: {height:100, width:100}, cb: function() {
-                    console.log('github.com has been opened');
+                window.fPopunderStack = [[$(event.target).data('target'), {window: {height:100, width:100}, cb: function(popunderWindow) {
+                    console.log('github.com has been opened', popunderWindow);
                 }}]];
             }
 
             return window.fPopunderStack;
         };
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormFour', '#testFormFour input[type="submit"]');
     </pre>
 
@@ -106,6 +109,7 @@
             return window.fPopunderStack;
         };
 
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
         $.popunder(window.fPopunder, '#testFormFive', '#testFormFive input[type="submit"]');
     </pre>
     <p>

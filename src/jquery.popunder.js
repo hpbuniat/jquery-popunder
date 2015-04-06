@@ -18,11 +18,11 @@
      * @param  {Array|function} aPopunder The popunder(s) to open
      * @param  {string|object} form A form, where the submit is used to open the popunder
      * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
-     * @param  {object} _source The source of the event
+     * @param  {object} eventSource The source of the event
      *
      * @return jQuery
      */
-    $.popunder = function(aPopunder, form, trigger, _source) {
+    $.popunder = function(aPopunder, form, trigger, eventSource) {
         var t = $.popunder.helper,
             u = 'undefined';
         if (arguments.length === 0) {
@@ -33,18 +33,18 @@
             t.bindEvents(aPopunder, form, trigger);
         }
         else {
-            aPopunder = (typeof aPopunder === 'function') ? aPopunder(_source) : aPopunder;
+            aPopunder = (typeof aPopunder === 'function') ? aPopunder(eventSource) : aPopunder;
             if (t.ua.ie === true || t.ua.g === true) {
-                aPopunder = t.handleTargetBlank(aPopunder, _source);
+                aPopunder = t.handleTargetBlank(aPopunder, eventSource);
             }
 
             t.reset();
             if (typeof aPopunder !== u) {
                 do {
-                    t.queue(aPopunder);
+                    t.queue(aPopunder, eventSource);
                 }
                 while (aPopunder.length > 0);
-                t.queue(aPopunder);
+                t.queue(aPopunder, eventSource);
             }
         }
 
@@ -174,9 +174,11 @@
             // the block-time of a popunder in minutes
             blocktime: false,
 
+            // chrome-exclude user-agent-string
+            chromeExclude: 'chrome\/(4[1-9]|[5-9][\d])\.',
+
             // user-agents to skip
             skip: {
-                'chrome\/(4[1-9]|[5-9][\d])\.': true,
                 'opera': true,
                 'linux': true,
                 'android': true,
@@ -189,9 +191,6 @@
 
             // flash-url (e.g. jq-pu-toolkit.swf)
             fs: false,
-			
-			// the background tab to open from the flash (e.g close.html)
-			fsCloseLink: '',
 
             // set to true, if the url should be opened in a popup instead of a popunder
             popup: false
@@ -227,17 +226,18 @@
          * Process the queue
          *
          * @param  {Array} aPopunder The popunder(s) to open
+         * @param  {object} eventSource The source of the event
          *
          * @return $.popunder.helper
          */
-        queue: function(aPopunder) {
+        queue: function(aPopunder, eventSource) {
             var b = false,
                 t = this;
 
             if (aPopunder.length > 0) {
                 while (b === false) {
                     var p = aPopunder.shift();
-                    b = (p) ? t.open(p[0], p[1] || {}, aPopunder.length) : true;
+                    b = (p) ? t.open(p[0], p[1] || {}, aPopunder.length, eventSource) : true;
                 }
             }
             else if (t.last === false) {
@@ -273,7 +273,6 @@
          *
          * @returns jQuery
          */
-
         getTrigger: function(trigger) {
             return $('#' + trigger).parents('.jq-pu').children().eq(0);
         },
@@ -286,13 +285,15 @@
          * @return void
          */
         trigger: function(trigger) {
-			// remove flash overlay
-			if(this.last){
-				setTimeout($.proxy(function(trigger){
-					$('#'+trigger).unwrap().remove();
-				},null,trigger),1);
-			}
-            this.getTrigger(trigger).trigger('click');
+            var t = this,
+                $trigger = t.getTrigger(trigger);
+            if (t.last && t.ua.g === true && t.m.g === 'overlay') {
+                setTimeout($.proxy(function($trigger){
+                    $trigger.unwrap().remove();
+                }, null, $trigger), 1);
+            }
+
+            $trigger.trigger('click');
         },
 
         /**
@@ -335,8 +336,11 @@
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
                 trigger.on('click.' + t.ns, c);
-                if (t.ua.g && t.def.fs && t.ua.fl) {
-                    t.overlay(trigger, hs);
+                if (t.ua.g) {
+                    t.def.skip[t.def.chromeExclude] = true;
+                    if (t.def.fs && t.ua.fl) {
+                        t.overlay(trigger, hs);
+                    }
                 }
             }
 
@@ -361,6 +365,7 @@
 
                     // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
+                    z = c.css('zIndex'),
                     o = $('<object id="' + i + '" type="application/x-shockwave-flash" data="' + t.def.fs + '" />').css($.extend(true, {}, {
                         position: a,
                         cursor: "pointer",
@@ -369,19 +374,31 @@
                         padding: $e.css('padding'),
                         margin: $e.css('margin'),
                         width: $e.width(),
-                        height: $e.height()
+                        height: $e.height(),
+                        zIndex: (parseInt(z === 'auto' ? 0 : z) - 1)
                     }));
 
                 o.append('<param name="wmode" value="transparent" />');
                 o.append('<param name="menu" value="false" />');
-				o.append('<param name="allowScriptAccess" value="always" />');
-                o.append('<param name="flashvars" value="'+$.param({
-								id: i,
-								hs: hs,
-								closeLink: t.def.fsCloseLink
-							}) + '" /">');
-				c.append(o);
+                o.append('<param name="allowScriptAccess" value="always" />');
+                o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" /">');
+                c.append(o);
             });
+
+            return t;
+        },
+
+        /**
+         * Load the flash-handler
+         *
+         * @return $.popunder.helper
+         */
+        loadfl: function() {
+            var t = this,
+                $o = $('div.jq-pu object');
+            t.setMethod('g','overlay');
+            $o.css('zIndex', 'auto');
+            t.def.skip[t.def.chromeExclude] = false;
 
             return t;
         },
@@ -437,12 +454,13 @@
          * @param  {string} sUrl The URL to open
          * @param  {object} opts Options for the Popunder
          * @param  {int} iLength Length of the popunder-stack
+         * @param  {object} eventSource The source of the event
          *
          * @return boolean
          */
-        open: function(sUrl, opts, iLength) {
+        open: function(sUrl, opts, iLength, eventSource) {
             var t = this,
-                i, o, s,
+                i, o, s, l,
                 f = 'function';
 
             o = $.extend(true, {}, t.def, opts);
@@ -469,11 +487,6 @@
                 return false;
             }
 
-            /* create pop-up */
-            if (t.ua.g === true && t.ua.g !== 'simple') {
-                window.open("javascript:window.focus()", "_self", "");
-            }
-
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
                 if (t.ua.g === true && t.m.g === 'tab') {
@@ -489,7 +502,7 @@
 
                 t.href(iLength);
                 if (typeof o.cb === f) {
-                    o.cb();
+                    o.cb(t.lastWin);
                 }
             }
 
