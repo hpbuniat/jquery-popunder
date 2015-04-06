@@ -288,9 +288,9 @@
             var t = this,
                 $trigger = t.getTrigger(trigger);
             if (t.last && t.ua.g === true && t.m.g === 'overlay') {
-                setTimeout($.proxy(function($trigger){
-                    $trigger.unwrap().remove();
-                }, null, $trigger), 1);
+                setTimeout($.proxy(function(trigger){
+                    $('#'+trigger).unwrap().remove();
+                }, null, trigger), 1);
             }
 
             $trigger.trigger('click');
