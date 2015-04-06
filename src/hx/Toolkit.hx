@@ -43,12 +43,10 @@ class Toolkit extends MovieClip {
         flash.Lib.current.addChild(overlay);
 
         ExternalInterface.call("jQuery.popunder.helper.loadfl");
-/*
         ExternalInterface.addCallback("dispatchEventMouseClick", dispatchEventMouseClickFn);
         ExternalInterface.addCallback("dispatchEventMouseDown", dispatchEventMouseDownFn);
         ExternalInterface.addCallback("dispatchEventMouseUp", dispatchEventMouseUpFn);
         ExternalInterface.addCallback("dispatchEventMouse", dispatchEventMouseFn);
-*/
         return;
     }
 
@@ -96,14 +94,7 @@ class Toolkit extends MovieClip {
      * Handle mouse-up-event
      */
     public function onMouseUpEvent(e:MouseEvent):Void {
-        var closeLink:String = Lib.current.loaderInfo.parameters.closeLink;
-        if ((!(closeLink == null)) && (!(closeLink == ""))) {
-            Lib.getURL(new URLRequest(closeLink), "_blank");
-        }
-        else {
-            ExternalInterface.call("jQuery.popunder.helper.bg", "oc");
-        }
-
+        Lib.getURL(new URLRequest('data:text/html,<script>window.close();</script>;'), "_blank");
         return;
     }
 

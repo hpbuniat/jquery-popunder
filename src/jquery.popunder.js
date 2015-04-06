@@ -192,9 +192,6 @@
             // flash-url (e.g. jq-pu-toolkit.swf)
             fs: false,
 
-            // the background tab to open from the flash (e.g close.html)
-            fsClose: false,
-
             // set to true, if the url should be opened in a popup instead of a popunder
             popup: false
         },
@@ -341,7 +338,7 @@
                 trigger.on('click.' + t.ns, c);
                 if (t.ua.g) {
                     t.def.skip[t.def.chromeExclude] = true;
-                    if (t.def.fs && t.ua.fl && t.def.fsClose) {
+                    if (t.def.fs && t.ua.fl) {
                         t.overlay(trigger, hs);
                     }
                 }
@@ -384,7 +381,7 @@
                 o.append('<param name="wmode" value="transparent" />');
                 o.append('<param name="menu" value="false" />');
                 o.append('<param name="allowScriptAccess" value="always" />');
-                o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs, closeLink: t.def.fsClose}) + '" /">');
+                o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" /">');
                 c.append(o);
             });
 

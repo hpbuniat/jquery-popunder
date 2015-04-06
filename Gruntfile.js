@@ -95,12 +95,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        copy: {
-            dist: {
-                src: './src/close.html',
-                dest: './dist/close.html'
-            }
-        },
         watch:{
             files:['src/*.js'],
             tasks:'lint'
@@ -111,10 +105,9 @@ module.exports = function (grunt) {
     // load tasks
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
     grunt.registerTask('update', ['shell:update_bower', 'shell:update_prepare', 'shell:update_buildJquery', 'default']);
-    grunt.registerTask('default', ['jshint', 'uglify', 'shell:haxe', 'copy']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'shell:haxe']);
 };
