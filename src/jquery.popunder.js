@@ -505,7 +505,7 @@
 
                 t.href(iLength);
                 if (typeof o.cb === f) {
-                    o.cb();
+                    o.cb(t.lastWin);
                 }
             }
 

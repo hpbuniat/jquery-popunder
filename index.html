@@ -79,8 +79,8 @@
     <pre>
         window.fPopunder = function(event) {
             if (!window.fPopunderStack) {
-                window.fPopunderStack = [[$(event.target).data('target'), {window: {height:100, width:100}, cb: function() {
-                    console.log('github.com has been opened');
+                window.fPopunderStack = [[$(event.target).data('target'), {window: {height:100, width:100}, cb: function(popunderWindow) {
+                    console.log('github.com has been opened', popunderWindow);
                 }}]];
             }
 
