@@ -16,7 +16,7 @@ So you leave the event-handling to the plugin. To add some flexibility to the fu
 
 Options
 -------
-All of the options are optional!.
+All of the options are optional!
 
 <pre>
 {
@@ -39,21 +39,18 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-36
-- Google Chrome 10-40
+- Mozilla Firefox 3-37
+- Google Chrome 10-41
 - Microsoft Internet Explorer 6-11
 - Apple Safari 5
 
 Known Issues
 -------
-- since chrome 31 it's only possible to open a tab in the background
--- popunder are possible by using a flash-layer (see examples)
-- chrome 41 killed the background-tab
+- chrome 41 needs a flash-layer to create a popunder
 - attention: the window-properties are currently not working in google chrome 28+
 - the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
-
 
 Installation
 -------

@@ -95,12 +95,12 @@ module.exports = function (grunt) {
                 }
             }
         },
-		copy: {
-			dist: {
-				src: './src/close.html',
-				dest: './dist/close.html'
-			}
-		},
+        copy: {
+            dist: {
+                src: './src/close.html',
+                dest: './dist/close.html'
+            }
+        },
         watch:{
             files:['src/*.js'],
             tasks:'lint'
