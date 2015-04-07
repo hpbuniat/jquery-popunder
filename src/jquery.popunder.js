@@ -416,7 +416,7 @@
                 z = c.css('zIndex'),
                 o = c.find('object');
 
-            if (true === bToggle && true === t.ua.flEnabled) {
+            if (true === bToggle && true === t.ua.g && true === t.ua.flEnabled) {
                 t.setMethod('g', 'overlay');
                 o.css('zIndex', 'auto');
                 t.def.skip[t.def.chromeExclude] = false;
