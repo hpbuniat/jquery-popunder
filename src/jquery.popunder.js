@@ -122,7 +122,8 @@
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
             w: !!(/webkit/i.test(navigator.userAgent)),
-            fl: !!(navigator.mimeTypes["application/x-shockwave-flash"])
+            fl: !!(navigator.mimeTypes["application/x-shockwave-flash"]),
+            flEnabled: false
         },
         m: {
             g: 'tab'
@@ -365,7 +366,6 @@
 
                     // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
-                    z = c.css('zIndex'),
                     o = $('<object id="' + i + '" type="application/x-shockwave-flash" data="' + t.def.fs + '" />').css($.extend(true, {}, {
                         position: a,
                         cursor: "pointer",
@@ -374,8 +374,7 @@
                         padding: $e.css('padding'),
                         margin: $e.css('margin'),
                         width: $e.width(),
-                        height: $e.height(),
-                        zIndex: (parseInt(z === 'auto' ? 0 : z) - 1)
+                        height: $e.height()
                     }));
 
                 o.append('<param name="wmode" value="transparent" />');
@@ -383,6 +382,8 @@
                 o.append('<param name="allowScriptAccess" value="always" />');
                 o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" /">');
                 c.append(o);
+
+                t.toggleFl(false);
             });
 
             return t;
@@ -394,11 +395,37 @@
          * @return $.popunder.helper
          */
         loadfl: function() {
+            var t = this;
+            t.ua.flEnabled = true;
+            t.toggleFl(true);
+
+            return t;
+        },
+
+        /**
+         * Toggle the flash-layer
+         *
+         * @param  {boolean} bToggle Set true, to show the layer - false, to hide it
+         *
+         * @return $.popunder.helper
+         */
+        toggleFl: function(bToggle) {
+            bToggle = !!bToggle;
             var t = this,
-                $o = $('div.jq-pu object');
-            t.setMethod('g','overlay');
-            $o.css('zIndex', 'auto');
-            t.def.skip[t.def.chromeExclude] = false;
+                c = $('div.jq-pu'),
+                z = c.css('zIndex'),
+                o = c.find('object');
+
+            if (true === bToggle && true === t.ua.flEnabled) {
+                t.setMethod('g', 'overlay');
+                o.css('zIndex', 'auto');
+                t.def.skip[t.def.chromeExclude] = false;
+            }
+            else {
+                t.setMethod('g', 'tab');
+                o.css('zIndex', (parseInt(z === 'auto' ? 0 : z) - 1));
+                t.def.skip[t.def.chromeExclude] = true;
+            }
 
             return t;
         },

@@ -9,7 +9,7 @@ Usage
 Popunders are popups which are opened in the background of a browser-window.
 This script will only work, if the popunder is opened on a user-generated event (e.g. click or submit).
 
-For examples, take a look at the index.html.
+For examples and usage documentation, take a look at the index.html.
 
 The recommended usage is the first example: a function to build the url-stack.
 So you leave the event-handling to the plugin. To add some flexibility to the function, the plugin will pass the initial event to the function - from which you may access e.g. DOM-data of the activated DOM-element.

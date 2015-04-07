@@ -43,10 +43,12 @@ class Toolkit extends MovieClip {
         flash.Lib.current.addChild(overlay);
 
         ExternalInterface.call("jQuery.popunder.helper.loadfl");
+/*
         ExternalInterface.addCallback("dispatchEventMouseClick", dispatchEventMouseClickFn);
         ExternalInterface.addCallback("dispatchEventMouseDown", dispatchEventMouseDownFn);
         ExternalInterface.addCallback("dispatchEventMouseUp", dispatchEventMouseUpFn);
         ExternalInterface.addCallback("dispatchEventMouse", dispatchEventMouseFn);
+*/
         return;
     }
 
