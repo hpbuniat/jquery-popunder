@@ -366,7 +366,7 @@
 
                     // build a container around the button/link - this is tricky, when it comes to the elements position
                     c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
-                    o = $('<object id="' + i + '" type="application/x-shockwave-flash" data="' + t.def.fs + '" />').css($.extend(true, {}, {
+                    s = $.extend(true, {}, {
                         position: a,
                         cursor: "pointer",
                         top: ((!!p) ? 0 : $e.css('top')),
@@ -375,7 +375,11 @@
                         margin: $e.css('margin'),
                         width: $e.width(),
                         height: $e.height()
-                    }));
+                    }),
+                    o = $('<object id="' + i + '" type="application/x-shockwave-flash" data="' + t.def.fs + '" />').css({
+                        width: 1,
+                        height: 1
+                    }).data(t.ns, s);
 
                 o.append('<param name="wmode" value="transparent" />');
                 o.append('<param name="menu" value="false" />');
@@ -415,6 +419,10 @@
                 c = $('div.jq-pu'),
                 z = c.css('zIndex'),
                 o = c.find('object');
+
+            if (o.data(t.ns)) {
+                o.css(o.data(t.ns)).removeData(t.ns);
+            }
 
             if (true === bToggle && true === t.ua.g && true === t.ua.flEnabled) {
                 t.setMethod('g', 'overlay');
