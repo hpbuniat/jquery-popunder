@@ -1,6 +1,6 @@
 {
     "name":"jquery-popunder",
-    "version":"0.2.35",
+    "version":"0.2.36",
     "main": "./dist/jquery.popunder.min.js",
     "repository":{
         "type":"git",
