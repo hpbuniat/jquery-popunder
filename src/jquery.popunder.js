@@ -420,8 +420,8 @@
                 z = c.css('zIndex'),
                 o = c.find('object');
 
-            if (o.data(t.ns)) {
-                o.css(o.data(t.ns)).removeData(t.ns);
+            if (o.data(t.ns) && parseInt(o.width()) === 1) {
+                o.css(o.data(t.ns));
             }
 
             if (true === bToggle && true === t.ua.g && true === t.ua.flEnabled) {
