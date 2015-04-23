@@ -384,7 +384,7 @@
                 o.append('<param name="wmode" value="transparent" />');
                 o.append('<param name="menu" value="false" />');
                 o.append('<param name="allowScriptAccess" value="always" />');
-                o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" /">');
+                o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" />');
                 c.append(o);
 
                 t.toggleFl(false);
