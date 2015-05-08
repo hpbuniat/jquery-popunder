@@ -175,8 +175,11 @@
             // the block-time of a popunder in minutes
             blocktime: false,
 
-            // chrome-exclude user-agent-string
-            chromeExclude: 'chrome\/(4[1-9]|[5-9][\d])\.',
+            // chrome-exclude/flash-handle user-agent-string
+            chrome: {
+                ex: 'chrome\/(4[1-9]|[5-9][\d])\.',
+                noFlash: 'chrome\/(4[3-9]|[5-9][\d])\.'
+            },
 
             // user-agents to skip
             skip: {
@@ -338,8 +341,9 @@
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
                 trigger.on('click.' + t.ns, c);
                 if (t.ua.g) {
-                    t.def.skip[t.def.chromeExclude] = true;
-                    if (t.def.fs && t.ua.fl) {
+                    t.def.skip[t.def.chrome.ex] = true;
+                    t.def.skip[t.def.chrome.noFlash] = true;
+                    if (t.def.fs && t.ua.fl && !t.uaTest(t.def.chrome.noFlash)) {
                         t.overlay(trigger, hs);
                     }
                 }
@@ -427,12 +431,12 @@
             if (true === bToggle && true === t.ua.g && true === t.ua.flEnabled) {
                 t.setMethod('g', 'overlay');
                 o.css('zIndex', 'auto');
-                t.def.skip[t.def.chromeExclude] = false;
+                t.def.skip[t.def.chrome.ex] = false;
             }
             else {
                 t.setMethod('g', 'tab');
                 o.css('zIndex', (parseInt(z === 'auto' ? 0 : z) - 1));
-                t.def.skip[t.def.chromeExclude] = true;
+                t.def.skip[t.def.chrome.ex] = true;
             }
 
             return t;
