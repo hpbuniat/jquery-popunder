@@ -93,7 +93,7 @@
     </pre>
 
     <input type="hidden" name="test" value="test" />
-    <input id="submitButtonSix" type="submit" data-target="http://www.google.com" value="Open Popunder via Button-Click" />
+    <input type="submit" data-target="http://www.google.com" value="Open Popunder via Button-Click" />
 </form>
 
 <form id="testFormFive" action="#">
@@ -123,12 +123,28 @@
     <a href="#">Open Popunder via Link</a>
 </form>
 
-<div id="testSix">
+<div id="testFormSix">
     <h3>Example #6 (unbind a popunder)</h3>
     <pre>
-        $.popunder.helper.unbind('#testSix', '#testSix input[type="submit"]');
+        window.fPopunder = function(event) {
+            if (!window.fPopunderStack) {
+                window.fPopunderStack = [[$(event.target).data('target')]];
+            }
+
+            return window.fPopunderStack;
+        };
+
+        $.popunder.helper.def.fs = 'dist/jq-pu-toolkit.swf';
+        $.popunder(window.fPopunder, '#testFormSix', '#testFormSix input[type="submit"]');
     </pre>
+    <div style="display:none">
+        <input id="submitButtonSix" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
+    </div>
+
+    <a href="#" onclick="$.popunder.helper.unbind('#testFormSix', '#submitButtonSix');">Unbind popunder</a>
+    <a href="#" onclick="$('#submitButtonSix').parent('div').show();">Show Button</a>
 </div>
+
 
 <a href="https://github.com/hpbuniat/jquery-popunder"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 

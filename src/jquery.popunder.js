@@ -197,7 +197,10 @@
             fs: false,
 
             // set to true, if the url should be opened in a popup instead of a popunder
-            popup: false
+            popup: false,
+
+            // visibility timer for flash-overlay
+            timer: []
         },
 
         /**
@@ -344,7 +347,12 @@
                     t.def.skip[t.def.chrome.ex] = true;
                     t.def.skip[t.def.chrome.noFlash] = true;
                     if (t.def.fs && t.ua.fl && !t.uaTest(t.def.chrome.noFlash)) {
-                        t.overlay(trigger, hs);
+                        t.def.timer[hs] = setInterval($.proxy(function(trigger, hs, t) {
+                            if (!trigger.is(':hidden')) {
+                                t.overlay(trigger, hs);
+                                clearInterval(t.def.timer[hs]);
+                            }
+                        }, this, trigger, hs, t), 500);
                     }
                 }
             }
@@ -363,13 +371,17 @@
         overlay: function(trigger, hs) {
             var t = this;
             trigger.each(function() {
-                var $e = $(this),
-                    a = 'absolute',
+                var $e = $(this);
+                if ($e.parent('.jq-pu').length) {
+                    t.unbind($e.parents('form:eq(0)'), $e);
+                }
+
+                var a = 'absolute',
                     p = ($e.css('position') === a) ? '' : 'position:relative;',
                     i = t.rand('pub'),
 
                     // build a container around the button/link - this is tricky, when it comes to the elements position
-                    c = $e.wrap('<div class="jq-pu" style="display:inline-block; ' + p + '" />').parent(),
+                    c = $e.wrap('<div class="jq-pu ' + i + '" style="display:inline-block; ' + p + '" />').parent(),
                     s = $.extend(true, {}, {
                         position: a,
                         cursor: "pointer",
@@ -391,7 +403,7 @@
                 o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" />');
                 c.append(o);
 
-                t.toggleFl(false);
+                t.toggleFl(t.m['g'] === 'overlay', i);
             });
 
             return t;
@@ -414,13 +426,14 @@
          * Toggle the flash-layer
          *
          * @param  {boolean} bToggle Set true, to show the layer - false, to hide it
+         * @param  {string} selector Class-Selector
          *
          * @return $.popunder.helper
          */
-        toggleFl: function(bToggle) {
+        toggleFl: function(bToggle, selector) {
             bToggle = !!bToggle;
             var t = this,
-                c = $('div.jq-pu'),
+                c = $(('div.jq-pu' + (!!selector) ? ('.' + selector) : '')),
                 z = c.css('zIndex'),
                 o = c.find('object');
 
@@ -720,10 +733,16 @@
                 s = 'string';
 
             t.reset();
-            form = (typeof form === s) ? $(form) : form;
-            form.off('submit.' + t.ns);
-            trigger = (typeof trigger === s) ? $(trigger) : trigger;
-            trigger.off('click.' + t.ns).next('.jq-pu object').remove().unwrap();
+            if (!!form) {
+                form = (typeof form === s) ? $(form) : form;
+                form.off('submit.' + t.ns);
+            }
+
+            if (!!trigger) {
+                trigger = (typeof trigger === s) ? $(trigger) : trigger;
+                trigger.off('click.' + t.ns).next('.jq-pu object').remove();
+                trigger.unwrap();
+            }
 
             window.aPopunder = [];
 
