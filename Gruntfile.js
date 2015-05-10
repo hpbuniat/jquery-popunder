@@ -82,7 +82,7 @@ module.exports = function (grunt) {
                     'cd jquery',
                     'git checkout tags/`git tag | grep -v "-" | tail -n 1`',
                     'npm install',
-                    'grunt custom:-sizzle,-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-deprecated,-exports/amd',
+                    'grunt custom:-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-deprecated,-exports/amd',
                     'cp -f dist/jquery.min.js ../../../src/jquery.min.js'
                 ].join(' && '),
                 options: {
