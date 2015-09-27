@@ -39,7 +39,7 @@
     </pre>
 
     <input type="hidden" name="q" value="jquery-popunder" />
-    <input id="submitButtonOneClick" data-target="http://www.github.com" type="submit" value="Open Popunder via Button-Click" />
+    <input id="submitButtonOneClick" data-target="http://www.wikipedia.de" type="submit" value="Open Popunder via Button-Click" />
 </form>
 
 <form id="testFormTwo" action="http://www.google.de" method="GET">
@@ -47,10 +47,10 @@
     <pre>
         window.aThreePopunder = [
             ['http://www.google.com', {window: {height:400, width:400}, blocktime: 1}],
-            ['http://www.github.com', {window: {height:100, width:100}, cb: function() {
-                console.log('github.com has been opened');
+            ['http://www.heise.de', {window: {height:100, width:100}, cb: function() {
+                console.log('heise.de has been opened');
             }}],
-            ['http://www.heise.de']
+            ['http://www.github.com']
         ];
 
         $.popunder(window.aThreePopunder, '#testFormTwo', '#testFormTwo input[type="submit"], #testForm a');

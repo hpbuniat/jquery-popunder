@@ -420,12 +420,8 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin && t.lastTarget && !l) {
-                t.lastWin["blur"]();
-                t.lastWin["opener"]["window"]["focus"]();
-                window["self"]["window"]["focus"]();
-                window["focus"]();
-
                 if (t.ua.ie === true) {
+                    t.switcher.simple(t);
                     t.switcher.simple(t);
                 }
                 else if (!t.ua.g) {
@@ -454,12 +450,15 @@
              * @return void
              */
             simple: function(t) {
-                setTimeout(function () {
+                if (t.ua.oldIE) {
                     t.lastWin["blur"]();
                     t.lastWin["opener"]["window"]["focus"]();
                     window["self"]["window"]["focus"]();
                     window["focus"]();
-                }, 1000)
+                }
+                else {
+                    document["focus"]();
+                }
             },
 
             /**
@@ -592,8 +591,11 @@
          */
         getFormUrl: function(source, bReturnIfNotBlank) {
             var $target = $(source.target),
-                bReturnIfNotBlank = bReturnIfNotBlank || true,
                 f, s;
+
+            if (typeof bReturnIfNotBlank === 'undefined') {
+                bReturnIfNotBlank = true;
+            }
 
             if ($target.is('input[type="submit"]') === true) {
                 f = source.target.form;
