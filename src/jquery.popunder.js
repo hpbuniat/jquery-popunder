@@ -23,8 +23,7 @@
      * @return jQuery
      */
     $.popunder = function(aPopunder, form, trigger, eventSource) {
-        var t = $.popunder.helper,
-            u = 'undefined';
+        var t = $.popunder.helper;
 
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
@@ -40,7 +39,7 @@
             }
 
             t.reset();
-            if (typeof aPopunder !== u) {
+            if (typeof aPopunder !== t.u) {
                 do {
                     t.queue(aPopunder, eventSource);
                 }
@@ -96,6 +95,13 @@
          * @var string
          */
         b: 'about:blank',
+
+        /**
+         * undefined
+         *
+         * @var string
+         */
+        u: 'undefined',
 
         /**
          * The last opened window-url (before calling href)
@@ -387,8 +393,11 @@
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
                 if (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher')) {
-                    eventSource.preventDefault();
-                    t.switcher.switchWindow(t.getFormUrl(eventSource), t.o);
+                    i = t.getFormUrl(eventSource);
+                    if (i) {
+                        eventSource.preventDefault();
+                        t.switcher.switchWindow(i, t.o);
+                    }
                 }
                 else if (true === t.isTab()) {
                     t.switcher.tab(t, t.o);
@@ -575,7 +584,7 @@
          * @return Array
          */
         handleTargetBlank: function(aPopunder, source) {
-            if (source && typeof source.target !== 'undefined') {
+            if (source && typeof source.target !== this.u) {
                 var t = this,
                     formTarget = t.getFormUrl(source, false);
 
@@ -602,14 +611,15 @@
          * @return String
          */
         getFormUrl: function(source, bReturnIfNotBlank) {
-            var $target = $(source.target),
+            var t = this,
+                $target = $(source.target),
                 f, s;
 
-            if (typeof bReturnIfNotBlank === 'undefined') {
+            if (typeof bReturnIfNotBlank === t.u) {
                 bReturnIfNotBlank = true;
             }
 
-            if ($target.is('input[type="submit"]') === true) {
+            if ($target.is('[type="submit"]') === true) {
                 f = source.target.form;
                 if (f && (f.target === '_blank' || bReturnIfNotBlank)) {
                     s = f.action + '/?' + $(f).serialize();
