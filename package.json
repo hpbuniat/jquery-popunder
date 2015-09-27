@@ -1,33 +1,35 @@
 {
-    "name":"jquery-popunder",
-    "description":"jquery-plugin to create popunders in major browsers.",
-    "version":"0.2.40",
-    "keywords":["popunder"],
-    "author":{
-        "name":"Hans-Peter Buniat",
-        "email":"hpbuniat@googlemail.com"
-    },
-    "bugs":"https://github.com/hpbuniat/jquery-popunder/issues",
-    "license":{
-        "type":"BSD",
-        "url":"https://github.com/hpbuniat/jquery-popunder/blob/master/LICENSE"
-    },
-    "repository": {
-      "type":"git",
-      "url":"git@github.com:hpbuniat/jquery-popunder.git"
-    },
-    "dependencies":{
-    },
-    "devDependencies": {
-        "grunt-compare-size": "latest",
-        "grunt-contrib-watch": "latest",
-        "grunt-contrib-jshint": "latest",
-        "grunt-contrib-uglify": "latest",
-        "grunt-shell": "latest",
-        "grunt-cli": "latest",
-        "grunt": "^0.4.0",
-        "bower": "latest",
-        "haxe": "latest"
-    },
-    "homepage":"https://github.com/hpbuniat/jquery-popunder"
+  "name": "jquery-popunder",
+  "description": "jquery-plugin to create popunders in major browsers.",
+  "version": "0.2.41",
+  "keywords": [
+    "popunder"
+  ],
+  "author": {
+    "name": "Hans-Peter Buniat",
+    "email": "hpbuniat@googlemail.com"
+  },
+  "bugs": "https://github.com/hpbuniat/jquery-popunder/issues",
+  "license": {
+    "type": "BSD",
+    "url": "https://github.com/hpbuniat/jquery-popunder/blob/master/LICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:hpbuniat/jquery-popunder.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "latest",
+    "grunt": "^0.4.0",
+    "grunt-cli": "latest",
+    "grunt-compare-size": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-shell": "latest",
+    "haxe": "latest",
+    "js-obfuscator": "^0.1.0"
+  },
+  "homepage": "https://github.com/hpbuniat/jquery-popunder"
 }

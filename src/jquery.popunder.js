@@ -4,7 +4,7 @@
  * @fileoverview jquery-popunder plugin
  *
  * @author Hans-Peter Buniat <hpbuniat@googlemail.com>
- * @copyright 2012-2014 Hans-Peter Buniat <hpbuniat@googlemail.com>
+ * @copyright 2012-2015 Hans-Peter Buniat <hpbuniat@googlemail.com>
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
@@ -25,6 +25,7 @@
     $.popunder = function(aPopunder, form, trigger, eventSource) {
         var t = $.popunder.helper,
             u = 'undefined';
+
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
         }
@@ -122,11 +123,11 @@
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
             w: !!(/webkit/i.test(navigator.userAgent)),
-            fl: !!(navigator.mimeTypes["application/x-shockwave-flash"]),
-            flEnabled: false
+            touch: ("ontouchstart" in document["documentElement"]) || !!(/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
         },
         m: {
-            g: 'tab'
+            g: 'switcher',
+            w: 'tab'
         },
 
         /**
@@ -175,47 +176,16 @@
             // the block-time of a popunder in minutes
             blocktime: false,
 
-            // chrome-exclude/flash-handle user-agent-string
-            chrome: {
-                ex: 'chrome\/(4[1-9]|[5-9][\d])\.',
-                noFlash: 'chrome\/(4[3-9]|[5-9][\d])\.'
-            },
-
             // user-agents to skip
             skip: {
-                'opera': true,
-                'linux': true,
-                'android': true,
-                'iphone': true,
-                'ipad': true
+                'linux': true
             },
 
             // callback function, to be executed when a popunder is opened
             cb: null,
 
-            // flash-url (e.g. jq-pu-toolkit.swf)
-            fs: false,
-
             // set to true, if the url should be opened in a popup instead of a popunder
-            popup: false,
-
-            // visibility timer for flash-overlay
-            timer: []
-        },
-
-        /**
-         * Set the method for a specific agent
-         *
-         * @param {String} ua The agent
-         * @param {String} m The method
-         *
-         * @returns $.popunder.helper
-         */
-        setMethod: function (ua, m) {
-            var t = this;
-            t.m[ua] = m;
-
-            return t;
+            popup: false
         },
 
         /**
@@ -285,25 +255,6 @@
         },
 
         /**
-         * Trigger click
-         *
-         * @param  {string} trigger
-         *
-         * @return void
-         */
-        trigger: function(trigger) {
-            var t = this,
-                $trigger = t.getTrigger(trigger);
-            if (t.last && t.ua.g === true && t.m.g === 'overlay') {
-                setTimeout($.proxy(function($trigger){
-                    $trigger.next('object').unwrap().remove();
-                }, null, $trigger), 1);
-            }
-
-            $trigger.trigger('click');
-        },
-
-        /**
          * Create a popunder
          *
          * @param  {Array} aPopunder The popunder(s) to open
@@ -315,6 +266,7 @@
         bindEvents: function(aPopunder, form, trigger) {
             var t = this,
                 s = 'string',
+                e = (t.ua.touch ? 'touchstart' : 'click'),
                 hs = t.hs.length,
                 c = (function(i) {
                     return function(event) {
@@ -335,121 +287,14 @@
                 };
             })(aPopunder);
 
-            if (form && !t.ua.g) {
+            if (form && !t.ua.g && !t.ua.w && !t.ua.touch) {
                 form = (typeof form === s) ? $(form) : form;
                 form.on('submit.' + t.ns, c);
             }
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                trigger.on('click.' + t.ns, c);
-                if (t.ua.g) {
-                    t.def.skip[t.def.chrome.ex] = true;
-                    t.def.skip[t.def.chrome.noFlash] = true;
-                    if (t.def.fs && t.ua.fl && !t.uaTest(t.def.chrome.noFlash)) {
-                        t.def.timer[hs] = setInterval($.proxy(function(trigger, hs, t) {
-                            if (!trigger.is(':hidden')) {
-                                t.overlay(trigger, hs);
-                                clearInterval(t.def.timer[hs]);
-                            }
-                        }, this, trigger, hs, t), 500);
-                    }
-                }
-            }
-
-            return t;
-        },
-
-        /**
-         * Create an flash-overlay to catch the click over a button or link
-         *
-         * @param  {object} trigger The click-trigger (button, link, etc.)
-         * @param  {int} hs The handler-stack index
-         *
-         * @return $.popunder.helper
-         */
-        overlay: function(trigger, hs) {
-            var t = this;
-            trigger.each(function() {
-                var $e = $(this);
-                if ($e.parent('.jq-pu').length) {
-                    t.unbind($e.parents('form:eq(0)'), $e);
-                }
-
-                var a = 'absolute',
-                    p = ($e.css('position') === a) ? '' : 'position:relative;',
-                    i = t.rand('pub'),
-
-                    // build a container around the button/link - this is tricky, when it comes to the elements position
-                    c = $e.wrap('<div class="jq-pu ' + i + '" style="display:inline-block; ' + p + '" />').parent(),
-                    s = $.extend(true, {}, {
-                        position: a,
-                        cursor: "pointer",
-                        top: ((!!p) ? 0 : $e.css('top')),
-                        left: ((!!p) ? 0 : $e.css('left')),
-                        padding: $e.css('padding'),
-                        margin: $e.css('margin'),
-                        width: $e.width(),
-                        height: $e.height()
-                    }),
-                    o = $('<object id="' + i + '" type="application/x-shockwave-flash" data="' + t.def.fs + '" />').css({
-                        width: 1,
-                        height: 1
-                    }).data(t.ns, s);
-
-                o.append('<param name="wmode" value="transparent" />');
-                o.append('<param name="menu" value="false" />');
-                o.append('<param name="allowScriptAccess" value="always" />');
-                o.append('<param name="flashvars" value="' + $.param({id: i, hs: hs}) + '" />');
-                c.append(o);
-
-                t.toggleFl(t.m['g'] === 'overlay', i);
-            });
-
-            return t;
-        },
-
-        /**
-         * Load the flash-handler
-         *
-         * @return $.popunder.helper
-         */
-        loadfl: function() {
-            var t = this;
-            t.ua.flEnabled = true;
-            t.toggleFl(true);
-
-            return t;
-        },
-
-        /**
-         * Toggle the flash-layer
-         *
-         * @param  {boolean} bToggle Set true, to show the layer - false, to hide it
-         * @param  {string} selector Class-Selector
-         *
-         * @return $.popunder.helper
-         */
-        toggleFl: function(bToggle, selector) {
-            bToggle = !!bToggle;
-            var t = this,
-                c = $(('div.jq-pu' + (!!selector) ? ('.' + selector) : '')),
-                z = c.css('zIndex'),
-                o = c.find('object');
-
-            if (o.data(t.ns) && parseInt(o.width()) === 1) {
-                o.css(o.data(t.ns));
-            }
-
-            if (true === bToggle && true === t.ua.g && true === t.ua.flEnabled) {
-                t.setMethod('g', 'overlay');
-                o.css('zIndex', 'auto');
-                t.def.skip[t.def.chrome.ex] = false;
-            }
-            else {
-                t.setMethod('g', 'tab');
-                o.css('zIndex', (parseInt(z === 'auto' ? 0 : z) - 1));
-                t.def.skip[t.def.chrome.ex] = true;
+                trigger.on(e + '.' + t.ns, c);
             }
 
             return t;
@@ -512,7 +357,7 @@
          */
         open: function(sUrl, opts, iLength, eventSource) {
             var t = this,
-                i, o, s, l,
+                i, o, s,
                 f = 'function';
 
             o = $.extend(true, {}, t.def, opts);
@@ -541,7 +386,11 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (t.ua.g === true && t.m.g === 'tab') {
+                if (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher')) {
+                    eventSource.preventDefault();
+                    t.switcher.switchWindow(t.getFormUrl(eventSource), t.o);
+                }
+                else if (t.ua.w === true && t.m.w === 'tab') {
                     t.switcher.tab(t, t.o);
                 }
                 else {
@@ -571,6 +420,11 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin && t.lastTarget && !l) {
+                t.lastWin["blur"]();
+                t.lastWin["opener"]["window"]["focus"]();
+                window["self"]["window"]["focus"]();
+                window["focus"]();
+
                 if (t.ua.ie === true) {
                     t.switcher.simple(t);
                 }
@@ -596,13 +450,16 @@
              * Classic popunder, used for ie
              *
              * @param  {$.popunder.helper} t
+             *
+             * @return void
              */
             simple: function(t) {
-                try {
-                    t.lastWin.blur();
-                }
-                catch (err) {}
-                window.focus();
+                setTimeout(function () {
+                    t.lastWin["blur"]();
+                    t.lastWin["opener"]["window"]["focus"]();
+                    window["self"]["window"]["focus"]();
+                    window["focus"]();
+                }, 1000)
             },
 
             /**
@@ -610,6 +467,8 @@
              * In ff4+, chrome21-23 we need to trigger a window.open loose the focus on the popup. Afterwards we can re-focus the parent-window
              *
              * @param  {$.popunder.helper} t
+             *
+             * @return void
              */
             pop: function(t) {
                 (function(e) {
@@ -629,32 +488,51 @@
             },
 
             /**
-             * "tab"-under for google-chrome 31+
+             * "tab"-under for webkit/chrome
              *
              * @param  {$.popunder.helper} t
              * @param  {String} h
              *
-             * @return $.popunder.helper
+             * @return void
              */
             tab: function(t, h) {
-                var u = (!h) ? 'data:text/html,<script>window.close();</script>;' : h,
+                var l = '',
+                    u = (!h) ? 'data:text/html,<scr' + l + 'ipt>window.close();</scr' + l + 'ipt>;' : h,
                     p = !h,
                     a = $('<a/>', {
                         'href': u
                     }).appendTo(document.body),
                     e = document.createEvent("MouseEvents");
 
-                p = (t.m.g === 'tab') ? !p : p;
-                e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, p, false, !p, p, 0, null);
-                a[0].dispatchEvent(e);
-                a[0].parentNode.removeChild(a[0]);
+                p = (t.m.w === 'tab') ? !p : p;
+                e.initMouseEvent("click", !p, true, window, 0, 0, 0, 0, 0, p, false, !p, p, 0, null);
+                if (!h) {
+                    a[0].dispatchEvent(e);
+                    a[0].parentNode.removeChild(a[0]);
+                }
+                else {
+                    setTimeout(function () {
+                        window["getSelection"]()["empty"]()
+                    }, 250);
+                }
+            },
 
-                return t;
+            /**
+             * Set the handle tab-switch url
+             *
+             * @param  {String} payloadUrl
+             * @param  {String} popunderUrl
+             *
+             * @return void
+             */
+            switchWindow: function (payloadUrl, popunderUrl) {
+                window["open"](payloadUrl);
+                window["location"]["assign"](popunderUrl);
             }
         },
 
         /**
-         * Set the popunders url
+         * Set the popunder's url
          *
          * @param  {int|boolean} l True, if the url should be set
          *
@@ -663,7 +541,7 @@
         href: function(l) {
             var t = this, d;
             if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
-                if (t.ua.g === true && t.m.g !== 'simple') {
+                if ((t.ua.w === true && t.m.w === 'tab') || (t.ua.g === true && t.m.g === 'tab')) {
                     d = t.lastWin.document;
                     d.open();
                     d.write('<html><head><title>' + document.title + '</title><script type="text/javascript">window.location="' + t.lastTarget + '";<\/script></head><body></body></html>');
@@ -688,27 +566,43 @@
         handleTargetBlank: function(aPopunder, source) {
             if (source && typeof source.target !== 'undefined') {
                 var t = this,
-                    form = null,
-                    $target = $(source.target),
-                    s;
+                    formTarget = t.getFormUrl(source, false);
 
-                if ($target.is('input[type="submit"]') === true) {
-                    form = source.target.form;
-                }
-
-                if (form && form.target === '_blank') {
-                    s = t.du;
-                    if (t.ua.ie) {
-                        s = form.action + '/?' + $(form).serialize();
+                if (formTarget) {
+                    if (!t.ua.ie) {
+                        formTarget = t.du;
                     }
 
-                    aPopunder.unshift([s, {
+                    aPopunder.unshift([formTarget, {
                         popup: true
                     }]);
                 }
             }
 
             return aPopunder;
+        },
+
+        /**
+         * Get the url of a form-element including the payload
+         *
+         * @param  {jQuery.Event} source
+         * @param  {boolean} bReturnIfNotBlank
+         *
+         * @return String
+         */
+        getFormUrl: function(source, bReturnIfNotBlank) {
+            var $target = $(source.target),
+                bReturnIfNotBlank = bReturnIfNotBlank || true,
+                f, s;
+
+            if ($target.is('input[type="submit"]') === true) {
+                f = source.target.form;
+                if (f && (f.target === '_blank' || bReturnIfNotBlank)) {
+                    s = f.action + '/?' + $(f).serialize();
+                }
+            }
+
+            return s;
         },
 
         /**

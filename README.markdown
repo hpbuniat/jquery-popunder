@@ -39,15 +39,14 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-37
-- Google Chrome 10-42
+- Mozilla Firefox 3-40
+- Google Chrome 10-45
 - Microsoft Internet Explorer 6-11
 - Apple Safari 5
 
 Known Issues
 -------
-- chrome 41,42 needs a flash-layer to create a popunder
--- chrome 43 is not supported yet
+- chrome 45+ is covered by moving the originating website into a new tab, leaving the popunder on the first one
 - attention: the window-properties are currently not working in google chrome 28+
 - the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome

@@ -28,6 +28,25 @@ module.exports = function (grunt) {
                 eqnull:true
             }
         },
+        jsObfuscate: {
+            dist: {
+                options: {
+                    concurrency: 2,
+                    keepLinefeeds: false,
+                    keepIndentations: false,
+                    encodeStrings: true,
+                    encodeNumbers: true,
+                    moveStrings: true,
+                    replaceNames: true,
+                    variableExclusions: ['^_get_', '^_set_', '^_mtd_']
+                },
+                files: {
+                    'dist/jquery.popunder.obfuscated.min.js': [
+                        'dist/jquery.popunder.min.js'
+                    ]
+                }
+            }
+        },
         uglify:{
             dist: {
                 files: {
@@ -103,11 +122,12 @@ module.exports = function (grunt) {
 
 
     // load tasks
+    grunt.loadNpmTasks('js-obfuscator');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
     grunt.registerTask('update', ['shell:update_bower', 'shell:update_prepare', 'shell:update_buildJquery', 'default']);
-    grunt.registerTask('default', ['jshint', 'uglify', 'shell:haxe']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'jsObfuscate', 'shell:haxe']);
 };
