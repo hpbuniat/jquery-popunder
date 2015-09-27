@@ -47,8 +47,6 @@ jquery-popunder was tested with:
 Known Issues
 -------
 - chrome 45+ is covered by moving the originating website into a new tab, leaving the popunder on the first one
-- attention: the window-properties are currently not working in google chrome 28+
-- the script does not work with the Opera-Browser, so the opera-browser is disable by default
 - the script does not work in Firefox under Gnome
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
