@@ -390,7 +390,7 @@
                     eventSource.preventDefault();
                     t.switcher.switchWindow(t.getFormUrl(eventSource), t.o);
                 }
-                else if (t.ua.w === true && t.m.w === 'tab') {
+                else if (true === t.isTab()) {
                     t.switcher.tab(t, t.o);
                 }
                 else {
@@ -422,9 +422,11 @@
             if (t.lastWin && t.lastTarget && !l) {
                 if (t.ua.ie === true) {
                     t.switcher.simple(t);
-                    t.switcher.simple(t);
+                    setTimeout(function () {
+                        t.switcher.simple(t);
+                    }, 500);
                 }
-                else if (!t.ua.g) {
+                else if (t.ua.ff === true) {
                     t.switcher.pop(t);
                 }
             }
@@ -472,7 +474,7 @@
             pop: function(t) {
                 (function(e) {
                     try {
-                        t.f = e.window.open('about:blank');
+                        t.f = e.window.open(t.b);
                         if (!!t.f) {
                             t.f.close();
                         }
@@ -503,7 +505,7 @@
                     }).appendTo(document.body),
                     e = document.createEvent("MouseEvents");
 
-                p = (t.m.w === 'tab') ? !p : p;
+                p = (true === t.isTab()) ? !p : p;
                 e.initMouseEvent("click", !p, true, window, 0, 0, 0, 0, 0, p, false, !p, p, 0, null);
                 if (!h) {
                     a[0].dispatchEvent(e);
@@ -531,6 +533,16 @@
         },
 
         /**
+         * Check if we're using the tab-method currently
+         *
+         * @return boolean
+         */
+        isTab: function() {
+            var t = this;
+            return (t.ua.w === true && t.m.w === 'tab') || (t.ua.g === true && t.m.g === 'tab');
+        },
+
+        /**
          * Set the popunder's url
          *
          * @param  {int|boolean} l True, if the url should be set
@@ -540,7 +552,7 @@
         href: function(l) {
             var t = this, d;
             if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
-                if ((t.ua.w === true && t.m.w === 'tab') || (t.ua.g === true && t.m.g === 'tab')) {
+                if (true === t.isTab()) {
                     d = t.lastWin.document;
                     d.open();
                     d.write('<html><head><title>' + document.title + '</title><script type="text/javascript">window.location="' + t.lastTarget + '";<\/script></head><body></body></html>');
