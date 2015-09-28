@@ -612,17 +612,25 @@
          */
         getFormUrl: function(source, bReturnIfNotBlank) {
             var t = this,
+                sel = '[type="submit"]',
                 $target = $(source.target),
-                f, s;
+                $f, s;
+
+            if ($target.is(sel) !== true) {
+                $target = $target.parents(sel);
+                $f = $target.parents('form');
+            }
+            else {
+                $f = $(source.target.form);
+            }
 
             if (typeof bReturnIfNotBlank === t.u) {
                 bReturnIfNotBlank = true;
             }
 
-            if ($target.is('[type="submit"]') === true) {
-                f = source.target.form;
-                if (f && (f.target === '_blank' || bReturnIfNotBlank)) {
-                    s = f.action + '/?' + $(f).serialize();
+            if ($target.length !== 0) {
+                if ($f.length && ($f.attr('target') === '_blank' || bReturnIfNotBlank)) {
+                    s = $f.attr('action') + '/?' + $f.serialize();
                 }
             }
 
