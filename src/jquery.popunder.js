@@ -42,6 +42,7 @@
             if (typeof aPopunder !== t.u) {
                 do {
                     t.queue(aPopunder, eventSource);
+                    t.first = false;
                 }
                 while (aPopunder.length > 0);
                 t.queue(aPopunder, eventSource);
@@ -88,6 +89,13 @@
          * @var boolean
          */
         last: false,
+
+        /**
+         * Was the last popunder was processed
+         *
+         * @var boolean
+         */
+        first: true,
 
         /**
          * About:blank
@@ -392,7 +400,7 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (iLength === 0 && (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher'))) {
+                if (t.first === true && (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher'))) {
                     i = t.getFormUrl(eventSource);
                     if (i) {
                         eventSource.preventDefault();
@@ -435,7 +443,7 @@
                         t.switcher.simple(t);
                     }, 500);
                 }
-                else if (t.ua.ff === true) {
+                else {
                     t.switcher.pop(t);
                 }
             }
@@ -646,6 +654,7 @@
         reset: function() {
             var t = this;
             t.f = t.last = false;
+            t.first = true;
             t.lastTarget = t.lastWin = null;
             return t;
         },
