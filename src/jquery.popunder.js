@@ -614,7 +614,7 @@
             var t = this,
                 sel = '[type="submit"]',
                 $target = $(source.target),
-                $f, s;
+                $f, s, m;
 
             if ($target.is(sel) !== true) {
                 $target = $target.parents(sel);
@@ -628,8 +628,9 @@
                 bReturnIfNotBlank = true;
             }
 
-            if ($target.length !== 0) {
-                if ($f.length && ($f.attr('target') === '_blank' || bReturnIfNotBlank)) {
+            if ($target.length !== 0 && $f.length !== 0) {
+                m = ($f.attr('method') + ''); // cast to string
+                if (m.toLowerCase() === 'get' && ($f.attr('target') === '_blank' || bReturnIfNotBlank)) {
                     s = $f.attr('action') + '/?' + $f.serialize();
                 }
             }
