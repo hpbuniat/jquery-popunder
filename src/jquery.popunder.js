@@ -392,7 +392,7 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher')) {
+                if (iLength === 0 && (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher'))) {
                     i = t.getFormUrl(eventSource);
                     if (i) {
                         eventSource.preventDefault();
@@ -548,7 +548,7 @@
          */
         isTab: function() {
             var t = this;
-            return (t.ua.w === true && t.m.w === 'tab') || (t.ua.g === true && t.m.g === 'tab');
+            return (t.ua.w === true && t.m.w === 'tab' && t.ua.g !== true) || (t.ua.g === true && t.m.g === 'tab');
         },
 
         /**
