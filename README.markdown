@@ -28,7 +28,7 @@ All of the options are optional!
         "width": ..        The height of the popunder
         ..: ..             more window.open-parameters ..
     },
-    "skip": {              UA-Patterns to skip
+    "skip": {              UA-Patterns to skip (needs to be a known ua!)
         "opera": true
     },
     "cb": null             Callback, after a popunder has been opened (if a function)
@@ -39,15 +39,14 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-40
-- Google Chrome 10-45
-- Microsoft Internet Explorer 6-11
+- Mozilla Firefox 3-45
+- Google Chrome 10-49
+- Microsoft Internet Explorer 6-11, edge
 - Apple Safari 5
 
 Known Issues
 -------
-- chrome 45+ is covered by moving the originating website into a new tab, leaving the popunder on the first one
-- the script does not work in Firefox under Gnome
+- chrome 45+ & linux is covered by moving the originating website into a new tab, leaving the popunder on the first one
 - in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
 Installation

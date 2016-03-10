@@ -25,6 +25,7 @@
     $.popunder = function(aPopunder, form, trigger, eventSource) {
         var t = $.popunder.helper;
 
+        t.getMethod();
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
         }
@@ -137,11 +138,13 @@
             o: !!(/opera/i.test(navigator.userAgent)),
             g: !!(/chrome/i.test(navigator.userAgent)),
             w: !!(/webkit/i.test(navigator.userAgent)),
+            linux: !!(/linux/i.test(navigator.userAgent)),
             touch: ("ontouchstart" in document["documentElement"]) || !!(/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
         },
         m: {
+            w: 'tab',
             g: 'switcher',
-            w: 'tab'
+            linux: 'switcher'
         },
 
         /**
@@ -192,7 +195,8 @@
 
             // user-agents to skip
             skip: {
-                'linux': true
+                // there needs to be a matching ua-lookup here
+                // 'linux': true
             },
 
             // callback function, to be executed when a popunder is opened
@@ -203,14 +207,42 @@
         },
 
         /**
-         * Simple user-agent test
+         * Test a stack of ua's
          *
-         * @param  {string} ua The user-agent pattern
+         * @param  {object} s Stack of ua's
+         * @param  {object} ua UA-matching-stack
          *
-         * @return {Boolean}
+         * @return boolean Returns true, if current ua is part of the stack
          */
-        uaTest: function(ua) {
-            return !!(new RegExp(ua, "i").test(navigator.userAgent.toString()));
+        testStack: function(s, ua) {
+            var i, r = false;
+            for (i in s) {
+                if (s.hasOwnProperty(i)) {
+                    if (!!s[i] && !!ua[i]) {
+                        r = s[i];
+                    }
+                }
+            }
+
+            return r;
+        },
+
+        /**
+         * Set the popunder-method by parsing the
+         *
+         * @return $.popunder.helper
+         */
+        getMethod: function() {
+            var t = this;
+            if (typeof t.m === 'object') {
+                t.m = t.testStack(t.m, t.ua);
+            }
+
+            if (!!t.ua.touch) {
+                t.m = 'switcher';
+            }
+
+            return t;
         },
 
         /**
@@ -280,7 +312,7 @@
         bindEvents: function(aPopunder, form, trigger) {
             var t = this,
                 s = 'string',
-                e = (t.ua.touch ? 'touchstart' : 'click'),
+                e = (t.ua.touch ? 'touchstart click' : 'click'),
                 hs = t.hs.length,
                 c = (function(i) {
                     return function(event) {
@@ -371,11 +403,10 @@
          */
         open: function(sUrl, opts, iLength, eventSource) {
             var t = this,
-                i, o, s,
+                i, o,
                 f = 'function';
 
             o = $.extend(true, {}, t.def, opts);
-            s = o.skip;
 
             t.o = sUrl;
             if (top !== window.self) {
@@ -386,21 +417,19 @@
                 } catch (err) {}
             }
 
-            for (i in s) {
-                if (s.hasOwnProperty(i)) {
-                    if (s[i] === true && t.uaTest(i)) {
-                        return false;
-                    }
-                }
+            // test if current user-agent forces skipping
+            if (t.testStack(o.skip, t.ua)) {
+                return false;
             }
 
+            // test if cookie-blocktime is active
             if (o.blocktime && (typeof $.cookie === f) && t.cookieCheck(sUrl, o)) {
                 return false;
             }
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (t.first === true && (t.ua.touch || (t.ua.g === true && t.m.g === 'switcher'))) {
+                if (t.first === true && t.m === 'switcher') {
                     i = t.getFormUrl(eventSource);
                     if (i) {
                         eventSource.preventDefault();
@@ -544,7 +573,7 @@
              * @return void
              */
             switchWindow: function (payloadUrl, popunderUrl) {
-                window["open"](payloadUrl);
+                window["open"](payloadUrl, '_newtab');
                 window["location"]["assign"](popunderUrl);
             }
         },
@@ -555,8 +584,7 @@
          * @return boolean
          */
         isTab: function() {
-            var t = this;
-            return (t.ua.w === true && t.m.w === 'tab' && t.ua.g !== true) || (t.ua.g === true && t.m.g === 'tab');
+            return (this.m === 'tab');
         },
 
         /**
