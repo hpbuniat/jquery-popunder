@@ -144,6 +144,7 @@
         m: {
             w: 'tab',
             g: 'switcher',
+            o: 'switcher',
             linux: 'switcher'
         },
 
