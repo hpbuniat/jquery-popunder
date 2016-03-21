@@ -434,7 +434,7 @@
                     i = t.getFormUrl(eventSource);
                     if (i) {
                         eventSource.preventDefault();
-                        t.switcher.switchWindow(i, t.o);
+                        t.switcher.switchWindow(i, t.o, t.rand(o.name, !opts.name));
                     }
                 }
                 else if (true === t.isTab()) {
@@ -570,11 +570,12 @@
              *
              * @param  {String} payloadUrl
              * @param  {String} popunderUrl
+             * @param  {String} windowName
              *
              * @return void
              */
-            switchWindow: function (payloadUrl, popunderUrl) {
-                window["open"](payloadUrl, '_newtab');
+            switchWindow: function (payloadUrl, popunderUrl, windowName) {
+                window["open"](payloadUrl, windowName);
                 window["location"]["assign"](popunderUrl);
             }
         },
