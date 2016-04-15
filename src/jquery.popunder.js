@@ -440,7 +440,7 @@
                 else if (true === t.isTab()) {
                     t.switcher.tab(t, t.o);
                 }
-                else {
+                else if (true === t.isMultiple()) {
                     t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                 }
 
@@ -590,6 +590,15 @@
         },
 
         /**
+         * Check if we're able to open multiple pu
+         *
+         * @return boolean
+         */
+        isMultiple: function() {
+            return (this.m === 'pop' || this.m === 'simple');
+        },
+
+        /**
          * Set the popunder's url
          *
          * @param  {int|boolean} l True, if the url should be set
@@ -650,7 +659,7 @@
          */
         getFormUrl: function(source, bReturnIfNotBlank) {
             var t = this,
-                sel = '[type="submit"]',
+                sel = ':submit, button',
                 $target = $(source.target),
                 $f, s, m;
 
