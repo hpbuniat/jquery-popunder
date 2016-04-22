@@ -440,7 +440,7 @@
                 else if (true === t.isTab()) {
                     t.switcher.tab(t, t.o);
                 }
-                else if (true === t.isMultiple()) {
+                else if (t.first === true || true === t.isMultiple()) {
                     t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                 }
 
