@@ -142,6 +142,8 @@
             touch: ("ontouchstart" in document["documentElement"]) || !!(/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
         },
         m: {
+            ie: 'simple',
+            ff: 'pop',
             w: 'tab',
             g: 'switcher',
             o: 'switcher',
