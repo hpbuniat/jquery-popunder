@@ -10,10 +10,7 @@
     "email": "hpbuniat@googlemail.com"
   },
   "bugs": "https://github.com/hpbuniat/jquery-popunder/issues",
-  "license": {
-    "type": "BSD",
-    "url": "https://github.com/hpbuniat/jquery-popunder/blob/master/LICENSE"
-  },
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "git@github.com:hpbuniat/jquery-popunder.git"
@@ -21,7 +18,7 @@
   "dependencies": {},
   "devDependencies": {
     "bower": "latest",
-    "grunt": "^0.4.0",
+    "grunt": "^1.0",
     "grunt-cli": "latest",
     "grunt-compare-size": "latest",
     "grunt-contrib-jshint": "latest",

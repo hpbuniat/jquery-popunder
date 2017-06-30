@@ -26,7 +26,8 @@ module.exports = function (grunt) {
                 expr:true,
                 evil:true,
                 eqnull:true
-            }
+            },
+            all: ['src/jquery.popunder.js']
         },
         jsObfuscate: {
             dist: {
@@ -71,7 +72,7 @@ module.exports = function (grunt) {
         },
         shell:{
             haxe: {
-                command: 'node ../../node_modules/haxe/bin/haxe-cli.js compile.hxml',
+                command: '../../node_modules/.bin/haxe compile.hxml',
                 options: {
                     stdout: true,
                     stderr: true,

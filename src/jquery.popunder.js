@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-/*global jQuery, window, screen, navigator, opener, top, document */
+/*global jQuery, window, screen, navigator, top, document */
 (function($, window, screen, navigator, document) {
     "use strict";
 
@@ -471,7 +471,7 @@
             if (t.lastWin && t.lastTarget && !l) {
                 if (t.ua.ie === true) {
                     t.switcher.simple(t);
-                    setTimeout(function () {
+                    window.setTimeout(function () {
                         t.switcher.simple(t);
                     }, 500);
                 }
@@ -561,8 +561,8 @@
                     a[0].parentNode.removeChild(a[0]);
                 }
                 else {
-                    setTimeout(function () {
-                        window["getSelection"]()["empty"]()
+                    window.setTimeout(function () {
+                        window["getSelection"]()["empty"]();
                     }, 250);
                 }
             },
