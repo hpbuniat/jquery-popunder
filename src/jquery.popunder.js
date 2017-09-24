@@ -159,9 +159,9 @@
             touch: ("ontouchstart" in document["documentElement"]) || !!(/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
         },
         m: {
-            ie: 'simple',
+            ie: 'switcher',
             ff: 'pop',
-            w: 'tab',
+            w: 'switcher',
             g: 'switcher',
             o: 'switcher',
             linux: 'switcher'
@@ -491,9 +491,6 @@
                         t.switcher.switchWindow(i, t.o, t.rand(o.name, !opts.name));
                     }
                 }
-                else if (true === t.isTab()) {
-                    t.switcher.tab(t, t.o);
-                }
                 else if (t.first === true || true === t.isMultiple()) {
                     t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                 }
@@ -590,36 +587,6 @@
             },
 
             /**
-             * "tab"-under for webkit/chrome
-             *
-             * @param  {$.popunder.helper} t
-             * @param  {String} h
-             *
-             * @return void
-             */
-            tab: function(t, h) {
-                var l = '',
-                    u = (!h) ? 'data:text/html,<scr' + l + 'ipt>window.close();</scr' + l + 'ipt>;' : h,
-                    p = !h,
-                    a = $('<a/>', {
-                        'href': u
-                    }).appendTo(document.body),
-                    e = document.createEvent("MouseEvents");
-
-                p = (true === t.isTab()) ? !p : p;
-                e.initMouseEvent("click", !p, true, window, 0, 0, 0, 0, 0, p, false, !p, p, 0, null);
-                if (!h) {
-                    a[0].dispatchEvent(e);
-                    a[0].parentNode.removeChild(a[0]);
-                }
-                else {
-                    window.setTimeout(function () {
-                        window["getSelection"]()["empty"]();
-                    }, 250);
-                }
-            },
-
-            /**
              * Set the handle tab-switch url
              *
              * @param  {String} payloadUrl
@@ -632,15 +599,6 @@
                 window["open"](payloadUrl, windowName);
                 window["location"]["assign"](popunderUrl);
             }
-        },
-
-        /**
-         * Check if we're using the tab-method currently
-         *
-         * @return boolean
-         */
-        isTab: function() {
-            return (this.m === 'tab');
         },
 
         /**
@@ -660,17 +618,9 @@
          * @return $.popunder.helper
          */
         href: function(l) {
-            var t = this, d;
+            var t = this;
             if (l && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
-                if (true === t.isTab()) {
-                    d = t.lastWin.document;
-                    d.open();
-                    d.write('<html><head><title>' + document.title + '</title><script type="text/javascript">window.location="' + t.lastTarget + '";<\/script></head><body></body></html>');
-                    d.close();
-                }
-                else {
-                    t.lastWin.document.location.href = t.lastTarget;
-                }
+                t.lastWin.document.location.href = t.lastTarget;
             }
 
             return t;
