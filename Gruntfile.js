@@ -29,18 +29,25 @@ module.exports = function (grunt) {
             },
             all: ['src/jquery.popunder.js']
         },
-        jsObfuscate: {
+        obfuscator: {
+            options: {
+                compact: true,
+                controlFlowFlattening: false,
+                deadCodeInjection: false,
+                debugProtection: false,
+                debugProtectionInterval: false,
+                disableConsoleOutput: true,
+                log: false,
+                mangle: true,
+                renameGlobals: false,
+                rotateStringArray: true,
+                selfDefending: true,
+                stringArray: true,
+                stringArrayEncoding: false,
+                stringArrayThreshold: 0.75,
+                unicodeEscapeSequence: false
+            },
             dist: {
-                options: {
-                    concurrency: 2,
-                    keepLinefeeds: false,
-                    keepIndentations: false,
-                    encodeStrings: true,
-                    encodeNumbers: true,
-                    moveStrings: true,
-                    replaceNames: true,
-                    variableExclusions: ['^_get_', '^_set_', '^_mtd_']
-                },
                 files: {
                     'dist/jquery.popunder.obfuscated.min.js': [
                         'dist/jquery.popunder.min.js'
@@ -102,7 +109,7 @@ module.exports = function (grunt) {
                     'cd jquery',
                     'git checkout tags/`git tag | grep -v "-" | tail -n 1`',
                     'npm install',
-                    'grunt custom:-event-alias,-ajax,-ajax/script,-ajax/jsonp,-ajax/xhr,-effects,-deprecated,-exports/amd',
+                    'grunt custom:-event-alias,-ajax/jsonp,-effects,-deprecated,-exports/amd',
                     'cp -f dist/jquery.min.js ../../../src/jquery.min.js'
                 ].join(' && '),
                 options: {
@@ -123,12 +130,12 @@ module.exports = function (grunt) {
 
 
     // load tasks
-    grunt.loadNpmTasks('js-obfuscator');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-obfuscator');
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task(s).
     grunt.registerTask('update', ['shell:update_bower', 'shell:update_prepare', 'shell:update_buildJquery', 'default']);
-    grunt.registerTask('default', ['jshint', 'uglify', 'jsObfuscate', 'shell:haxe']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'obfuscator', 'shell:haxe']);
 };

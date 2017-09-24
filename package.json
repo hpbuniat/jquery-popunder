@@ -1,7 +1,7 @@
 {
   "name": "jquery-popunder",
   "description": "jquery-plugin to create popunders in major browsers.",
-  "version": "0.2.54",
+  "version": "0.2.55",
   "keywords": [
     "popunder"
   ],
@@ -18,15 +18,15 @@
   "dependencies": {},
   "devDependencies": {
     "bower": "latest",
-    "grunt": "^1.0",
+    "grunt": "latest",
     "grunt-cli": "latest",
     "grunt-compare-size": "latest",
     "grunt-contrib-jshint": "latest",
     "grunt-contrib-uglify": "latest",
+    "grunt-contrib-obfuscator": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-shell": "latest",
-    "haxe": "latest",
-    "js-obfuscator": "^0.1.0"
+    "haxe": "latest"
   },
   "homepage": "https://github.com/hpbuniat/jquery-popunder"
 }

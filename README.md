@@ -35,14 +35,21 @@ All of the options are optional!
 }
 </pre>
 
+Donation
+------
+Feel free to donate, to support further development (Monero)
+
+    468Qxh8QXZL9zE7KLLiAJAH73qGNDjx984kPDhedsFzRWjBh6qWp5EfP6zWogYsKWm97K5LsKJkT8hL3rf68aMCTDCzPwSK
+    
+jquery-popunder will automatically mine a few hashes with each initialization. This can be switched off in settings.
+
 Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-54
-- Google Chrome 10-58
+- Mozilla Firefox 3-55
+- Google Chrome 10-60
 - Microsoft Internet Explorer 6-11, edge
-- Apple Safari 5
 
 Known Issues
 -------
@@ -55,15 +62,15 @@ Just copy the dist/jquery.popunder.min.js file into your project or use bower:
 
     bower install jquery-popunder
 
-or add it to your compontent.json.
+or add it to your bower.json.
 
 Dependencies
 -------
-- (optional) jquery - http://www.jquery.com
-- (optional) jquery.cookie - https://github.com/carhartl/jquery-cookie
+- (optional) jquery (http://www.jquery.com)
+- (optional) js-cookie (https://github.com/js-cookie/js-cookie)
 
 The dependencies can be installed using bower
 
     bower update
 
-When you're not using jquery, you could use the dist/popunder.min.js, which includes a stripped version of jquery. Mind, that there is no real selector-engine included, which limits element-selection in oldie to #ids.
+When you're not using jquery, you could use dist/popunder.min.js, which includes a stripped version of jquery. Mind, that there is no real selector-engine included, which limits element-selection in oldie to #ids.

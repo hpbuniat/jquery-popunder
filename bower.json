@@ -1,13 +1,13 @@
 {
     "name":"jquery-popunder",
-    "version":"0.2.54",
+    "version":"0.2.55",
     "main": "./dist/jquery.popunder.min.js",
     "repository":{
         "type":"git",
         "url":"git://github.com/hpbuniat/jquery-popunder.git"
     },
     "dependencies":{
-        "jquery":"<2.0",
-        "jquery.cookie":"~1.4"
+        "jquery":">1.4",
+        "js-cookie":"~2.1.4"
     }
 }
