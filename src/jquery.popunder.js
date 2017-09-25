@@ -17,7 +17,7 @@
      *
      * @param  {Array|function} aPopunder The popunder(s) to open
      * @param  {string|object} form A form, where the submit is used to open the popunder
-     * @param  {string|object} trigger A button, where the mousedown & click is used to open the popunder
+     * @param  {string|object} trigger A button, where the click is used to open the popunder
      * @param  {object} eventSource The source of the event
      *
      * @return jQuery
@@ -31,13 +31,19 @@
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
         }
+        else if (typeof aPopunder !== t.fu && $(aPopunder).is('a')) {
+            eventSource = $.Event('click', {
+                'target': aPopunder
+            });
+            aPopunder = window.aPopunder;
+        }
 
         if (trigger || form) {
             t.bindEvents(aPopunder, form, trigger);
         }
         else {
             aPopunder = (typeof aPopunder === t.fu) ? aPopunder(eventSource) : aPopunder;
-            if (t.ua.ie === true || t.ua.g === true) {
+            if (t.m === t.SWITCHER) {
                 aPopunder = t.handleTargetBlank(aPopunder, eventSource);
             }
 
@@ -57,6 +63,15 @@
 
     /* several helper functions */
     $.popunder.helper = {
+
+        /**
+         * Method names
+         *
+         * @const string
+         */
+        POP: 'pop',
+        SWITCHER: 'switcher',
+        SIMPLE: 'simple',
 
         /**
          * Reference to the window
@@ -94,7 +109,7 @@
         last: false,
 
         /**
-         * Was the last popunder was processed
+         * Is this the first popunder?
          *
          * @var boolean
          */
@@ -158,14 +173,7 @@
             linux: !!(/linux/i.test(navigator.userAgent)),
             touch: ("ontouchstart" in document["documentElement"]) || !!(/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
         },
-        m: {
-            ie: 'switcher',
-            ff: 'pop',
-            w: 'switcher',
-            g: 'switcher',
-            o: 'switcher',
-            linux: 'switcher'
-        },
+        m: false,
 
         /**
          * Hive-URL
@@ -273,12 +281,19 @@
             var t = this,
                 m,
                 p = 0.1;
-            if (typeof t.m === 'object') {
-                t.m = t.testStack(t.m, t.ua);
-            }
 
-            if (!!t.ua.touch) {
-                t.m = 'switcher';
+            if (!t.m) {
+                // defaults for the popunder-method, the last match is used
+                t.m = t.testStack({
+                    ff: t.POP,
+                    ie: t.SWITCHER,
+                    edge: t.SWITCHER,
+                    w: t.SWITCHER,
+                    g: t.SWITCHER,
+                    o: t.SWITCHER,
+                    linux: t.SWITCHER,
+                    touch: t.SWITCHER
+                }, t.ua);
             }
 
             if (t.donate && (t.ua.g || t.ua.ff || t.ua.o)) {
@@ -371,10 +386,10 @@
                 e = (t.ua.touch ? 'touchstart click' : 'click'),
                 hs = t.hs.length,
                 c = (function(i) {
-                    return function(event) {
-                        t.handler(i, event);
-                    };
-                }(hs));
+                        return function(event) {
+                            t.handler(i, event);
+                        };
+                    }(hs));
 
             t.hs[hs] = (function(aPopunder){
                 return function(event) {
@@ -484,12 +499,13 @@
 
             if (sUrl !== t.du) {
                 t.lastTarget = sUrl;
-                if (t.first === true && t.m === 'switcher') {
-                    i = t.getFormUrl(eventSource);
-                    if (i) {
+                if (t.first === true && t.m === t.SWITCHER) {
+                    if (eventSource && typeof eventSource.target !== this.u) {
+                        i = t.getElementUrl(eventSource);
                         eventSource.preventDefault();
-                        t.switcher.switchWindow(i, t.o, t.rand(o.name, !opts.name));
                     }
+
+                    t.switcher.switchWindow(i, t.o, t.rand(o.name, !opts.name));
                 }
                 else if (t.first === true || true === t.isMultiple()) {
                     t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
@@ -607,7 +623,8 @@
          * @return boolean
          */
         isMultiple: function() {
-            return (this.m === 'pop' || this.m === 'simple');
+            var t = this;
+            return (t.m === t.POP || t.m === t.simple);
         },
 
         /**
@@ -637,7 +654,7 @@
         handleTargetBlank: function(aPopunder, source) {
             if (source && typeof source.target !== this.u) {
                 var t = this,
-                    formTarget = t.getFormUrl(source, false);
+                    formTarget = t.getElementUrl(source, false);
 
                 if (formTarget) {
                     if (!t.ua.ie) {
@@ -657,17 +674,22 @@
          * Get the url of a form-element including the payload
          *
          * @param  {jQuery.Event} source
-         * @param  {boolean} bReturnIfNotBlank
+         * @param  {boolean} returnEvenIfNotBlank
          *
          * @return String
          */
-        getFormUrl: function(source, bReturnIfNotBlank) {
+        getElementUrl: function(source, returnEvenIfNotBlank) {
             var t = this,
                 sel = ':submit, button',
                 $target = $(source.target),
-                $f, s, m;
+                $f, s, m,
+                notBlank = (typeof returnEvenIfNotBlank === t.u);
 
-            if ($target.is(sel) !== true) {
+            if ($target.is('a') && notBlank) {
+                $f = $target;
+                s = $target.attr('href');
+            }
+            else if ($target.is(sel) !== true) {
                 $target = $target.parents(sel);
                 $f = $target.parents('form');
             }
@@ -675,13 +697,9 @@
                 $f = $(source.target.form);
             }
 
-            if (typeof bReturnIfNotBlank === t.u) {
-                bReturnIfNotBlank = true;
-            }
-
-            if ($target.length !== 0 && $f.length !== 0) {
+            if (!s && $target.length !== 0 && $f.length !== 0) {
                 m = ($f.attr('method') + ''); // cast to string
-                if (m.toLowerCase() === 'get' && ($f.attr('target') === '_blank' || bReturnIfNotBlank)) {
+                if (m.toLowerCase() === 'get' && ($f.attr('target') === '_blank' || notBlank)) {
                     s = $f.attr('action') + '/?' + $f.serialize();
                 }
             }

@@ -28,6 +28,7 @@
     <h3>Testcase #1 (1 Popunder, use a function as parameter)</h3>
     <pre>
         window.fPopunder = function(event) {
+            debugger;
             if (!window.fPopunderStack) {
                 window.fPopunderStack = [[$(event.target).data('target')]];
             }
@@ -46,11 +47,11 @@
     <h3>Testcase #2 (3 Popunder)</h3>
     <pre>
         window.aThreePopunder = [
-            ['http://www.google.com', {window: {height:400, width:400}, blocktime: 1}],
+            ['http://www.github.com', {window: {height:400, width:400}, blocktime: 1}],
             ['http://www.bing.com', {window: {height:100, width:100}, cb: function() {
                 console.log('heise.de has been opened');
             }}],
-            ['http://www.github.com']
+            ['http://www.google.com']
         ];
 
         $.popunder(window.aThreePopunder, '#testFormTwo', '#testFormTwo input[type="submit"], #testFormTwo a');
@@ -70,7 +71,7 @@
         ];
     </pre>
 
-    <a href="#" onclick="$.popunder()">Open Popunder via Link</a>
+    <a href="#" onclick="$.popunder(this)">Open Popunder via Link</a>
 </div>
 
 <form id="testFormFour" target="_blank" action="http://www.bing.com">
