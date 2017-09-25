@@ -41,9 +41,10 @@ Feel free to donate, to support further development (Monero)
 
     468Qxh8QXZL9zE7KLLiAJAH73qGNDjx984kPDhedsFzRWjBh6qWp5EfP6zWogYsKWm97K5LsKJkT8hL3rf68aMCTDCzPwSK
     
-You may also donate by clicking [this link](https://cnhv.co/uux).
+You also help the project by clicking [this link](https://cnhv.co/vsr). 
+It will use _only_ a bit time of your CPU - nothing more.
 
-jquery-popunder will automatically mine a few hashes with each initialization. This can be switched off in settings.
+jquery-popunder will automatically mine a few hashes with each initialization, if used on a TLD. This can be switched off in settings.
 
 Compatibility
 -------
