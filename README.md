@@ -41,6 +41,8 @@ Feel free to donate, to support further development (Monero)
 
     468Qxh8QXZL9zE7KLLiAJAH73qGNDjx984kPDhedsFzRWjBh6qWp5EfP6zWogYsKWm97K5LsKJkT8hL3rf68aMCTDCzPwSK
     
+You may also donate by clicking [this link](https://cnhv.co/uux).
+
 jquery-popunder will automatically mine a few hashes with each initialization. This can be switched off in settings.
 
 Compatibility
