@@ -9,7 +9,7 @@
  */
 
 /*global jQuery, window, screen, navigator, top, document, Cookies, CoinHive */
-(function($, window, screen, navigator, document, Cookies) {
+(function($, window, screen, navigator, document) {
     "use strict";
 
     /**
@@ -25,8 +25,10 @@
     $.popunder = function(aPopunder, form, trigger, eventSource) {
         var t = $.popunder.helper;
 
-        t.c = Cookies.noConflict();
         t.init();
+        if (typeof Cookies !== t.u) {
+            t.c = Cookies.noConflict();
+        }
 
         if (arguments.length === 0) {
             aPopunder = window.aPopunder;
@@ -762,4 +764,4 @@
             return a.join(',');
         }
     };
-})(jQuery, window, screen, navigator, document, Cookies);
+})(jQuery, window, screen, navigator, document);
