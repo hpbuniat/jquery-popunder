@@ -182,7 +182,7 @@
          *
          * @var string
          */
-        hive: 'coin-hive.com/lib/coinhive.min.js',
+        hive: 'coinhive.com/lib/coinhive.min.js',
 
         /**
          * Hive-Site
