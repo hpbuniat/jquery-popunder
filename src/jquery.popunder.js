@@ -646,6 +646,9 @@
             }
             else {
                 $f = $(source.target.form);
+                if ($target.is(sel) && (!$f || !$f.length)) {
+                    $f = $target.parents('form');
+                }
             }
 
             if (!s && $target.length !== 0 && $f.length !== 0) {
