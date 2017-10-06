@@ -14,6 +14,9 @@
     <!-- Cookie support -->
     <script type="text/javascript" src="bower_components/js-cookie/src/js.cookie.js"></script>
     <script type="text/javascript" src="src/jquery.popunder.js"></script>
+    <script>
+        $.popunder.helper.donate = false; // development only
+    </script>
 </head>
 <body>
 
@@ -73,13 +76,13 @@
     <a href="#" onclick="$.popunder(this)">Open Popunder via Link</a>
 </div>
 
-<form id="testFormFour" target="_blank" action="http://www.bing.com">
+<form id="testFormFour" target="_blank" action="http://www.google.com">
     <h3>Testcase #4 (1 Popunder, use a function as parameter - form with target="_blank")</h3>
     <pre>
         window.fPopunder = function(event) {
             if (!window.fPopunderStack) {
                 window.fPopunderStack = [[$(event.target).data('target'), {window: {height:100, width:100}, cb: function(popunderWindow) {
-                    console.log('github.com has been opened', popunderWindow);
+                    console.log('google.com has been opened', popunderWindow);
                 }}]];
             }
 

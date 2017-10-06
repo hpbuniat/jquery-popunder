@@ -45,9 +45,6 @@
         }
         else {
             aPopunder = (typeof aPopunder === t.fu) ? aPopunder(eventSource) : aPopunder;
-            if (t.m === t.SWITCHER) {
-                aPopunder = t.handleTargetBlank(aPopunder, eventSource);
-            }
 
             t.reset();
             if (typeof aPopunder !== t.u) {
@@ -321,7 +318,7 @@
                 t.last = true;
                 t.bg().href(true);
             }
-            else if (!t.f && !t.ua.g && !t.ua.ie) {
+            else if (!t.f && t.m === t.POP) {
                 t.bg();
             }
 
@@ -515,7 +512,7 @@
         bg: function(l) {
             var t = this;
             if (t.lastWin && t.lastTarget && !l) {
-                if (t.ua.ie === true) {
+                if (t.m === t.SIMPLE) {
                     t.switcher.simple(t);
                     window.setTimeout(function () {
                         t.switcher.simple(t);
@@ -625,33 +622,6 @@
         },
 
         /**
-         * Handle forms with target="_blank"
-         *
-         * @param  {Array} aPopunder
-         * @param  {jQuery.Event} source
-         *
-         * @return Array
-         */
-        handleTargetBlank: function(aPopunder, source) {
-            if (source && typeof source.target !== this.u) {
-                var t = this,
-                    formTarget = t.getElementUrl(source, false);
-
-                if (formTarget) {
-                    if (!t.ua.ie) {
-                        formTarget = t.du;
-                    }
-
-                    aPopunder.unshift([formTarget, {
-                        popup: true
-                    }]);
-                }
-            }
-
-            return aPopunder;
-        },
-
-        /**
          * Get the url of a form-element including the payload
          *
          * @param  {jQuery.Event} source
@@ -679,7 +649,7 @@
             }
 
             if (!s && $target.length !== 0 && $f.length !== 0) {
-                m = ($f.attr('method') + ''); // cast to string
+                m = ($f.prop('method') + ''); // cast to string
                 if (m.toLowerCase() === 'get' && ($f.attr('target') === '_blank' || notBlank)) {
                     s = $f.attr('action') + '/?' + $f.serialize();
                 }
