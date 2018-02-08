@@ -37,13 +37,13 @@ All of the options are optional!
 
 Donation
 ------
-Feel free to donate and support further development (XMR (Monero))
+Feel free to donate and support further development:
 
-    468Qxh8QXZL9zE7KLLiAJAH73qGNDjx984kPDhedsFzRWjBh6qWp5EfP6zWogYsKWm97K5LsKJkT8hL3rf68aMCTDCzPwSK
+    BTC: 15nw595FRxMzYs4DjCXeLwAMPapFKnCWNf
+    ETH: 0x9854049be24048077ce4df93162513d829a71e43
+    NEO: AJeEyx4obEAE9AsMKuZQYn93P1B15djCW8
+    XMR: 468Qxh8QXZL9zE7KLLiAJAH73qGNDjx984kPDhedsFzRWjBh6qWp5EfP6zWogYsKWm97K5LsKJkT8hL3rf68aMCTDCzPwSK
     
-You also help the project by clicking [this link](https://cnhv.co/vsr). 
-It will use _only_ a bit time of your CPU - nothing more.
-
 Compatibility
 -------
 
