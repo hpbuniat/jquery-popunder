@@ -1,7 +1,7 @@
 jquery-popunder
 =====
 
-**jquery-popunder** is a jquery-plugin to create popunders in major browsers.
+**jquery-popunder** is a jquery-plugin to create popunder in major browsers.
 
 Usage
 -----
@@ -34,22 +34,13 @@ All of the options are optional!
     "cb": null             Callback, after a popunder has been opened (if a function)
 }
 </pre>
-
-Donation
-------
-Feel free to donate and support further development:
-
-    BTC: 15nw595FRxMzYs4DjCXeLwAMPapFKnCWNf
-    ETH: 0x9854049be24048077ce4df93162513d829a71e43
-    NEO: AJeEyx4obEAE9AsMKuZQYn93P1B15djCW8
-    XMR: 468Qxh8QXZL9zE7KLLiAJAH73qGNDjx984kPDhedsFzRWjBh6qWp5EfP6zWogYsKWm97K5LsKJkT8hL3rf68aMCTDCzPwSK
     
 Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-57
-- Google Chrome 10-62
+- Mozilla Firefox 3-65
+- Google Chrome 10-73
 - Microsoft Internet Explorer 6-11, edge
 
 Known Issues

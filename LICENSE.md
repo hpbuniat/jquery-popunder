@@ -1,6 +1,8 @@
-jquery-popunder
+jquery-popunder License
+=====
 
-Copyright (c) 2012-2017, Hans-Peter Buniat <hpbuniat@googlemail.com>.
+Copyright (c) 2012-2019, [Hans-Peter Buniat](https://github.com/hpbuniat).
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

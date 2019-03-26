@@ -136,5 +136,6 @@ module.exports = function (grunt) {
 
     // Default task(s).
     grunt.registerTask('update', ['shell:update_bower', 'shell:update_prepare', 'shell:update_buildJquery', 'default']);
-    grunt.registerTask('default', ['jshint', 'uglify', 'obfuscator', 'shell:haxe']);
+    // grunt.registerTask('default', ['jshint', 'uglify', 'obfuscator', 'shell:haxe']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'obfuscator']);
 };
