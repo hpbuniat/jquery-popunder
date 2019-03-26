@@ -39,7 +39,7 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-65
+- Mozilla Firefox 3-66
 - Google Chrome 10-73
 - Microsoft Internet Explorer 6-11, edge
 
