@@ -9,7 +9,8 @@
  */
 
 /*global jQuery, window, screen, navigator, top, document, Cookies */
-;(function($, window, screen, navigator, document) {
+;(function ($, window, screen, navigator, document) {
+
     "use strict";
 
     /**
@@ -22,7 +23,7 @@
      *
      * @return jQuery
      */
-    $.popunder = function(popunderStack, form, trigger, event) {
+    $.popunder = function (popunderStack, form, trigger, event) {
         var t = $.popunder.helper;
 
         t.init();
@@ -32,8 +33,7 @@
 
         if (arguments.length === 0) {
             popunderStack = window.aPopunder;
-        }
-        else if (typeof popunderStack !== t.fu && $(popunderStack).is('a')) {
+        } else if (typeof popunderStack !== t.fu && $(popunderStack).is('a')) {
             event = $.Event('click', {
                 'target': popunderStack
             });
@@ -42,8 +42,7 @@
 
         if (trigger || form) {
             t.bindEvents(popunderStack, form, trigger);
-        }
-        else {
+        } else {
             popunderStack = (typeof popunderStack === t.fu) ? popunderStack(event) : popunderStack;
 
             t.reset();
@@ -226,7 +225,7 @@
          *
          * @return boolean Returns true, if current ua is part of the stack
          */
-        testStack: function(uaStack, ua) {
+        testStack: function (uaStack, ua) {
             var i, r = false;
             for (i in uaStack) {
                 if (uaStack.hasOwnProperty(i)) {
@@ -244,7 +243,7 @@
          *
          * @return $.popunder.helper
          */
-        init: function() {
+        init: function () {
             var t = this;
 
             if (!t.m) {
@@ -272,7 +271,7 @@
          *
          * @return $.popunder.helper
          */
-        queue: function(popunderStack, eventSource) {
+        queue: function (popunderStack, eventSource) {
             var b = false,
                 t = this;
 
@@ -302,11 +301,10 @@
          *
          * @return $.popunder.helper
          */
-        bindEvents: function(popunderStack, form, trigger) {
+        bindEvents: function (popunderStack, form, trigger) {
             var t = this,
                 s = 'string',
-                e = (t.ua.touch ? 'touchstart click' : 'click'),
-                c = function(event) {
+                c = function (event) {
                     $.popunder(event.data.stack, false, false, event);
                     return true;
                 };
@@ -320,7 +318,7 @@
 
             if (trigger) {
                 trigger = (typeof trigger === s) ? $(trigger) : trigger;
-                trigger.on(e + '.' + t.ns, {
+                trigger.on('click.' + t.ns, {
                     stack: popunderStack
                 }, c);
             }
@@ -336,7 +334,7 @@
          *
          * @return boolean
          */
-        cookieCheck: function(url, o) {
+        cookieCheck: function (url, o) {
             var t = this,
                 name = t.rand(o.cookie, false),
                 cookie = t.c.get(name),
@@ -344,11 +342,9 @@
 
             if (!cookie) {
                 cookie = url;
-            }
-            else if (cookie.indexOf(url) === -1) {
+            } else if (cookie.indexOf(url) === -1) {
                 cookie += url;
-            }
-            else {
+            } else {
                 ret = true;
             }
 
@@ -367,7 +363,7 @@
          *
          * @return string
          */
-        rand: function(name, rand) {
+        rand: function (name, rand) {
             var t = this,
                 p = (!!name) ? name : t.du;
             return p + (rand === false ? '' : Math.floor(89999999 * Math.random() + 10000000).toString()).replace('.', '');
@@ -383,7 +379,7 @@
          *
          * @return boolean
          */
-        open: function(url, opts, stackLength, event) {
+        open: function (url, opts, stackLength, event) {
             var t = this,
                 i, o = $.extend(true, {}, t.def, opts);
 
@@ -393,7 +389,8 @@
                     if (top.document.location.toString()) {
                         t._top = top;
                     }
-                } catch (err) {}
+                } catch (err) {
+                }
             }
 
             // test if current user-agent forces skipping
@@ -408,6 +405,7 @@
 
             if (url !== t.du) {
                 t.lastTarget = url;
+
                 if (t.first === true && t.m === t.SWITCHER) {
                     if (event && typeof event.target !== t.u) {
                         i = t.getElementUrl(event, undefined);
@@ -415,10 +413,9 @@
                     }
 
                     t.switcher.switchWindow(i, t.o, t.rand(o.name, !opts.name));
-                }
-                else if (t.first === true || true === t.isMultiple()) {
+                } else if (t.first === true || true === t.isMultiple()) {
                     if (t.m === t.TIMEOUT) {
-                        window.setTimeout(function(helper) {
+                        window.setTimeout(function (helper) {
                             return function () {
                                 try {
                                     helper.lastWin = (window.open(helper.o, helper.rand(o.name, !opts.name), helper.getOptions(o.window)) || helper.lastWin);
@@ -426,11 +423,11 @@
                                     if (typeof o.cb === helper.fu) {
                                         o.cb(helper.lastWin);
                                     }
-                                } catch (err) {}
+                                } catch (err) {
+                                }
                             };
                         }($.extend(true, {}, t)), 0);
-                    }
-                    else {
+                    } else {
                         t.lastWin = (t._top.window.open(t.o, t.rand(o.name, !opts.name), t.getOptions(o.window)) || t.lastWin);
                     }
                 }
@@ -451,7 +448,7 @@
          *
          * @return $.popunder.helper
          */
-        bg: function() {
+        bg: function () {
             var t = this;
             if (t.TIMEOUT === t.m || t.lastTarget) {
                 if (t.m === t.SIMPLE) {
@@ -459,8 +456,7 @@
                     window.setTimeout(function () {
                         t.switcher.simple(t);
                     }, 500);
-                }
-                else if (t.m === t.TIMEOUT) {
+                } else if (t.m === t.TIMEOUT) {
                     t.switcher.timeout();
                 }
             }
@@ -482,14 +478,13 @@
              *
              * @return void
              */
-            simple: function(t) {
+            simple: function (t) {
                 if (t.ua.oldIE) {
                     t.lastWin["blur"]();
                     t.lastWin["opener"]["window"]["focus"]();
                     window["self"]["window"]["focus"]();
                     window["focus"]();
-                }
-                else {
+                } else {
                     document["focus"]();
                 }
             },
@@ -500,8 +495,8 @@
              *
              * @return void
              */
-            timeout: function() {
-                window.setTimeout(function() {
+            timeout: function () {
+                window.setTimeout(function () {
                     var n = window.open('', '_self');
                     n && !n.closed && n.focus();
                 }, 0);
@@ -527,7 +522,7 @@
          *
          * @return boolean
          */
-        isMultiple: function() {
+        isMultiple: function () {
             var t = this;
             return (t.m === t.TIMEOUT || t.m === t.SIMPLE);
         },
@@ -540,7 +535,7 @@
          *
          * @return $.popunder.helper
          */
-        href: function(stackLength, t) {
+        href: function (stackLength, t) {
             if (stackLength && t.lastTarget && t.lastWin && t.lastTarget !== t.b && t.lastTarget !== t.o) {
                 t.lastWin.document.location.href = t.lastTarget;
             }
@@ -556,7 +551,7 @@
          *
          * @return String
          */
-        getElementUrl: function(event, returnEvenIfNotBlank) {
+        getElementUrl: function (event, returnEvenIfNotBlank) {
             var t = this,
                 sel = ':submit, button',
                 $target = $(event.target),
@@ -566,12 +561,10 @@
             if ($target.is('a') && notBlank) {
                 $f = $target;
                 s = $target.attr('href');
-            }
-            else if ($target.is(sel) !== true) {
+            } else if ($target.is(sel) !== true) {
                 $target = $target.parents(sel);
                 $f = $target.parents('form');
-            }
-            else {
+            } else {
                 $f = $(event.target.form);
                 if ($target.is(sel) && (!$f || !$f.length)) {
                     $f = $target.parents('form');
@@ -593,7 +586,7 @@
          *
          * @return $.popunder.helper
          */
-        reset: function() {
+        reset: function () {
             var t = this;
             t.last = false;
             t.first = true;
@@ -606,7 +599,7 @@
          *
          * @return $.popunder.helper
          */
-        unbind: function(form, trigger) {
+        unbind: function (form, trigger) {
             var t = this,
                 s = 'string';
 
@@ -631,7 +624,7 @@
          *
          * @return {String}
          */
-        getOptions: function(options) {
+        getOptions: function (options) {
             var a = [], i;
             for (i in options) {
                 if (options.hasOwnProperty(i)) {
