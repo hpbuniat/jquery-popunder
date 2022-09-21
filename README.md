@@ -6,7 +6,7 @@ jquery-popunder
 Usage
 -----
 
-Popunders are popups which are opened in the background of a browser-window.
+A popunder is a popup which opens in the background of a browser-window.
 This script will only work, if the popunder is opened on a user-generated event (e.g. click or submit).
 
 For examples and usage documentation, take a look at the index.html.
@@ -16,7 +16,7 @@ So you leave the event-handling to the plugin. To add some flexibility to the fu
 
 Options
 -------
-All of the options are optional!
+All options are optional.
 
 <pre>
 {
@@ -39,14 +39,11 @@ Compatibility
 -------
 
 jquery-popunder was tested with:
-- Mozilla Firefox 3-67
-- Google Chrome 10-75
+- Mozilla Firefox 
+- Google Chrome
 - Microsoft Internet Explorer 6-11, edge
+- Safari (incl. iPadOS)
 
-Known Issues
--------
-- chrome 45+ & linux is covered by moving the originating website into a new tab, leaving the popunder on the first one
-- in Firefox, when the setting: 'Open new windows in a new tab instead' is deactivated
 
 Installation
 -------

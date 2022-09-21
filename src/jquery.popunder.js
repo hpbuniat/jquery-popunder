@@ -5,7 +5,7 @@
  *
  * @author Hans-Peter Buniat <hpbuniat@googlemail.com>
  * @copyright 2012-2019 Hans-Peter Buniat <hpbuniat@googlemail.com>
- * @license http://opensource.org/licenses/BSD-3-Clause
+ * @license https://opensource.org/licenses/BSD-3-Clause
  */
 
 /*global jQuery, window, screen, navigator, top, document, Cookies */
@@ -179,7 +179,7 @@
          */
         def: {
 
-            // properites of the opened window
+            // properties of the opened window
             window: {
                 'toolbar': 0,
                 'scrollbars': 1,
@@ -249,7 +249,7 @@
             if (!t.m) {
                 // defaults for the popunder-method, the last match is used
                 t.m = t.testStack({
-                    ff: t.TIMEOUT,
+                    ff: t.SWITCHER,
                     ie: t.SWITCHER,
                     edge: t.SWITCHER,
                     w: t.SWITCHER,

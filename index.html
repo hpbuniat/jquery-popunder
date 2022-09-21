@@ -23,13 +23,13 @@
         </h4>
         <hr />
 
-        <form id="testFormOne" action="http://www.google.de" method="GET">
+        <form id="testFormOne" action="https://www.google.de" method="GET">
             <h3>Testcase #1 (1 Popunder, use a function as parameter)</h3>
             <pre>
                 window.fPopunder = function(event) {
                     if (!window.fPopunderStack) {
                         window.fPopunderStack = [
-                            ['http://www.bing.com']
+                            ['https://www.bing.com']
                         ];
                     }
 
@@ -43,15 +43,15 @@
             <input id="submitButtonOneClick" type="submit" value="Open Popunder via Button-Click" />
         </form>
 
-        <form id="testFormTwo" action="http://www.google.de" method="GET">
+        <form id="testFormTwo" action="https://www.google.de" method="GET">
             <h3>Testcase #2 (3 Popunder)</h3>
             <pre>
                 window.aThreePopunder = [
-                    ['http://www.github.com', {window: {height:400, width:400}, blocktime: 1}],
-                    ['http://www.bing.com', {window: {height:100, width:100}, cb: function() {
+                    ['https://www.github.com', {window: {height:400, width:400}, blocktime: 1}],
+                    ['https://www.bing.com', {window: {height:100, width:100}, cb: function() {
                         console.log('bing.com has been opened');
                     }}],
-                    ['http://www.google.com']
+                    ['https://www.google.com']
                 ];
 
                 $.popunder(window.aThreePopunder, '#testFormTwo', '#testFormTwo input[type="submit"], #testFormTwo a');
@@ -67,20 +67,20 @@
             <h3>Testcase #3 (1 Popunder)</h3>
             <pre>
                 window.aPopunder = [
-                    ['http://www.bing.com']
+                    ['https://www.bing.com']
                 ];
             </pre>
 
             <a href="#" onclick="$.popunder(this)">Open Popunder via Link</a>
         </div>
 
-        <form id="testFormFour" target="_blank" action="http://www.google.com">
+        <form id="testFormFour" target="_blank" action="https://www.google.com">
             <h3>Testcase #4 (1 Popunder, use a function as parameter - form with target="_blank")</h3>
             <pre>
                 window.fPopunder = function(event) {
                     if (!window.fPopunderStack) {
                         window.fPopunderStack = [
-                            ['http://www.bing.com', {window: {height:100, width:100}, cb: function(popunderWindow) {
+                            ['https://www.bing.com', {window: {height:100, width:100}, cb: function(popunderWindow) {
                                 console.log('google.com has been opened', popunderWindow);
                             }}]
                         ];
@@ -115,7 +115,7 @@
                 $.popunder(window.fPopunder, '#testFormFive', '#testFormFive input[type="submit"]');
             </pre>
             <p>
-                <input id="checkBoxOne" type="checkbox" value="http://www.github.com" /> <label for="checkBoxOne">github.com</label>
+                <input id="checkBoxOne" type="checkbox" value="https://www.github.com" /> <label for="checkBoxOne">github.com</label>
             </p>
             <input id="submitButtonFiveClick" type="submit" value="Open Popunder via Button-Click" />
 
